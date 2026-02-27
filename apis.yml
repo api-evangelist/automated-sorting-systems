@@ -1,0 +1,116 @@
+name: Automated Sorting Systems API
+description: API for managing and controlling automated sorting systems, including package tracking, sorting configuration, and system monitoring
+image: https://example.com/images/sorting-systems-logo.png
+url: https://api.sortingsystems.example.com
+created: '2024-01-15'
+modified: '2024-01-15'
+apis:
+- name: Automated Sorting Systems Core API
+  description: Core API for controlling sorting operations, managing conveyor systems, and tracking packages through the sorting process
+  image: https://example.com/images/sorting-api-icon.png
+  humanURL: https://sortingsystems.example.com
+  baseURL: https://api.sortingsystems.example.com/v1
+  tags:
+  - sorting
+  - logistics
+  - automation
+  - warehouse
+  - package tracking
+  properties:
+  - type: Documentation
+    url: https://docs.sortingsystems.example.com
+  - type: OpenAPI
+    url: https://api.sortingsystems.example.com/v1/openapi.json
+  - type: Authentication
+    url: https://docs.sortingsystems.example.com/authentication
+  - type: Rate Limits
+    url: https://docs.sortingsystems.example.com/rate-limits
+  - type: SDKs
+    url: https://docs.sortingsystems.example.com/sdks
+  - type: Changelog
+    url: https://docs.sortingsystems.example.com/changelog
+  - type: Status
+    url: https://status.sortingsystems.example.com
+  - type: Support
+    url: https://support.sortingsystems.example.com
+  - type: Pricing
+    url: https://sortingsystems.example.com/pricing
+  contact:
+  - type: Email
+    url: mailto:api-support@sortingsystems.example.com
+  - type: Support Portal
+    url: https://support.sortingsystems.example.com
+  - type: Twitter
+    url: https://twitter.com/sortingsystems
+- name: Package Tracking API
+  description: Real-time tracking and monitoring of packages as they move through the sorting system
+  baseURL: https://api.sortingsystems.example.com/v1/tracking
+  tags:
+  - tracking
+  - packages
+  - monitoring
+  properties:
+  - type: Documentation
+    url: https://docs.sortingsystems.example.com/tracking
+  - type: OpenAPI
+    url: https://api.sortingsystems.example.com/v1/tracking/openapi.json
+  - type: Webhooks
+    url: https://docs.sortingsystems.example.com/tracking/webhooks
+- name: Sorting Configuration API
+  description: Configure sorting rules, destination mapping, and routing logic for the automated system
+  baseURL: https://api.sortingsystems.example.com/v1/configuration
+  tags:
+  - configuration
+  - routing
+  - rules
+  properties:
+  - type: Documentation
+    url: https://docs.sortingsystems.example.com/configuration
+  - type: OpenAPI
+    url: https://api.sortingsystems.example.com/v1/configuration/openapi.json
+- name: System Monitoring API
+  description: Monitor system health, performance metrics, and equipment status in real-time
+  baseURL: https://api.sortingsystems.example.com/v1/monitoring
+  tags:
+  - monitoring
+  - analytics
+  - performance
+  - health
+  properties:
+  - type: Documentation
+    url: https://docs.sortingsystems.example.com/monitoring
+  - type: OpenAPI
+    url: https://api.sortingsystems.example.com/v1/monitoring/openapi.json
+  - type: Metrics Dashboard
+    url: https://dashboard.sortingsystems.example.com
+- name: Alerts & Notifications API
+  description: Manage alerts, notifications, and event-driven workflows for sorting system events
+  baseURL: https://api.sortingsystems.example.com/v1/alerts
+  tags:
+  - alerts
+  - notifications
+  - events
+  properties:
+  - type: Documentation
+    url: https://docs.sortingsystems.example.com/alerts
+  - type: OpenAPI
+    url: https://api.sortingsystems.example.com/v1/alerts/openapi.json
+  - type: Webhooks
+    url: https://docs.sortingsystems.example.com/alerts/webhooks
+maintainers:
+- name: API Team
+  email: api-team@sortingsystems.example.com
+  twitter: sortingsystems
+tags:
+- automated sorting
+- logistics
+- warehouse automation
+- package handling
+- conveyor systems
+- distribution center
+- fulfillment
+include:
+- name: Industry Standards
+  url: https://sortingsystems.example.com/standards.json
+- name: Integration Partners
+  url: https://sortingsystems.example.com/partners.json
