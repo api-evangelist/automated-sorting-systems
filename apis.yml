@@ -8,11 +8,11 @@ description: >-
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
-  - Sorting
-  - Logistics
   - Automation
-  - Warehouse
+  - Logistics
   - Package Tracking
+  - Sorting
+  - Warehouse
 url: >-
   https://raw.githubusercontent.com/api-evangelist/automated-sorting-systems/refs/heads/main/apis.yml
 created: '2024-01-15'
