@@ -1,0 +1,157 @@
+vocabulary:
+  name: Automated Sorting Systems Vocabulary
+  description: >-
+    Key industrial and manufacturing concepts for automated conveyor, sortation,
+    and parcel routing systems used in logistics, warehousing, e-commerce
+    fulfillment, and postal distribution environments.
+  version: "1.0.0"
+  terms:
+    - term: sortation
+      definition: >-
+        The automated process of routing individual items or packages to specific
+        destinations based on barcode scans, weight, or dimensional data. High-speed
+        sortation systems can process thousands of items per hour.
+      tags:
+        - core
+        - operations
+        - automation
+
+    - term: divert-point
+      definition: >-
+        A physical location along a conveyor line where a package is mechanically
+        diverted off the main line onto a chute, lane, or secondary conveyor based
+        on a routing decision from the WCS.
+      tags:
+        - hardware
+        - conveyor
+        - routing
+
+    - term: warehouse-control-system
+      definition: >-
+        Software layer (WCS) that interfaces directly with conveyor and sortation
+        hardware via PLCs to execute real-time routing decisions and relay
+        equipment status to higher-level WMS or ERP systems.
+      tags:
+        - software
+        - integration
+        - control
+
+    - term: warehouse-management-system
+      definition: >-
+        Enterprise software (WMS) that manages inventory, orders, and labor within
+        a warehouse or distribution center. WMS systems send sortation instructions
+        to WCS layers and receive confirmation events.
+      tags:
+        - software
+        - integration
+        - inventory
+
+    - term: throughput
+      definition: >-
+        The rate at which packages are successfully sorted, typically measured in
+        items per hour (IPH). Throughput is a primary KPI for sortation system
+        performance and capacity planning.
+      tags:
+        - metrics
+        - performance
+        - operations
+
+    - term: inductor
+      definition: >-
+        The entry point of a sortation system where items are placed onto the
+        sorter surface (e.g., cross-belt, tilt-tray, shoe sorter). Items may be
+        inducted manually or automatically from upstream conveyors.
+      tags:
+        - hardware
+        - conveyor
+        - input
+
+    - term: mis-sort
+      definition: >-
+        An exception event in which a package is diverted to an incorrect destination
+        lane. Mis-sorts are tracked as accuracy KPIs and can trigger exception
+        callbacks in WCS API integrations.
+      tags:
+        - exceptions
+        - quality
+        - metrics
+
+    - term: cross-belt-sorter
+      definition: >-
+        A type of sortation conveyor where individual carriers hold small belt
+        conveyors that run perpendicular to the main direction of travel, enabling
+        gentle and precise diverting of items to both sides of the sorter line.
+      tags:
+        - hardware
+        - equipment
+        - sorter-type
+
+    - term: opc-ua
+      definition: >-
+        OPC Unified Architecture — an industrial machine-to-machine communication
+        protocol used in sorting and conveyor systems to expose real-time sensor,
+        PLC, and equipment status data to higher-level software systems.
+      tags:
+        - protocol
+        - industrial
+        - integration
+
+    - term: jam-rate
+      definition: >-
+        The frequency at which items become blocked or stopped on a conveyor or
+        sorter, expressed as jams per hour or as a percentage of total items
+        processed. High jam rates indicate mechanical or loading issues.
+      tags:
+        - metrics
+        - exceptions
+        - performance
+
+    - term: barcode-scan-tunnel
+      definition: >-
+        A fixed scanning array positioned over a conveyor belt that captures
+        barcodes on packages from multiple angles simultaneously, feeding the
+        package ID to the WCS for routing lookup without manual intervention.
+      tags:
+        - hardware
+        - scanning
+        - identification
+
+    - term: parcel-routing
+      definition: >-
+        The process of determining the correct sort destination for a parcel based
+        on delivery address, carrier service level, postal zone, or customer-specific
+        rules encoded in the WCS routing table.
+      tags:
+        - routing
+        - logistics
+        - operations
+
+    - term: aidm
+      definition: >-
+        IATA Airport Information Data Model — a standardized data model for airport
+        operations including baggage sortation, flight data, and ULD management
+        adopted by airport automation vendors such as Vanderlande.
+      tags:
+        - standard
+        - airport
+        - data-model
+
+    - term: exception-handling
+      definition: >-
+        Automated workflows triggered by sortation anomalies such as unknown
+        barcodes, overweight packages, or conveyor faults. Exception events are
+        surfaced via API callbacks or message queues to upstream WMS systems.
+      tags:
+        - exceptions
+        - integration
+        - automation
+
+    - term: uld
+      definition: >-
+        Unit Load Device — standardized containers or pallets used in air cargo
+        and airport baggage operations. Automated sortation systems route ULDs
+        to aircraft positions based on flight assignments from the WCS.
+      tags:
+        - airport
+        - baggage
+        - container

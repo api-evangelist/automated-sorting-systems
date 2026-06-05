@@ -1,0 +1,113 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "schema": "https://schema.org/",
+    "mfg": "https://schema.org/manufacturer/",
+    "qudt": "http://qudt.org/vocab/unit/",
+    "ssn": "http://www.w3.org/ns/ssn/",
+    "sosa": "http://www.w3.org/ns/sosa/",
+
+    "AutomatedSortingSystems": {
+      "@id": "schema:Organization",
+      "@type": "@id"
+    },
+    "name": "schema:name",
+    "url": "schema:url",
+    "description": "schema:description",
+    "industry": "schema:industry",
+
+    "SortationSystem": {
+      "@id": "ssn:System",
+      "@type": "@id"
+    },
+    "ConveyorSystem": {
+      "@id": "ssn:System",
+      "@type": "@id"
+    },
+    "WarehouseManagementSystem": {
+      "@id": "schema:SoftwareApplication",
+      "@type": "@id"
+    },
+    "WarehouseControlSystem": {
+      "@id": "schema:SoftwareApplication",
+      "@type": "@id"
+    },
+
+    "Package": {
+      "@id": "schema:Product",
+      "@type": "@id"
+    },
+    "barcode": "schema:identifier",
+    "trackingNumber": "schema:trackingNumber",
+    "weight": "schema:weight",
+    "dimensions": "schema:size",
+    "sortDestination": {
+      "@id": "schema:location",
+      "@type": "@id"
+    },
+    "divertPoint": {
+      "@id": "schema:Place",
+      "@type": "@id"
+    },
+
+    "SortationEvent": {
+      "@id": "schema:Event",
+      "@type": "@id"
+    },
+    "timestamp": "schema:startDate",
+    "eventType": "schema:eventStatus",
+    "laneId": "schema:identifier",
+    "throughput": {
+      "@id": "schema:value",
+      "@type": "qudt:NUM"
+    },
+    "itemsPerHour": {
+      "@id": "schema:value",
+      "@type": "qudt:NUM"
+    },
+
+    "SortOrder": {
+      "@id": "schema:Order",
+      "@type": "@id"
+    },
+    "orderId": "schema:orderNumber",
+    "orderStatus": "schema:orderStatus",
+    "carrier": "schema:provider",
+    "shipDate": "schema:orderDate",
+
+    "DivertRule": {
+      "@id": "schema:Action",
+      "@type": "@id"
+    },
+    "ruleId": "schema:identifier",
+    "condition": "schema:description",
+    "destination": "schema:location",
+    "priority": "schema:position",
+
+    "ThroughputMetric": {
+      "@id": "schema:Observation",
+      "@type": "@id"
+    },
+    "observedPeriod": "schema:temporalCoverage",
+    "jamRate": "schema:value",
+    "divertAccuracy": "schema:value",
+    "errorCount": "schema:value",
+
+    "ExceptionEvent": {
+      "@id": "schema:Event",
+      "@type": "@id"
+    },
+    "exceptionType": "schema:eventStatus",
+    "packageId": "schema:identifier",
+    "faultCode": "schema:value",
+    "resolvedAt": "schema:endDate",
+
+    "WMSIntegration": {
+      "@id": "schema:SoftwareApplication",
+      "@type": "@id"
+    },
+    "erpSystem": "schema:applicationCategory",
+    "integrationProtocol": "schema:encodingFormat",
+    "apiVersion": "schema:version"
+  }
+}
