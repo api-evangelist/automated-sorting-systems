@@ -8,7 +8,7 @@ description: >-
   integrate with warehouse management systems (WMS), warehouse control systems (WCS),
   and ERP platforms via APIs and EDI to orchestrate high-speed package sorting.
 type: Index
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
   - Automation
   - Conveyor Systems
