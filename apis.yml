@@ -97,6 +97,10 @@ apis:
         url: https://www.beumer.com/en/industries/logistics/
 
 common:
+  - type: VulnerabilityDisclosure
+    url: security/automated-sorting-systems-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/automated-sorting-systems-domain-security.yml
   - type: Features
     data:
       - name: Real-Time Package Tracking
