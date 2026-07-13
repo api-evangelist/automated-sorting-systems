@@ -6,30 +6,34 @@
       "feed_url": "https://www.dematic.com/en-us/products/technologies/software/",
       "title": "Dematic Software",
       "saved": 0,
-      "method": "none"
+      "method": "none",
+      "error": "fetch_failed: HTTPError"
     },
     {
       "source": "https://sps.honeywell.com/us/en/products/productivity/warehouse-automation",
       "feed_url": "https://sps.honeywell.com/us/en/products/productivity/warehouse-automation",
       "title": "Honeywell Intelligrated Warehouse Automation",
       "saved": 0,
-      "method": "none"
+      "method": "none",
+      "error": "parse_failed"
     },
     {
       "source": "https://www.vanderlande.com/software-and-services/fleet/",
       "feed_url": "https://www.vanderlande.com/software-and-services/fleet/",
       "title": "Vanderlande FLEET",
       "saved": 0,
-      "method": "none"
+      "method": "none",
+      "error": "parse_failed"
     },
     {
       "source": "https://www.beumer.com/en/industries/logistics/",
       "feed_url": "https://www.beumer.com/en/industries/logistics/",
       "title": "BEUMER Group Logistics",
       "saved": 0,
-      "method": "none"
+      "method": "none",
+      "error": "fetch_failed: HTTPError"
     }
   ],
   "post_count": 0,
-  "fetched": "2026-06-05T00:00:00Z"
+  "fetched": "2026-07-11T11:43:46Z"
 }
