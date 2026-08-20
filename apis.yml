@@ -104,6 +104,11 @@ apis:
       - Airport Logistics
       - Parcel Sorting
       - Industrial Integration
+      - OPC UA
+    tags_raw:
+      - Airport Logistics
+      - Parcel Sorting
+      - Industrial Integration
       - OPC-UA
     properties:
       - type: Website
