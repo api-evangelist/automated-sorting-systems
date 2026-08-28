@@ -9,6 +9,17 @@ description: >-
   integrate with warehouse management systems (WMS), warehouse control systems (WCS),
   and ERP platforms via APIs and EDI to orchestrate high-speed package sorting.
 type: Index
+deliveryModel:
+  model: unknown
+  open_source: false
+  commercial: false
+  callable_host: false
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
+  source:
+  - none
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: unknown
