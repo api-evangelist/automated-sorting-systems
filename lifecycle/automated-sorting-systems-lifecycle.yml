@@ -1,0 +1,35 @@
+generated: '2026-09-14'
+method: derived
+source: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+note: Lifecycle posture across the four vendors in this index. Only Vanderlande publishes a versioned
+  contract. No vendor publishes a status page, a deprecation policy, an SLA document or a dated changelog
+  on any public host probed on 2026-09-14.
+versioning:
+  scheme: document-version
+  current: 6.6.0
+  docs: https://api.datahub.oair.io/
+  applies_to: automated-sorting-systems:vanderlande-api
+  note: info.version 6.6.0; no version segment in any path, so an older major is not addressable.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  note: No deprecation policy is published. Deprecation is signalled inline in the contract only — the
+    summary of one operation is prefixed "DEPRECATED!" with no sunset date, no replacement named and no
+    Deprecation/Sunset header (RFC 8594) declared.
+deprecated_operations:
+- operationId: postBagLoadIntoUldEvent
+  source: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+  signal: summary prefixed "DEPRECATED!"
+  sunset_date: null
+  replacement: null
+sla:
+  url: null
+  uptime_target: null
+  note: No public SLA or uptime commitment found for any of the four vendors.
+status_page: null
+status_page_note: 'Probed 2026-09-14 — every candidate host failed to resolve (curl exit 000, no DNS):
+  status.dematic.com, status.vanderlande.com, status.beumergroup.com, status.oair.io,
+  status.datahub.oair.io, status.honeywell.com. No status page is linked from any of the four vendor sites.'
+changelog:
+  url: null
+  note: No dated changelog or release-notes page published for any of the four API surfaces.

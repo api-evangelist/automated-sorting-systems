@@ -1,0 +1,92 @@
+generated: '2026-09-14'
+method: derived
+source: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+docs: https://www.vanderlande.com/airport-logistics/airport-vertical/apis-references/
+note: Cross-cutting runtime semantics for the one machine-readable contract in this index, the Vanderlande
+  OpenAir Datahub API. Dematic, Honeywell Intelligrated and BEUMER publish no contract, so no conventions
+  can be derived for them.
+applies_to: automated-sorting-systems:vanderlande-api
+authentication:
+  style: undeclared
+  note: The published contract declares no components.securitySchemes and no security[] requirement on
+    any of its 52 operations. Vanderlande gates access through a contact form on its developer portal
+    rather than a self-serve credential, and publishes no auth reference page. An integrator cannot tell
+    from the contract what credential to present.
+idempotency:
+  coverage: none
+  mechanism: null
+  header: null
+  retention: null
+  scope: []
+  evidence: no Idempotency-Key (or equivalent) parameter on any of the 26 mutating operations in openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+  note: Every write is an event POST (postBagTrackingEvent, postFlightTimeEvent, ...). A replayed POST
+    is indistinguishable from a second real event to the caller, and nothing in the contract or the docs
+    defines a replay key.
+reversibility:
+  grade: none
+  write_operations: 26
+  reversal_operations: []
+  window: null
+  evidence: 'the contract exposes no cancel/undo/delete/reverse operation of any kind: all 26 mutating
+    operations are POSTs that append an event, and there is no DELETE method anywhere in the document'
+  note: postBagCancelEvent and postFlightCancelledEvent are NOT reversals of a prior API call — they record
+    that the real-world bag or flight was cancelled, and they are themselves appends. No window is stated
+    anywhere in the docs, so none is recorded here.
+dry_run_mode:
+  supported: false
+  evidence: no dry-run/simulate/validate-only parameter or endpoint in the contract
+pagination:
+  style: result-cap
+  parameters:
+  - name: max-results
+    in: query
+    description: Caps the number of records returned. Where unset the contract states a default of 1000
+      records.
+  cursor: false
+  offset: false
+  total_count_field: null
+  note: There is no cursor, offset or page parameter and no next-link in any response, so a result set
+    larger than the cap cannot be walked. Callers page by narrowing the time window instead (created-from/created-to,
+    updated-from/updated-to, from/to) — that is the de-facto pagination mechanism in this contract.
+time_filtering:
+  parameters:
+  - from
+  - to
+  - created-from
+  - created-to
+  - updated-from
+  - updated-to
+  format: ISO 8601 UTC, e.g. 2020-01-31T12:30:00.000Z
+  default_window: 24 hours where no query parameter is supplied (stated in operation descriptions)
+field_expansion:
+  supported: false
+metadata:
+  schemas:
+  - BasicMeta
+  - AggregatedMeta
+  note: Every stored object carries a meta block recording creation/update time and source system.
+request_tracing:
+  header: null
+  evidence: no request-id/correlation-id header declared in the contract
+versioning:
+  scheme: document-version
+  current: 6.6.0
+  in_path: false
+  in_header: false
+  note: The contract carries info.version 6.6.0 but no version segment appears in any path and no version
+    header is declared.
+error_envelope:
+  media_type: '*/*'
+  schema: ModelAndView
+  problem_json: false
+  cross_reference: errors/automated-sorting-systems-problem-types.yml
+rate_limit_signaling:
+  headers: []
+  status_on_exhaustion: null
+  evidence: no 429 response declared on any operation and no rate-limit headers documented
+  cross_reference: rate-limits/automated-sorting-systems-rate-limits.yml
+cross_links:
+- errors/automated-sorting-systems-problem-types.yml
+- lifecycle/automated-sorting-systems-lifecycle.yml
+- authentication/automated-sorting-systems-authentication.yml
+- rate-limits/automated-sorting-systems-rate-limits.yml

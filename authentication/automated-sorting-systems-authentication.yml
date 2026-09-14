@@ -1,0 +1,20 @@
+generated: '2026-09-14'
+method: derived
+source: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+summary:
+  types: []
+  api_key_in: []
+  oauth2_flows: []
+schemes: []
+finding: no-auth-declared
+note: derive-authentication.py returned 0 auth profiles for this slug on 2026-09-14. The Vanderlande OpenAir
+  Datahub contract declares no components.securitySchemes and applies no security[] requirement to any
+  of its 52 operations, and no auth reference page is published on vanderlande.com or api.datahub.oair.io.
+  Dematic, Honeywell Intelligrated and BEUMER publish no contract at all. This file records a measured
+  ABSENCE of a documented authentication model — no Authentication pointer is wired into apis.yml from
+  it, because that pointer would assert the providers document authentication, and they do not.
+gated_access:
+  mechanism: contact form
+  url: https://www.vanderlande.com/airport-logistics/developerportal-contact/
+  note: Vanderlande directs prospective integrators to a contact form; there is no self-serve signup,
+    key issuance page or credential documentation.

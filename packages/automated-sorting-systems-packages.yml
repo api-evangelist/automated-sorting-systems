@@ -1,0 +1,18 @@
+generated: '2026-09-14'
+method: searched
+source: npm, PyPI, RubyGems, crates.io, NuGet, Maven Central, pkg.go.dev and Packagist searched 2026-09-14;
+  vendor docs and GitHub orgs checked
+packages: []
+package_count: 0
+note: No first-party client library exists for any of the four vendors. Vanderlande publishes an OpenAPI
+  contract but no SDK in any registry and no public GitHub organisation; Dematic, Honeywell Intelligrated
+  and BEUMER publish neither. The only Dematic-named package found anywhere is folio-org/edge-dematic,
+  a third-party FOLIO library-system bridge written by the FOLIO community — it is NOT a Dematic package
+  and is not recorded as one. No SDKs pointer is wired into apis.yml from this file.
+third_party_observed:
+- name: folio-org/edge-dematic
+  url: https://github.com/folio-org/edge-dematic
+  official: false
+  vendor: automated-sorting-systems:dematic-api
+  note: Community bridge between the FOLIO library platform and a Dematic ASRS; written by FOLIO, not
+    Dematic.

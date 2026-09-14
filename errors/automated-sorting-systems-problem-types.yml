@@ -1,0 +1,72 @@
+generated: '2026-09-14'
+method: derived
+source: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+format: vendor
+note: 'Derived from the 4xx responses declared in the Vanderlande OpenAir Datahub contract. The contract
+  is NOT RFC 9457: error bodies are typed as the Spring ModelAndView schema under a */* media type, so
+  a client cannot rely on a problem+json envelope. No 5xx response is declared on any of the 52 operations,
+  and no error-code registry is published in the docs.'
+envelope:
+  media_type: '*/*'
+  schema: ModelAndView
+  problem_json: false
+  fields:
+  - status
+  - viewName
+  - model
+  - view
+  - empty
+  - reference
+coverage:
+  operations: 52
+  with_400: 49
+  with_404: 7
+  with_5xx: 0
+  declared_error_codes: 8
+problems:
+- status: 400
+  title: Bad Request
+  schema: ModelAndView
+  content_types:
+  - '*/*'
+  example_operation: postBagTrackingEvent
+- status: 404
+  title: 'Not Found: bag tag with given id not found.'
+  schema: null
+  content_types: []
+  example_operation: getBagTagREST
+- status: 400
+  title: Bad Request
+  schema: null
+  content_types:
+  - '*/*'
+  example_operation: postContainerStorageEvent
+- status: 404
+  title: 'Not Found: flight leg with given id not found.'
+  schema: null
+  content_types: []
+  example_operation: getFlightLegREST
+- status: 404
+  title: CPM message not found.
+  schema: null
+  content_types:
+  - application/json
+  example_operation: getCpmById
+- status: 404
+  title: BUM message not found.
+  schema: null
+  content_types:
+  - application/json
+  example_operation: getBumById
+- status: 404
+  title: BSM message not found.
+  schema: null
+  content_types:
+  - application/json
+  example_operation: getBsmById
+- status: 404
+  title: BPM message not found.
+  schema: null
+  content_types:
+  - application/json
+  example_operation: getBpmById

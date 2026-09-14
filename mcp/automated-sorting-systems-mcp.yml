@@ -1,0 +1,231 @@
+generated: '2026-09-14'
+method: derived
+status: candidate
+source: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+note: No hosted or stdio MCP server is published by Vanderlande, Dematic, Honeywell Intelligrated or BEUMER
+  — searched the vendor docs, the npm @modelcontextprotocol scope and the public MCP registries on 2026-09-14
+  and found nothing first-party. The tools below are a CANDIDATE list derived one-to-one from the operationIds
+  in the Vanderlande OpenAir Datahub contract. Nobody ships this; it is a design input, not an agent surface.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: derived
+server:
+  name: vanderlande-openair-datahub
+  transport: null
+  url: null
+tools:
+- name: postBagTrackingEvent
+  description: Post a bag tracking event.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postBagTrackingEvent
+- name: postBagScreeningEvent
+  description: Post a bag screening event.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postBagScreeningEvent
+- name: postBagLoadIntoUldEvent
+  description: DEPRECATED! Post a bag load into uld event.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postBagLoadIntoUldEvent
+- name: postBagContainerizationEvent
+  description: Post a bag containerization event.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postBagContainerizationEvent
+- name: postBagCheckInEvent
+  description: Post a bag check in event.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postBagCheckInEvent
+- name: postBagChangeEvent
+  description: Post a bag change event.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postBagChangeEvent
+- name: postBagCancelEvent
+  description: Post a bag cancel event.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postBagCancelEvent
+- name: getBagTagREST
+  description: Query bag tag by unique bag-tag-id provided by adh.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getBagTagREST
+- name: queryFlightSegmentBagTagsForBagTag
+  description: Query bag tags by flight segment for given bag tag id based on given search criteria.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#queryFlightSegmentBagTagsForBagTag
+- name: queryBagEventsForBagTag
+  description: Query bag events for given bag tag id based on given search criteria.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#queryBagEventsForBagTag
+- name: queryFlightSegmentBagTags
+  description: Query bag tags by flight segment based on given search criteria.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#queryFlightSegmentBagTags
+- name: queryBagEvents
+  description: Query bag events based on given search criteria.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#queryBagEvents
+- name: queryBagTags
+  description: Query bag tags based on given search criteria.
+  category: Bag Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#queryBagTags
+- name: postContainerStorageEvent
+  description: Post a container storage event.
+  category: Container Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postContainerStorageEvent
+- name: postContainerSecurityEvent
+  description: Post a container security event.
+  category: Container Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postContainerSecurityEvent
+- name: postContainerRegistrationEvent
+  description: Post a container registration event.
+  category: Container Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postContainerRegistrationEvent
+- name: postContainerMovementEvent
+  description: Post a container movement event.
+  category: Container Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postContainerMovementEvent
+- name: postContainerContainerizationEvent
+  description: Post a container containerization event.
+  category: Container Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postContainerContainerizationEvent
+- name: getContainerTagREST
+  description: Query container tag by unique container-tag-id provided by adh.
+  category: Container Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getContainerTagREST
+- name: queryContainerEventsForContainerTag
+  description: Query container events based on given search criteria.
+  category: Container Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#queryContainerEventsForContainerTag
+- name: queryContainerEvents
+  description: Query container events based on given search criteria.
+  category: Container Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#queryContainerEvents
+- name: queryContainertags
+  description: Query container tags based on given search criteria.
+  category: Container Tag Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#queryContainertags
+- name: postFlightTimeEvent
+  description: Post a flight time event.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postFlightTimeEvent
+- name: postFlightScheduledEvent
+  description: Post a flight scheduled event.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postFlightScheduledEvent
+- name: postGateResourceEvent
+  description: Post a gate resource event.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postGateResourceEvent
+- name: postFlightPaxCountEvent
+  description: Post a flight pax count event.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postFlightPaxCountEvent
+- name: postCheckInDesksResourceEvent
+  description: Post a check-in desks resource event.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postCheckInDesksResourceEvent
+- name: postFlightCancelledEvent
+  description: Post a flight cancelled event.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postFlightCancelledEvent
+- name: postTerminalResourceEvent
+  description: Post a terminal resource event.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postTerminalResourceEvent
+- name: postStandResourceEvent
+  description: Post an aircraft parking position resource event.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postStandResourceEvent
+- name: postFlightAircraftAllocationEvent
+  description: Post a flight aircraft allocation event.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postFlightAircraftAllocationEvent
+- name: getFlightLegREST
+  description: Get flight leg by id.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getFlightLegREST
+- name: getFlightLegEvents
+  description: Get events for a specific flight leg.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getFlightLegEvents
+- name: queryFlightEvents
+  description: Query flight events based on given search criteria.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#queryFlightEvents
+- name: queryFlightLegs
+  description: Query flight legs based on given search criteria.
+  category: Flight Leg Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#queryFlightLegs
+- name: postPaxCountEvent
+  description: Post a Pax Count event.
+  category: Pax Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#postPaxCountEvent
+- name: queryPaxEvents
+  description: Query flight events based on given search criteria.
+  category: Pax Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#queryPaxEvents
+- name: getCpms
+  description: Get parsed CPM's.
+  category: Cpm Parser Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getCpms
+- name: parserCpm
+  description: Post a CPM.
+  category: Cpm Parser Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#parserCpm
+- name: getBums
+  description: Get parsed BUM's.
+  category: Bum Parser Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getBums
+- name: parserBum
+  description: Post a BUM.
+  category: Bum Parser Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#parserBum
+- name: getBsms
+  description: Get parsed BSM's.
+  category: Bsm Parser Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getBsms
+- name: parserBsm
+  description: Post a BSM.
+  category: Bsm Parser Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#parserBsm
+- name: getBpms
+  description: Get parsed BPM's.
+  category: Bpm Parser Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getBpms
+- name: parserBpm
+  description: Post a BPM.
+  category: Bpm Parser Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#parserBpm
+- name: getCpmById
+  description: This endopint queries CPMs that have been posted to ADH.
+  category: Cpm Parser Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getCpmById
+- name: getBumById
+  description: This endopint queries BUMs that have been posted to ADH.
+  category: Bum Parser Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getBumById
+- name: getBsmById
+  description: This endopint queries BSMs that have been posted to ADH.
+  category: Bsm Parser Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getBsmById
+- name: getBpmById
+  description: This endopint queries BPMs that have been posted to ADH.
+  category: Bpm Parser Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getBpmById
+- name: getReportFlightREST
+  description: Get report flight by id.
+  category: Report Flight Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#getReportFlightREST
+- name: doPing
+  description: Test connection.
+  category: Info
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#doPing
+- name: queryReportFlight
+  description: Query report flight based on given search criteria.
+  category: Report Flight Store
+  source_operation: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#queryReportFlight
+pointer_decision: No MCPServer pointer is wired into apis.yml from this file. deployment.mode is none
+  — nobody ships a server — and an MCPServer pointer asserts a reachable agent surface. Emitting it would
+  credit a surface that does not exist. Wire the pointer the day a real server is published.

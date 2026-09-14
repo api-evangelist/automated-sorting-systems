@@ -1,11 +1,11 @@
-generated: '2026-07-11'
+generated: '2026-09-14'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
 - host: www.dematic.com
   https: true
   tls_version: TLSv1.3
-  cert_expires: Aug 23 11:16:46 2026 GMT
+  cert_expires: Nov  2 04:21:49 2026 GMT
   hsts: true
   hsts_max_age: 31557600
 - host: sps.honeywell.com
@@ -17,9 +17,27 @@ hosts:
 - host: www.vanderlande.com
   https: true
   tls_version: TLSv1.3
-  cert_expires: Aug 31 22:26:59 2026 GMT
+  cert_expires: Oct 30 22:45:41 2026 GMT
   hsts: true
   hsts_max_age: 63072000
+- host: automation.honeywell.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Feb 16 23:59:59 2027 GMT
+  hsts: true
+  hsts_max_age: 86400
+- host: www.beumergroup.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 27 11:38:24 2026 GMT
+  hsts: false
+  hsts_max_age: null
+- host: api.datahub.oair.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov  4 23:59:59 2026 GMT
+  hsts: false
+  hsts_max_age: null
 domains:
 - domain: dematic.com
   dnssec: false
@@ -30,12 +48,38 @@ domains:
 - domain: honeywell.com
   dnssec: true
   caa:
-  - 0 issuewild "digicert.com; cansignhttpexchanges=yes"
-  - 0 issuewild "entrust.net"
-  - 0 issuewild "letsencrypt.org"
-  - 0 issuewild "pki.goog; cansignhttpexchanges=yes"
-  - 0 issuewild "ssl.com"
-  - 0 issue "amazontrust.com"
+  - 0 issue "entrust.net"
+  - 0 issue "globalsign.com"
+  - 0 issue "godaddy.com"
+  - 0 issue "letsencrypt.org"
+  - 0 issue "pki.goog; cansignhttpexchanges=yes"
+  - 0 issue "ssl.com"
   spf: true
   dmarc: true
   dmarc_policy: reject
+- domain: vanderlande.com
+  dnssec: true
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine
+  note: 'DMARC is delegated: _dmarc.vanderlande.com CNAMEs to hosteddmarc.dmarc-dns.com, which answers
+    v=DMARC1; p=quarantine.'
+- domain: beumergroup.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: none
+- domain: oair.io
+  dnssec: false
+  caa: []
+  spf: false
+  dmarc: true
+  dmarc_policy: none
+  note: oair.io is the OpenAir platform domain hosting the Vanderlande Datahub API. No SPF record and
+    DMARC p=none.
+note: probe-domain-security.py covered the three hosts named as Website/humanURL in apis.yml on 2026-09-14;
+  automation.honeywell.com, www.beumergroup.com and the Vanderlande API host api.datahub.oair.io were
+  probed by hand the same day with the same method (openssl s_client + HEAD + dig) and appended, along
+  with the vanderlande.com, beumergroup.com and oair.io registrable domains the script did not reach.

@@ -47,7 +47,7 @@ tags:
 url: >-
   https://raw.githubusercontent.com/api-evangelist/automated-sorting-systems/refs/heads/main/apis.yml
 created: '2024-01-15'
-modified: '2026-04-19'
+modified: '2026-09-14'
 specificationVersion: '0.23'
 apis:
   - aid: automated-sorting-systems:dematic-api
@@ -57,7 +57,7 @@ apis:
       REST APIs for integrating automated sorting systems with ERP, TMS, and
       order management systems. Their iQ software platform exposes real-time
       order, inventory, and conveyor status data.
-    humanURL: https://www.dematic.com/en-us/products/technologies/software/
+    humanURL: https://www.dematic.com/en-us/software/
     tags:
       - Warehouse Management
       - Sortation Control
@@ -65,9 +65,17 @@ apis:
       - ERP Integration
     properties:
       - type: Website
-        url: https://www.dematic.com/en-us/products/technologies/software/
+        url: https://www.dematic.com/en-us/software/
       - type: Documentation
-        url: https://www.dematic.com/en-us/products/technologies/software/warehouse-management-systems/
+        url: https://www.dematic.com/en-us/software/software-integrations/
+      - type: Support
+        url: https://www.dematic.com/en-us/lifecycle-solutions-services/maintenance-and-support/
+      - type: Blog
+        url: https://www.dematic.com/en-us/insights/
+      - type: TermsOfService
+        url: https://www.dematic.com/en-us/legal/terms-of-use/
+      - type: PrivacyPolicy
+        url: https://www.dematic.com/en-us/legal/privacy-and-data-policy/
 
   - aid: automated-sorting-systems:honeywell-intelligrated-api
     name: Honeywell Intelligrated Momentum WMS API
@@ -85,6 +93,14 @@ apis:
     properties:
       - type: Website
         url: https://sps.honeywell.com/us/en/products/productivity/warehouse-automation
+      - type: Documentation
+        url: https://automation.honeywell.com/us/en/software/warehouse-automation
+      - type: Support
+        url: https://automation.honeywell.com/us/en/support
+      - type: TermsOfService
+        url: https://www.honeywell.com/us/en/terms-and-conditions
+      - type: PrivacyPolicy
+        url: https://www.honeywell.com/us/en/privacy-statement
 
   - aid: automated-sorting-systems:vanderlande-api
     name: Vanderlande FLEET WMS API
@@ -94,6 +110,7 @@ apis:
       parcel logistics, and warehouse automation. It integrates with third-party
       WMS, ERP, and parcel carrier systems.
     humanURL: https://www.vanderlande.com/software-and-services/fleet/
+    baseURL: https://api.datahub.oair.io
     tags:
       - Baggage Handling
       - Parcel Logistics
@@ -102,6 +119,22 @@ apis:
     properties:
       - type: Website
         url: https://www.vanderlande.com/software-and-services/fleet/
+      - type: OpenAPI
+        url: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+      - type: DeveloperPortal
+        url: https://www.vanderlande.com/airports/software/developer-portal/
+      - type: APIReference
+        url: https://api.datahub.oair.io/
+      - type: Documentation
+        url: https://www.vanderlande.com/airport-logistics/airport-vertical/apis-references/
+      - type: Support
+        url: https://www.vanderlande.com/airport-logistics/developerportal-contact/
+      - type: Blog
+        url: https://www.vanderlande.com/news-insights/
+      - type: TermsOfService
+        url: https://www.vanderlande.com/about-vanderlande/legal-compliance-vanderlande/
+      - type: PrivacyPolicy
+        url: https://www.vanderlande.com/privacy-statement/
 
   - aid: automated-sorting-systems:beumer-api
     name: BEUMER Group Sortation API
@@ -110,7 +143,7 @@ apis:
       distribution centers with software integration capabilities via standard
       industrial protocols (OPC-UA, PLC interfaces) and higher-level WMS/WCS
       REST APIs for order management and throughput monitoring.
-    humanURL: https://www.beumer.com/en/industries/logistics/
+    humanURL: https://www.beumergroup.com/industry/courier-express-parcel/automated-sortation/
     tags:
       - Airport Logistics
       - Parcel Sorting
@@ -123,13 +156,57 @@ apis:
       - OPC-UA
     properties:
       - type: Website
-        url: https://www.beumer.com/en/industries/logistics/
+        url: https://www.beumergroup.com/industry/courier-express-parcel/automated-sortation/
+      - type: Documentation
+        url: https://www.beumergroup.com/products-systems/baggage-handling-technology/airport-software-suite/
+      - type: Support
+        url: https://www.beumergroup.com/about-us/contact/
+      - type: Blog
+        url: https://www.beumergroup.com/press
+      - type: TermsOfService
+        url: https://www.beumergroup.com/legal-notice/
+      - type: PrivacyPolicy
+        url: https://www.beumergroup.com/privacy-notice/
+      - type: LLMsTxt
+        url: llms/automated-sorting-systems-beumer-llms.txt
 
 common:
+  - type: Website
+    name: Vanderlande
+    url: https://www.vanderlande.com/software-and-services/fleet/
+  - type: Website
+    name: Dematic
+    url: https://www.dematic.com/en-us/software/
+  - type: Website
+    name: Honeywell Intelligrated
+    url: https://sps.honeywell.com/us/en/products/productivity/warehouse-automation
+  - type: Website
+    name: BEUMER Group
+    url: https://www.beumergroup.com/industry/courier-express-parcel/automated-sortation/
   - type: VulnerabilityDisclosure
     url: security/automated-sorting-systems-vulnerability-disclosure.yml
   - type: DomainSecurity
     url: security/automated-sorting-systems-domain-security.yml
+  - type: Security
+    url: https://www.honeywell.com/us/en/product-security
+  - type: Vocabulary
+    url: vocabulary/automated-sorting-systems-vocabulary.yml
+  - type: Conformance
+    url: conformance/automated-sorting-systems-conformance.yml
+  - type: Conventions
+    url: conventions/automated-sorting-systems-conventions.yml
+  - type: ErrorCatalog
+    url: errors/automated-sorting-systems-problem-types.yml
+  - type: DataModel
+    url: data-model/automated-sorting-systems-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/automated-sorting-systems-lifecycle.yml
+  - type: Overlay
+    url: overlays/automated-sorting-systems-vanderlande-datahub-overlay.yaml
+  - type: LLMsTxt
+    url: llms/automated-sorting-systems-llms.txt
+  - type: AgentSkill
+    url: skills/_index.yml
   - type: Features
     data:
       - name: Real-Time Package Tracking
@@ -191,3 +268,8 @@ common:
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-09-14'
+  status: enriched
+  artifacts_added: 20
+  pass: local-v3

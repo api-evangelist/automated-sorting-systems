@@ -1,0 +1,442 @@
+generated: '2026-09-14'
+method: derived
+source: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+note: Binds the candidate MCP tool set to the backing OpenAPI operations. Confidence is high on every
+  row because the tools were derived from the operations themselves — there is no published MCP server
+  whose naming could diverge. mcp_only is empty for the same reason.
+surfaces:
+  openapi: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+  graphql: null
+  mcp:
+    url: null
+    status: none published
+    gated: null
+  note: The contract also mentions standardized MQTT interfaces for the same data core, but no MQTT topic
+    catalogue or AsyncAPI document is published, so that surface is not mapped.
+crosswalk:
+- tool: postBagTrackingEvent
+  category: Bag Tag Store
+  rest:
+  - postBagTrackingEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postBagScreeningEvent
+  category: Bag Tag Store
+  rest:
+  - postBagScreeningEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postBagLoadIntoUldEvent
+  category: Bag Tag Store
+  rest:
+  - postBagLoadIntoUldEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postBagContainerizationEvent
+  category: Bag Tag Store
+  rest:
+  - postBagContainerizationEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postBagCheckInEvent
+  category: Bag Tag Store
+  rest:
+  - postBagCheckInEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postBagChangeEvent
+  category: Bag Tag Store
+  rest:
+  - postBagChangeEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postBagCancelEvent
+  category: Bag Tag Store
+  rest:
+  - postBagCancelEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getBagTagREST
+  category: Bag Tag Store
+  rest:
+  - getBagTagREST
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: queryFlightSegmentBagTagsForBagTag
+  category: Bag Tag Store
+  rest:
+  - queryFlightSegmentBagTagsForBagTag
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: queryBagEventsForBagTag
+  category: Bag Tag Store
+  rest:
+  - queryBagEventsForBagTag
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: queryFlightSegmentBagTags
+  category: Bag Tag Store
+  rest:
+  - queryFlightSegmentBagTags
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: queryBagEvents
+  category: Bag Tag Store
+  rest:
+  - queryBagEvents
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: queryBagTags
+  category: Bag Tag Store
+  rest:
+  - queryBagTags
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postContainerStorageEvent
+  category: Container Tag Store
+  rest:
+  - postContainerStorageEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postContainerSecurityEvent
+  category: Container Tag Store
+  rest:
+  - postContainerSecurityEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postContainerRegistrationEvent
+  category: Container Tag Store
+  rest:
+  - postContainerRegistrationEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postContainerMovementEvent
+  category: Container Tag Store
+  rest:
+  - postContainerMovementEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postContainerContainerizationEvent
+  category: Container Tag Store
+  rest:
+  - postContainerContainerizationEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getContainerTagREST
+  category: Container Tag Store
+  rest:
+  - getContainerTagREST
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: queryContainerEventsForContainerTag
+  category: Container Tag Store
+  rest:
+  - queryContainerEventsForContainerTag
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: queryContainerEvents
+  category: Container Tag Store
+  rest:
+  - queryContainerEvents
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: queryContainertags
+  category: Container Tag Store
+  rest:
+  - queryContainertags
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postFlightTimeEvent
+  category: Flight Leg Store
+  rest:
+  - postFlightTimeEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postFlightScheduledEvent
+  category: Flight Leg Store
+  rest:
+  - postFlightScheduledEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postGateResourceEvent
+  category: Flight Leg Store
+  rest:
+  - postGateResourceEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postFlightPaxCountEvent
+  category: Flight Leg Store
+  rest:
+  - postFlightPaxCountEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postCheckInDesksResourceEvent
+  category: Flight Leg Store
+  rest:
+  - postCheckInDesksResourceEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postFlightCancelledEvent
+  category: Flight Leg Store
+  rest:
+  - postFlightCancelledEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postTerminalResourceEvent
+  category: Flight Leg Store
+  rest:
+  - postTerminalResourceEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postStandResourceEvent
+  category: Flight Leg Store
+  rest:
+  - postStandResourceEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postFlightAircraftAllocationEvent
+  category: Flight Leg Store
+  rest:
+  - postFlightAircraftAllocationEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getFlightLegREST
+  category: Flight Leg Store
+  rest:
+  - getFlightLegREST
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getFlightLegEvents
+  category: Flight Leg Store
+  rest:
+  - getFlightLegEvents
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: queryFlightEvents
+  category: Flight Leg Store
+  rest:
+  - queryFlightEvents
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: queryFlightLegs
+  category: Flight Leg Store
+  rest:
+  - queryFlightLegs
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: postPaxCountEvent
+  category: Pax Store
+  rest:
+  - postPaxCountEvent
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: queryPaxEvents
+  category: Pax Store
+  rest:
+  - queryPaxEvents
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getCpms
+  category: Cpm Parser Store
+  rest:
+  - getCpms
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: parserCpm
+  category: Cpm Parser Store
+  rest:
+  - parserCpm
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getBums
+  category: Bum Parser Store
+  rest:
+  - getBums
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: parserBum
+  category: Bum Parser Store
+  rest:
+  - parserBum
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getBsms
+  category: Bsm Parser Store
+  rest:
+  - getBsms
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: parserBsm
+  category: Bsm Parser Store
+  rest:
+  - parserBsm
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getBpms
+  category: Bpm Parser Store
+  rest:
+  - getBpms
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: parserBpm
+  category: Bpm Parser Store
+  rest:
+  - parserBpm
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getCpmById
+  category: Cpm Parser Store
+  rest:
+  - getCpmById
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getBumById
+  category: Bum Parser Store
+  rest:
+  - getBumById
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getBsmById
+  category: Bsm Parser Store
+  rest:
+  - getBsmById
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getBpmById
+  category: Bpm Parser Store
+  rest:
+  - getBpmById
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: getReportFlightREST
+  category: Report Flight Store
+  rest:
+  - getReportFlightREST
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: doPing
+  category: Info
+  rest:
+  - doPing
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+- tool: queryReportFlight
+  category: Report Flight Store
+  rest:
+  - queryReportFlight
+  binding: rest
+  confidence: high
+  note: candidate tool derived 1:1 from the operation; inherits that operation's parameters and requestBody
+    as its real inputSchema
+mcp_only: []
+rest_only: []
+coverage:
+  tools_named: 52
+  tools_bound: 52
+  mcp_only: 0
+  rest_operations_total: 52
+  rest_operations_with_tool: 52
+pointer_decision: 'No ToolCrosswalk pointer is wired into apis.yml either: the MCP side of this crosswalk
+  is a candidate we derived, not a published server. The file is kept as the design input for one.'

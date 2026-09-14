@@ -1,0 +1,63 @@
+generated: '2026-09-14'
+method: generated
+source: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+note: Packaged agent skills for the one machine-readable contract in this index, the Vanderlande OpenAir
+  Datahub API. Every operationId referenced was grepped against the harvested spec before the skill was
+  written. No skill exists for Dematic, Honeywell Intelligrated or BEUMER because none of them publishes
+  a contract to ground one in.
+skills:
+- file: automated-sorting-systems-trace-a-bag.md
+  name: Trace a bag through an airport
+  api: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+  operations:
+  - queryBagTags
+  - getBagTagREST
+  - queryFlightSegmentBagTagsForBagTag
+  - queryBagEventsForBagTag
+- file: automated-sorting-systems-ingest-type-b-messages.md
+  name: Ingest IATA Type B baggage messages
+  api: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+  operations:
+  - parserBsm
+  - parserBpm
+  - parserBum
+  - parserCpm
+  - getBsms
+  - getBpms
+  - getBums
+  - getCpms
+  - getBsmById
+  - getBpmById
+  - getBumById
+  - getCpmById
+  - doPing
+- file: automated-sorting-systems-publish-flight-events.md
+  name: Publish flight and resource events
+  api: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+  operations:
+  - postFlightScheduledEvent
+  - postFlightTimeEvent
+  - postFlightAircraftAllocationEvent
+  - postStandResourceEvent
+  - postGateResourceEvent
+  - postTerminalResourceEvent
+  - postCheckInDesksResourceEvent
+  - postFlightPaxCountEvent
+  - postFlightCancelledEvent
+  - queryFlightLegs
+  - getFlightLegREST
+  - getFlightLegEvents
+  - queryFlightEvents
+- file: automated-sorting-systems-track-containers.md
+  name: Track ULDs and containers
+  api: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+  operations:
+  - postContainerRegistrationEvent
+  - postContainerMovementEvent
+  - postContainerStorageEvent
+  - postContainerSecurityEvent
+  - postContainerContainerizationEvent
+  - queryContainertags
+  - getContainerTagREST
+  - queryContainerEventsForContainerTag
+  - queryContainerEvents

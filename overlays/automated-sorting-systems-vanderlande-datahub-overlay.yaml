@@ -1,0 +1,42 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Vanderlande OpenAir Datahub API
+  version: 1.0.0
+extends: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-slug: automated-sorting-systems
+    x-apievangelist-api: automated-sorting-systems:vanderlande-api
+    x-apievangelist-harvested: '2026-09-14'
+    x-apievangelist-source: https://api.datahub.oair.io/
+    x-apievangelist-harvest-method: extracted verbatim from the __redoc_state spec.data embedded in the Redoc document
+      served at the API host root
+    x-apievangelist-ownership: info.contact.name 'Vanderlande Logistics GmbH' and info.license 'Property of Vanderlande
+      Logistics GmbH' confirm the contract belongs to Vanderlande; oair.io is Vanderlande's OpenAir airport-data
+      brand, linked from its own developer portal
+    x-domain-standards:
+    - IATA AIDM
+    - ACI ACRIS
+    - IATA Type B baggage messages (BSM/BPM/BUM/CPM)
+- target: $
+  update:
+    servers:
+    - url: https://api.datahub.oair.io
+      description: Recorded by API Evangelist. The published contract declares NO servers[] block; this host is
+        where Vanderlande serves the contract and is the base named by its own developer portal. Not merged into
+        the harvested original.
+- target: $.paths['/bagtags/events/loadintould'].post
+  update:
+    deprecated: true
+    x-apievangelist-note: The summary is prefixed "DEPRECATED!" but the deprecated flag is not set and no sunset
+      date or replacement is named.
+- target: $.info
+  update:
+    x-apievangelist-gaps:
+    - no components.securitySchemes and no security[] requirement on any of the 52 operations
+    - no 5xx response declared on any operation
+    - error bodies typed as the Spring ModelAndView schema under */* rather than application/problem+json
+    - no cursor/offset pagination and no next link; max-results caps a page with no way to walk past it
+    - no Idempotency-Key on any of the 25 mutating operations
+    - no reversal operation of any kind — there is no DELETE method in the document

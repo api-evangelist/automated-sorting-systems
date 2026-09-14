@@ -1,0 +1,612 @@
+generated: '2026-09-14'
+method: probed
+source: live GET of the named /.well-known/ path list on every host this record knows
+note: 'Probed 2026-09-14 across the registrable domain and www for all four vendors, plus the sps./automation.
+  Honeywell hosts, the Vanderlande OpenAir API host api.datahub.oair.io, and BEUMER Group. NOT ONE real
+  discovery document is served anywhere. Two hosts are path-echoing catch-alls: www.dematic.com/dematic.com
+  (Adobe Experience Manager) and api.datahub.oair.io (a Redoc single-page document) answer 200 with an
+  identical HTML body for every path including the negative control, so every 200 on those hosts is discarded.
+  No WellKnown and no SecurityTxt pointer is emitted from this file — it records an absence, not a presence.'
+summary:
+  hosts_probed: 10
+  paths_per_host: 14
+  documents_found: 0
+  catch_all_hosts:
+  - https://www.dematic.com
+  - https://dematic.com
+  - https://api.datahub.oair.io
+hosts:
+- host: https://www.dematic.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/api-catalog
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/ucp.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/acp.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/aauth-resource.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/apis.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /apis.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /apis.yml
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/agent-card.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/agent.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  hit_count: 0
+  path_echo_control: failed
+  soft_404_control:
+    path: /.well-known/automated-sorting-systems-negative-control-7f3ab91c.json
+    status: 200
+    bytes: 306378
+    content_type: text/html;charset=utf-8
+- host: https://dematic.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/api-catalog
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/ucp.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/acp.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/aauth-resource.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/apis.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /apis.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /apis.yml
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/agent-card.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  - path: /.well-known/agent.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 306378-byte HTML shell (text/html;charset=utf-8);
+      NOT a document — nothing was saved.
+  hit_count: 0
+  path_echo_control: failed
+  soft_404_control:
+    path: /.well-known/automated-sorting-systems-negative-control-7f3ab91c.json
+    status: 200
+    bytes: 306378
+    content_type: text/html;charset=utf-8
+- host: https://sps.honeywell.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/ucp.json
+    status: 404
+    file: null
+  - path: /.well-known/acp.json
+    status: 404
+    file: null
+  - path: /.well-known/aauth-resource.json
+    status: 404
+    file: null
+  - path: /.well-known/apis.json
+    status: 404
+    file: null
+  - path: /apis.json
+    status: 404
+    file: null
+  - path: /apis.yml
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+  hit_count: 0
+  path_echo_control: passed
+  soft_404_control:
+    path: /.well-known/automated-sorting-systems-negative-control-7f3ab91c.json
+    status: 404
+    bytes: 198812
+    content_type: text/html;charset=utf-8
+- host: https://automation.honeywell.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/ucp.json
+    status: 404
+    file: null
+  - path: /.well-known/acp.json
+    status: 404
+    file: null
+  - path: /.well-known/aauth-resource.json
+    status: 404
+    file: null
+  - path: /.well-known/apis.json
+    status: 404
+    file: null
+  - path: /apis.json
+    status: 404
+    file: null
+  - path: /apis.yml
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+  hit_count: 0
+  path_echo_control: passed
+  soft_404_control:
+    path: /.well-known/automated-sorting-systems-negative-control-7f3ab91c.json
+    status: 404
+    bytes: 198812
+    content_type: text/html;charset=utf-8
+- host: https://www.honeywell.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/ucp.json
+    status: 404
+    file: null
+  - path: /.well-known/acp.json
+    status: 404
+    file: null
+  - path: /.well-known/aauth-resource.json
+    status: 404
+    file: null
+  - path: /.well-known/apis.json
+    status: 404
+    file: null
+  - path: /apis.json
+    status: 404
+    file: null
+  - path: /apis.yml
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+  hit_count: 0
+  path_echo_control: passed
+  soft_404_control:
+    path: /.well-known/automated-sorting-systems-negative-control-7f3ab91c.json
+    status: 404
+    bytes: 109481
+    content_type: text/html;charset=utf-8
+- host: https://www.vanderlande.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/ucp.json
+    status: 404
+    file: null
+  - path: /.well-known/acp.json
+    status: 404
+    file: null
+  - path: /.well-known/aauth-resource.json
+    status: 404
+    file: null
+  - path: /.well-known/apis.json
+    status: 404
+    file: null
+  - path: /apis.json
+    status: 404
+    file: null
+  - path: /apis.yml
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+  hit_count: 0
+  path_echo_control: passed
+  soft_404_control:
+    path: /.well-known/automated-sorting-systems-negative-control-7f3ab91c.json
+    status: 404
+    bytes: 552
+    content_type: text/html
+- host: https://vanderlande.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/ucp.json
+    status: 404
+    file: null
+  - path: /.well-known/acp.json
+    status: 404
+    file: null
+  - path: /.well-known/aauth-resource.json
+    status: 404
+    file: null
+  - path: /.well-known/apis.json
+    status: 404
+    file: null
+  - path: /apis.json
+    status: 404
+    file: null
+  - path: /apis.yml
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+  hit_count: 0
+  path_echo_control: passed
+  soft_404_control:
+    path: /.well-known/automated-sorting-systems-negative-control-7f3ab91c.json
+    status: 404
+    bytes: 552
+    content_type: text/html
+- host: https://api.datahub.oair.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /.well-known/api-catalog
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /.well-known/ucp.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /.well-known/acp.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /.well-known/aauth-resource.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /.well-known/apis.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /apis.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /apis.yml
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /.well-known/agent-card.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  - path: /.well-known/agent.json
+    status: 200
+    file: null
+    note: 200 returned by a catch-all that answers every path with the same 42734920-byte HTML shell (text/html);
+      NOT a document — nothing was saved.
+  hit_count: 0
+  path_echo_control: failed
+  soft_404_control:
+    path: /.well-known/automated-sorting-systems-negative-control-7f3ab91c.json
+    status: 200
+    bytes: 42734920
+    content_type: text/html
+- host: https://www.beumergroup.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/ucp.json
+    status: 404
+    file: null
+  - path: /.well-known/acp.json
+    status: 404
+    file: null
+  - path: /.well-known/aauth-resource.json
+    status: 404
+    file: null
+  - path: /.well-known/apis.json
+    status: 404
+    file: null
+  - path: /apis.json
+    status: 404
+    file: null
+  - path: /apis.yml
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+  hit_count: 0
+  path_echo_control: passed
+  soft_404_control:
+    path: /.well-known/automated-sorting-systems-negative-control-7f3ab91c.json
+    status: 404
+    bytes: 160372
+    content_type: text/html; charset=UTF-8
+- host: https://beumergroup.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/ucp.json
+    status: 404
+    file: null
+  - path: /.well-known/acp.json
+    status: 404
+    file: null
+  - path: /.well-known/aauth-resource.json
+    status: 404
+    file: null
+  - path: /.well-known/apis.json
+    status: 404
+    file: null
+  - path: /apis.json
+    status: 404
+    file: null
+  - path: /apis.yml
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+  hit_count: 0
+  path_echo_control: passed
+  soft_404_control:
+    path: /.well-known/automated-sorting-systems-negative-control-7f3ab91c.json
+    status: 404
+    bytes: 160372
+    content_type: text/html; charset=UTF-8

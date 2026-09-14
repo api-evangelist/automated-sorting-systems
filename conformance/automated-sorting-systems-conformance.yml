@@ -1,0 +1,70 @@
+generated: '2026-09-14'
+method: derived
+source: openapi/_original/automated-sorting-systems-vanderlande-datahub-openapi.json + provider documentation
+note: 'Cross-cutting and domain standards asserted for the API surfaces in this index. The domain-standard
+  signature for this market is aviation baggage/flight data: the Vanderlande OpenAir Datahub contract
+  declares IATA AIDM and ACI ACRIS as its data model and exposes IATA Type B message parsers (BSM/BPM/BUM/CPM)
+  as endpoints. Dematic, Honeywell Intelligrated and BEUMER publish no machine-readable contract, so nothing
+  is asserted for them beyond what their own documentation states.'
+standards:
+- id: iata-aidm
+  name: IATA Airline Industry Data Model (AIDM)
+  conforms: true
+  evidence: 'openapi info.description: "The data structure is based on industry standards such as IATA''s
+    AIDM and ACI''s ACRIS"'
+  source: openapi/_original/automated-sorting-systems-vanderlande-datahub-openapi.json#/info/description
+- id: aci-acris
+  name: ACI ACRIS Semantic Model
+  conforms: true
+  evidence: openapi info.description names ACI's ACRIS as a source data standard for the Datahub schemas
+  source: openapi/_original/automated-sorting-systems-vanderlande-datahub-openapi.json#/info/description
+- id: iata-type-b-baggage-messages
+  name: IATA Type B baggage messaging (BSM / BPM / BUM / CPM, RP 1745)
+  conforms: true
+  evidence: dedicated parser stores with operations parserBsm, parserBpm, parserBum, parserCpm and matching
+    GET readers expose IATA Type B baggage message ingestion as first-class endpoints
+  source: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#/paths/~1parser~1bsm
+- id: iata-bag-tag-identifiers
+  name: IATA bag tag / licence plate number identifiers
+  conforms: true
+  evidence: components.schemas.BagTagIdentifier and the tag/carrier/flight-number/operational-suffix/origin-date
+    query parameter set follow IATA bag-tag and flight-identifier conventions
+  source: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml#/components/schemas/BagTagIdentifier
+- id: openapi-3.1
+  name: OpenAPI 3.1.0
+  conforms: true
+  evidence: 'openapi: 3.1.0 declared at the document root'
+  source: openapi/automated-sorting-systems-vanderlande-datahub-openapi.yml
+- id: oauth2
+  name: OAuth 2.0
+  conforms: false
+  evidence: no components.securitySchemes and no security[] requirement anywhere in the published contract
+- id: oidc
+  name: OpenID Connect
+  conforms: false
+  evidence: no /.well-known/openid-configuration served on any host in this record; api.datahub.oair.io
+    answers every path with the Redoc HTML shell
+- id: rfc9457-problem-details
+  name: RFC 9457 Problem Details for HTTP APIs
+  conforms: false
+  evidence: 400/404 responses carry a Spring ModelAndView schema under */*, not application/problem+json
+- id: json-api
+  name: JSON:API
+  conforms: false
+  evidence: responses are plain JSON resource documents; no JSON:API envelope
+- id: idempotency-key
+  name: Idempotency-Key request header
+  conforms: false
+  evidence: no Idempotency-Key parameter on any of the 25 POST operations in the contract
+- id: opc-ua
+  name: OPC Unified Architecture
+  conforms: true
+  evidence: BEUMER Group publishes OPC UA as its cross-system software interface standard for the BG software
+    suite
+  source: https://www.beumergroup.com/products-systems/baggage-handling-technology/airport-software-suite/
+  applies_to: automated-sorting-systems:beumer-api
+compliance_program:
+  published: false
+  note: No trust center, certification page or published compliance program (SOC 2 / ISO 27001 / PCI /
+    HIPAA / FedRAMP) was found on any host in this record; probe-security-programs.py returned trust=none
+    on 2026-09-14.
