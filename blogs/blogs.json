@@ -2,38 +2,49 @@
   "repo": "automated-sorting-systems",
   "feeds": [
     {
-      "source": "https://www.dematic.com/en-us/products/technologies/software/",
-      "feed_url": "https://www.dematic.com/en-us/products/technologies/software/",
-      "title": "Dematic Software",
+      "source": "https://www.dematic.com/en-us/lifecycle-solutions-services/maintenance-and-support/",
+      "feed_url": "https://www.dematic.com/en-us/lifecycle-solutions-services/maintenance-and-support/",
+      "title": "",
       "saved": 0,
-      "method": "none",
-      "error": "fetch_failed: HTTPError"
+      "method": "none"
     },
     {
-      "source": "https://sps.honeywell.com/us/en/products/productivity/warehouse-automation",
-      "feed_url": "https://sps.honeywell.com/us/en/products/productivity/warehouse-automation",
-      "title": "Honeywell Intelligrated Warehouse Automation",
+      "source": "https://www.beumergroup.com/about-us/contact/",
+      "feed_url": "https://www.beumergroup.com/feed/",
+      "title": "",
       "saved": 0,
-      "method": "none",
-      "error": "parse_failed"
+      "method": "discovered"
+    },
+    {
+      "source": "https://www.vanderlande.com/airport-logistics/developerportal-contact/",
+      "feed_url": "https://www.vanderlande.com/airport-logistics/developerportal-contact/feed/",
+      "title": "",
+      "saved": 0,
+      "method": "discovered"
+    },
+    {
+      "source": "https://www.dematic.com/en-us/products/technologies/software/",
+      "error": "HTTPError"
     },
     {
       "source": "https://www.vanderlande.com/software-and-services/fleet/",
       "feed_url": "https://www.vanderlande.com/software-and-services/fleet/",
-      "title": "Vanderlande FLEET",
+      "title": "",
       "saved": 0,
-      "method": "none",
-      "error": "parse_failed"
+      "method": "none"
+    },
+    {
+      "source": "https://sps.honeywell.com/us/en/products/productivity/warehouse-automation",
+      "feed_url": "https://sps.honeywell.com/us/en/products/productivity/warehouse-automation",
+      "title": "",
+      "saved": 0,
+      "method": "none"
     },
     {
       "source": "https://www.beumer.com/en/industries/logistics/",
-      "feed_url": "https://www.beumer.com/en/industries/logistics/",
-      "title": "BEUMER Group Logistics",
-      "saved": 0,
-      "method": "none",
-      "error": "fetch_failed: HTTPError"
+      "error": "HTTPError"
     }
   ],
   "post_count": 0,
-  "fetched": "2026-09-13T12:41:53Z"
+  "fetched": "2026-09-19T20:17:39Z"
 }
