@@ -1,0 +1,379 @@
+openapi: 3.2.0
+info:
+  title: Datahub Pax Store API
+  description: OpenAir Datahub acts as a central data repository for all functions, which affect the efficient functioning of an airport. Data can be ingested from various sources via standardized interfaces. The way of getting data out of it is similar; there are standardized REST and MQTT interfaces to fetch the data. The data structure is based on industry standards such as IATA's AIDM and ACI's ACRIS combined with decades of Vanderlande Logistics industry knowledge.
+  contact:
+    name: Vanderlande Logistics GmbH
+    url: https://www.vanderlande.com
+    email: info.digital@vanderlande-logistics.com
+  license:
+    name: Property of Vanderlande Logistics GmbH
+  version: 6.6.0
+tags:
+- name: Pax Store
+  externalDocs:
+    description: The pax store contains methods to access and insert or modify pax related data.
+paths:
+  /pax/events/count:
+    post:
+      tags:
+      - Pax Store
+      summary: Post a Pax Count event
+      description: Transfers a pax count event to ADH. This will create and send flight pax count event to flight event border. New data is processed asynchronously and may need some time to be updated.
+      operationId: postPaxCountEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaxCountEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+      security:
+      - aviationdatahub:
+        - ADH.PX.W
+  /pax/events:
+    get:
+      tags:
+      - Pax Store
+      summary: Query flight events based on given search criteria
+      description: If no query parameter is set the search will be reduced to the last 24 hours. If no maxResult is set a maximum of 1000 records will be returned.
+      operationId: queryPaxEvents
+      parameters:
+      - name: from
+        in: query
+        description: The start point of the interval in UTC. e.g. 2020-01-31T12:30:00.000Z. If used the from and the to parameter has to be set.
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        description: The end point of the interval in UTC. e.g. 2020-01-31T12:30:00.000Z. If used the from and the to parameter has to be set.
+        required: false
+        schema:
+          type: string
+      - name: carrier
+        in: query
+        description: IATA 2-digit code of the operating carrier.
+        required: false
+        schema:
+          type: string
+      - name: flight-number
+        in: query
+        description: The numeric flight number of operating airline.
+        required: false
+        schema:
+          type: string
+      - name: operational-suffix
+        in: query
+        description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+        required: false
+        schema:
+          type: string
+      - name: origin-date
+        in: query
+        description: The day of operation, i.e. local day of schedule off-block time in UTC at first departure airport of flight. e.g. 2020-01-31T12:30:00.000Z.
+        required: false
+        schema:
+          type: string
+      - name: origin-iata-code
+        in: query
+        description: The IATA code of an airport as origin airport for a flight leg.
+        required: false
+        schema:
+          type: string
+      - name: destination-iata-code
+        in: query
+        description: The IATA code of an airport as destination airport for a flight leg.
+        required: false
+        schema:
+          type: string
+      - name: event-type
+        in: query
+        description: 'The event type: '
+        required: false
+        schema:
+          type: string
+          enum:
+          - PAX_COUNT_EVENT
+      - name: location
+        in: query
+        description: Location of the event to search for.
+        required: false
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Source of the event to search for.
+        required: false
+        schema:
+          type: string
+      - name: max-results
+        in: query
+        description: The maximum number of results.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaxEvent'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+      security:
+      - aviationdatahub:
+        - ADH.FL.R
+components:
+  schemas:
+    BasicMeta:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        created-at:
+          type: string
+          format: date-time
+          description: Timestamp when object was first created in DH.
+          readOnly: true
+        created-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be created.
+          readOnly: true
+        modified-count:
+          type: integer
+          format: int64
+          description: Number of modifications in DH.
+          readOnly: true
+        modified-at:
+          type: string
+          format: date-time
+          description: Timestamp of last modification in DH.
+          readOnly: true
+        modified-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be modified.
+          readOnly: true
+        tag-id:
+          type: string
+          deprecated: true
+          description: Unique id of the bag tag in the data hub for an unlimited period of time.
+        skip-datawarehouse:
+          type: boolean
+          description: Skip Datawarehouse processing.
+          readOnly: true
+        skip-report-flight:
+          type: boolean
+          description: Skip Report Flight processing.
+          readOnly: true
+      readOnly: true
+    PaxEvent:
+      type: object
+      description: Entity for Business Events for pax. Always use one of the subtypes.
+      discriminator:
+        propertyName: event-type
+      oneOf:
+      - $ref: '#/components/schemas/PaxCountEvent'
+      properties:
+        meta:
+          $ref: '#/components/schemas/BasicMeta'
+          description: Event metadata, generated by DataHub. May not be passed in.
+          readOnly: true
+        event-type:
+          type: string
+          description: Type of event, must match the type defined for the concrete subclass.
+        event-time:
+          type: string
+          format: date-time
+          description: Timestamp when the event occurred in UTC.
+        location:
+          type: string
+          description: Location id where the event occured.
+          example: TRA_12
+        source:
+          type: string
+          description: System generating the event.
+          example: Scanner TRA_12
+        identifier:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: 'identifying properties of flight leg. Additional constraints apply: The event-time must be in the range of 180 days before and 180 days after origin-date'
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers used by BHS etc.
+          items:
+            $ref: '#/components/schemas/SecondaryIdentifier'
+          uniqueItems: true
+        sourceId:
+          type: string
+        adhId:
+          type: string
+        correlationId:
+          type: string
+      required:
+      - event-time
+      - event-type
+      - identifier
+      - source
+    SecondaryIdentifier:
+      type: object
+      description: Additional identifiers for flight legs or segments used by airport systems etc.
+      properties:
+        identifier:
+          type: string
+          description: Secondary identifier .
+        created:
+          type: string
+          format: date-time
+          description: Timestamp of creation of secondary identifier in UTC.
+        source:
+          type: string
+          description: Source creating the secondary identifier.
+      required:
+      - created
+      - identifier
+      - source
+    PaxCountEvent:
+      allOf:
+      - $ref: '#/components/schemas/PaxEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - PAX_COUNT_EVENT
+          flight-pax:
+            $ref: '#/components/schemas/FlightPax'
+            description: Set of passengers and bags count.
+      description: Entity for Business Events for pax count assignment to flight leg.
+      required:
+      - event-time
+      - event-type
+      - flight-pax
+      - identifier
+      - source
+    User:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        user-id:
+          type: string
+          description: Unique user id.
+          readOnly: true
+        user-name:
+          type: string
+          description: Readable user name
+          readOnly: true
+      readOnly: true
+    FlightIdentifier:
+      type: object
+      description: Object holding identifying information for a flight.
+      properties:
+        carrier:
+          type: string
+          description: 2-digit IATA code of operating carrier.
+          example: ZZ
+        flight-number:
+          type: string
+          description: The flight number of the operating carrier. Should contain not more than 4 chars and must not include whitespaces. If less than 4 chars leading zeros will be added to normalize it to 4 chars.
+          example: 997
+        operational-suffix:
+          type: string
+          description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+          example: B
+        origin-date:
+          type: string
+          format: date
+          description: UTC scheduled date of departure of the first leg of the flight. Must be between 2010-01-01 and 2210-01-01.
+        identifier-string:
+          type: string
+          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-DATE-ORIGIN-DESTINATION.
+        iata-message-key:
+          type: string
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT in the origin timezone
+        iata-message-key-utc:
+          type: string
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT coverted to UTC
+        origin-iata-code:
+          type: string
+          description: 3-digit IATA code of origin airport.
+          example: AAA
+        destination-iata-code:
+          type: string
+          description: 3-digit IATA code of destination airport.
+          example: ZZZ
+      required:
+      - carrier
+      - destination-iata-code
+      - flight-number
+      - origin-date
+      - origin-iata-code
+    ClassCount:
+      type: object
+      properties:
+        planned:
+          type: integer
+          format: int32
+          description: Planned/booked count.
+          example: 100
+        estimated:
+          type: integer
+          format: int32
+          description: Estimated count.
+          example: 99
+        actual:
+          type: integer
+          format: int32
+          description: Actual count.
+          example: 102
+    FlightPax:
+      type: object
+      description: Model for passenger count information.
+      properties:
+        pax-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
+        transfer-pax-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Transfer pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
+        bag-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
+        transfer-bag-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Transfer bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.

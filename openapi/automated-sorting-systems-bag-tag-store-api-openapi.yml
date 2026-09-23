@@ -1,0 +1,2122 @@
+openapi: 3.2.0
+info:
+  title: Datahub Bag Tag Store API
+  description: OpenAir Datahub acts as a central data repository for all functions, which affect the efficient functioning of an airport. Data can be ingested from various sources via standardized interfaces. The way of getting data out of it is similar; there are standardized REST and MQTT interfaces to fetch the data. The data structure is based on industry standards such as IATA's AIDM and ACI's ACRIS combined with decades of Vanderlande Logistics industry knowledge.
+  contact:
+    name: Vanderlande Logistics GmbH
+    url: https://www.vanderlande.com
+    email: info.digital@vanderlande-logistics.com
+  license:
+    name: Property of Vanderlande Logistics GmbH
+  version: 6.6.0
+tags:
+- name: Bag Tag Store
+  externalDocs:
+    description: The bag tag store contains methods to access and insert or modify bag tag data.
+paths:
+  /bagtags/events/tracking:
+    post:
+      tags:
+      - Bag Tag Store
+      summary: Post a bag tracking event
+      description: Transfers a bag tracking event to ADH. This may change the state of the bag tag. New data is processed asynchronously and may need some time to be updated.
+      operationId: postBagTrackingEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BagTrackingEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+      security:
+      - aviationdatahub:
+        - ADH.BT.W
+  /bagtags/events/screening:
+    post:
+      tags:
+      - Bag Tag Store
+      summary: Post a bag screening event
+      description: Transfers a bag screening event to ADH. This may change the state of the bag tag.New data is processed asynchronously and may need some time to be updated.
+      operationId: postBagScreeningEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BagScreeningEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+      security:
+      - aviationdatahub:
+        - ADH.BT.W
+  /bagtags/events/loadintould:
+    post:
+      tags:
+      - Bag Tag Store
+      summary: DEPRECATED! Post a bag load into uld event
+      description: Transfers a bag load into uld event to ADH. This may change the state of the bag tag.New data is processed asynchronously and may need some time to be updated.
+      operationId: postBagLoadIntoUldEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BagLoadIntoUldEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+      deprecated: true
+      security:
+      - aviationdatahub:
+        - ADH.BT.W
+  /bagtags/events/containerization:
+    post:
+      tags:
+      - Bag Tag Store
+      summary: Post a bag containerization event
+      description: Transfers a bag containerization event to ADH. This may change the state of the bag tag. New data is processed asynchronously and may need some time to be updated.
+      operationId: postBagContainerizationEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BagContainerizationEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+      security:
+      - aviationdatahub:
+        - ADH.BT.W
+  /bagtags/events/checkin:
+    post:
+      tags:
+      - Bag Tag Store
+      summary: Post a bag check in event
+      description: Transfers a bag check in event to ADH. This may change the state of the bag tag. New data is processed asynchronously and may need some time to be updated.
+      operationId: postBagCheckInEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BagCheckInEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+      security:
+      - aviationdatahub:
+        - ADH.BT.W
+  /bagtags/events/change:
+    post:
+      tags:
+      - Bag Tag Store
+      summary: Post a bag change event
+      description: Transfers a bag change event to ADH. This may change the state of the bag tag. New data is processed asynchronously and may need some time to be updated.
+      operationId: postBagChangeEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BagChangeEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+      security:
+      - aviationdatahub:
+        - ADH.BT.W
+  /bagtags/events/cancel:
+    post:
+      tags:
+      - Bag Tag Store
+      summary: Post a bag cancel event
+      description: Transfers a bag cancel event to ADH. This may change the state of the bag tag. New data is processed asynchronously and may need some time to be updated.
+      operationId: postBagCancelEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BagCancelEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+      security:
+      - aviationdatahub:
+        - ADH.BT.W
+  /bagtags/{id}:
+    get:
+      tags:
+      - Bag Tag Store
+      summary: Query bag tag by unique bag-tag-id provided by adh
+      operationId: getBagTagREST
+      parameters:
+      - name: id
+        in: path
+        description: The unique bag-tag-id provided by adh. Searches for this in bag-tag-id or merged-bag-tag-id.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Ok: Default response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BagTag'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+        '404':
+          description: 'Not Found: bag tag with given id not found.'
+      security:
+      - aviationdatahub:
+        - ADH.BT.R
+  /bagtags/{id}/segments:
+    get:
+      tags:
+      - Bag Tag Store
+      summary: Query bag tags by flight segment for given bag tag id based on given search…
+      description: If no query parameter is set the search will be reduced to the last 24 hours. If no maxResult is set a maximum of 1000 records will be returned.
+      operationId: queryFlightSegmentBagTagsForBagTag
+      parameters:
+      - name: id
+        in: path
+        description: The unique bag-tag-id provided by adh. Searches for this in bag-tag-id or merged-bag-tag-id.
+        required: true
+        schema:
+          type: string
+      - name: tag
+        in: query
+        description: The tag number of the bag tag.
+        required: false
+        schema:
+          type: string
+      - name: carrier
+        in: query
+        description: The iata code of the operating carrier.
+        required: false
+        schema:
+          type: string
+      - name: flight-number
+        in: query
+        description: The (numeric) flight number of operating airline.
+        required: false
+        schema:
+          type: string
+      - name: operational-suffix
+        in: query
+        description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+        required: false
+        schema:
+          type: string
+      - name: origin-date
+        in: query
+        description: The day of operation, i.e. local day of schedule off-block time in UTC at first departure airport of flight. e.g. 2020-01-31T12:30:00.000Z.
+        required: false
+        schema:
+          type: string
+      - name: origin-iata-code
+        in: query
+        description: The iata code of an airport as origin airport of a flight leg the bag is booked on.
+        required: false
+        schema:
+          type: string
+      - name: destination-iata-code
+        in: query
+        description: The iata code of an airport as destination airport of a flight leg the bag is booked on.
+        required: false
+        schema:
+          type: string
+      - name: created-from
+        in: query
+        description: 'Object creation time by ADH: the start point of the interval in UTC (included). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: created-to
+        in: query
+        description: 'Object creation time by ADH: the end point of the interval in UTC (excluded). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: updated-from
+        in: query
+        description: 'Last object modification time by ADH: the start point of the interval in UTC (included). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: updated-to
+        in: query
+        description: 'Last object modification time by ADH: the end point of the interval in UTC (excluded). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: secondary-identifier
+        in: query
+        description: A secondary identifier given to the bag tag.
+        required: false
+        schema:
+          type: string
+      - name: max-results
+        in: query
+        description: The maximum number of results.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FlightSegmentBagTag'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+      security:
+      - aviationdatahub:
+        - ADH.BT.R
+  /bagtags/{id}/events:
+    get:
+      tags:
+      - Bag Tag Store
+      summary: Query bag events for given bag tag id based on given search criteria
+      description: If no query parameter is set the search will be reduced to the last 24 hours. If no maxResult is set a maximum of 1000 records will be returned.
+      operationId: queryBagEventsForBagTag
+      parameters:
+      - name: id
+        in: path
+        description: The unique bag-tag-id provided by adh. Searches for this in bag-tag-id or merged-bag-tag-id.
+        required: true
+        schema:
+          type: string
+      - name: tag
+        in: query
+        description: The tag number of the bag tag.
+        required: false
+        schema:
+          type: string
+      - name: from
+        in: query
+        description: The start point of the interval in UTC. e.g. 2020-01-31T12:30:00.000Z. If used the from and the to parameter has to be set.
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        description: The end point of the interval in UTC. e.g. 2020-01-31T12:30:00.000Z. If used the from and the to parameter has to be set.
+        required: false
+        schema:
+          type: string
+      - name: carrier
+        in: query
+        description: The iata code of the operating carrier.
+        required: false
+        schema:
+          type: string
+      - name: flight-number
+        in: query
+        description: The (numeric part of) flight number of operating airline.
+        required: false
+        schema:
+          type: string
+      - name: operational-suffix
+        in: query
+        description: Used to distinguish two flights having the same flight number and departing from their respective Origin Stations on the same date.
+        required: false
+        schema:
+          type: string
+      - name: origin-date
+        in: query
+        description: The day of operation, i.e. local day of schedule off-block time in UTC at first departure airport of flight. e.g. 2020-01-31T12:30:00.000Z.
+        required: false
+        schema:
+          type: string
+      - name: origin-iata-code
+        in: query
+        description: The iata code of the departure airport.
+        required: false
+        schema:
+          type: string
+      - name: destination-iata-code
+        in: query
+        description: The iata code of the arrival airport.
+        required: false
+        schema:
+          type: string
+      - name: event-type
+        in: query
+        description: The event type.
+        required: false
+        schema:
+          type: string
+          enum:
+          - BAG_CHECK_IN_EVENT
+          - BAG_CANCEL_EVENT
+          - BAG_CHANGE_EVENT
+          - BAG_ROUTE_EVENT
+          - BAG_REFLIGHT_EVENT
+          - BAG_CONTAINERIZATION_EVENT
+          - BAG_TRACKING_EVENT
+          - BAG_SCREENING_EVENT
+          - BAG_LOAD_INTO_ULD_EVENT
+      - name: tracking-event-sub-type
+        in: query
+        description: The tracking event sub-type.
+        required: false
+        schema:
+          type: string
+          enum:
+          - BHS_INDUCTION
+          - ATR
+          - MES
+          - BVS
+          - EBS_IN
+          - EBS_OUT
+          - MUP_DISCHARGE
+          - RECONCILED
+          - CART_LOAD
+          - LOAD
+          - DEPARTED_FROM_MUP
+          - ARRIVED_AT_BAY
+          - DEPARTED_FROM_BAY
+          - ARRIVED_AT_TRANSFER_LATERAL
+          - ARRIVED_AT_RECLAIM_BELT
+          - UNLOAD
+          - ULD_UNLOAD
+          - RECLAIM_BELT_INDUCTION
+          - DELIVERED
+      - name: secondary-identifier
+        in: query
+        description: A secondary identifier given to the bag tag.
+        required: false
+        schema:
+          type: string
+      - name: container-tag
+        in: query
+        description: Tag of the a container to search for.
+        required: false
+        schema:
+          type: string
+      - name: location
+        in: query
+        description: Location of the container event to search for.
+        required: false
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Source of the container event to search for.
+        required: false
+        schema:
+          type: string
+      - name: max-results
+        in: query
+        description: The maximum number of results.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BagEvent'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+      security:
+      - aviationdatahub:
+        - ADH.BT.R
+  /bagtags/segments:
+    get:
+      tags:
+      - Bag Tag Store
+      summary: Query bag tags by flight segment based on given search criteria
+      description: If no query parameter is set the search will be reduced to the last 24 hours. If no maxResult is set a maximum of 1000 records will be returned.
+      operationId: queryFlightSegmentBagTags
+      parameters:
+      - name: tag
+        in: query
+        description: The tag number of the bag tag.
+        required: false
+        schema:
+          type: string
+      - name: carrier
+        in: query
+        description: The iata code of the operating carrier.
+        required: false
+        schema:
+          type: string
+      - name: flight-number
+        in: query
+        description: The (numeric) flight number of operating airline.
+        required: false
+        schema:
+          type: string
+      - name: operational-suffix
+        in: query
+        description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+        required: false
+        schema:
+          type: string
+      - name: origin-date
+        in: query
+        description: The day of operation, i.e. local day of schedule off-block time in UTC at first departure airport of flight.
+        required: false
+        schema:
+          type: string
+      - name: origin-iata-code
+        in: query
+        description: The iata code of an airport as origin airport of a flight leg the bag is booked on.
+        required: false
+        schema:
+          type: string
+      - name: destination-iata-code
+        in: query
+        description: The iata code of an airport as destination airport of a flight leg the bag is booked on.
+        required: false
+        schema:
+          type: string
+      - name: created-from
+        in: query
+        description: 'Object creation time by ADH: the start point of the interval in UTC (included). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: created-to
+        in: query
+        description: 'Object creation time by ADH: the end point of the interval in UTC (excluded). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: updated-from
+        in: query
+        description: 'Last object modification time by ADH: the start point of the interval in UTC (included). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: updated-to
+        in: query
+        description: 'Last object modification time by ADH: the end point of the interval in UTC (excluded). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: secondary-identifier
+        in: query
+        description: A secondary identifier given to the bag tag.
+        required: false
+        schema:
+          type: string
+      - name: bag-tag-id
+        in: query
+        description: The unique bag-tag-id provided by adh. Looked up in bag-tag-id and merged-bag-tag-id.
+        required: false
+        schema:
+          type: string
+      - name: max-results
+        in: query
+        description: The maximum number of results.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FlightSegmentBagTag'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+      security:
+      - aviationdatahub:
+        - ADH.BT.R
+  /bagtags/events:
+    get:
+      tags:
+      - Bag Tag Store
+      summary: Query bag events based on given search criteria
+      description: If no query parameter is set the search will be reduced to the last 24 hours. If no maxResult is set a maximum of 1000 records will be returned.
+      operationId: queryBagEvents
+      parameters:
+      - name: tag
+        in: query
+        description: The tag number of the bag tag.
+        required: false
+        schema:
+          type: string
+      - name: from
+        in: query
+        description: The start point of the interval in UTC. e.g. 2020-01-31T12:30:00.000Z. If used the from and the to parameter has to be set.
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        description: The end point of the interval in UTC. e.g. 2020-01-31T13:30:00.000Z. If used the from and the to parameter has to be set.
+        required: false
+        schema:
+          type: string
+      - name: carrier
+        in: query
+        description: The iata code of the operating carrier.
+        required: false
+        schema:
+          type: string
+      - name: flight-number
+        in: query
+        description: The (numeric part of) flight number of operating airline.
+        required: false
+        schema:
+          type: string
+      - name: operational-suffix
+        in: query
+        description: Used to distinguish two flights having the same flight number and departing from their respective Origin Stations on the same date.
+        required: false
+        schema:
+          type: string
+      - name: origin-date
+        in: query
+        description: The day of operation, i.e. local day of schedule off-block time in UTC at first departure airport of flight. e.g. 2020-01-31T12:30:00.000Z.
+        required: false
+        schema:
+          type: string
+      - name: origin-iata-code
+        in: query
+        description: The iata code of the departure airport.
+        required: false
+        schema:
+          type: string
+      - name: destination-iata-code
+        in: query
+        description: The iata code of the arrival airport.
+        required: false
+        schema:
+          type: string
+      - name: event-type
+        in: query
+        description: The event type.
+        required: false
+        schema:
+          type: string
+          enum:
+          - BAG_CHECK_IN_EVENT
+          - BAG_CANCEL_EVENT
+          - BAG_CHANGE_EVENT
+          - BAG_ROUTE_EVENT
+          - BAG_REFLIGHT_EVENT
+          - BAG_CONTAINERIZATION_EVENT
+          - BAG_TRACKING_EVENT
+          - BAG_SCREENING_EVENT
+          - BAG_LOAD_INTO_ULD_EVENT
+      - name: tracking-event-sub-type
+        in: query
+        description: The tracking event sub-type.
+        required: false
+        schema:
+          type: string
+          enum:
+          - BHS_INDUCTION
+          - ATR
+          - MES
+          - BVS
+          - EBS_IN
+          - EBS_OUT
+          - MUP_DISCHARGE
+          - RECONCILED
+          - CART_LOAD
+          - LOAD
+          - DEPARTED_FROM_MUP
+          - ARRIVED_AT_BAY
+          - DEPARTED_FROM_BAY
+          - ARRIVED_AT_TRANSFER_LATERAL
+          - ARRIVED_AT_RECLAIM_BELT
+          - UNLOAD
+          - ULD_UNLOAD
+          - RECLAIM_BELT_INDUCTION
+          - DELIVERED
+      - name: secondary-identifier
+        in: query
+        description: A secondary identifier given to the bag tag.
+        required: false
+        schema:
+          type: string
+      - name: bag-tag-id
+        in: query
+        description: One or more bag-tag-ids. If searching for events of a bagTag pass in bag-tag-id and all merged-bag-tag-id to find all events, even merged ones.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: container-tag
+        in: query
+        description: Tag of the a container to search for.
+        required: false
+        schema:
+          type: string
+      - name: location
+        in: query
+        description: Location of the event to search for.
+        required: false
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Source of the event to search for.
+        required: false
+        schema:
+          type: string
+      - name: max-results
+        in: query
+        description: The maximum number of results.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BagEvent'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+      security:
+      - aviationdatahub:
+        - ADH.BT.R
+  /bagtags/:
+    get:
+      tags:
+      - Bag Tag Store
+      summary: Query bag tags based on given search criteria
+      description: If no query parameter is set the search will be reduced to the last 24 hours. If no maxResult is set a maximum of 1000 records will be returned.
+      operationId: queryBagTags
+      parameters:
+      - name: tag
+        in: query
+        description: The tag number of the bag tag.
+        required: false
+        schema:
+          type: string
+      - name: carrier
+        in: query
+        description: The iata code of the operating carrier. 2-digit code is expected.
+        required: false
+        schema:
+          type: string
+      - name: flight-number
+        in: query
+        description: The (numeric) flight number of operating airline.
+        required: false
+        schema:
+          type: string
+      - name: operational-suffix
+        in: query
+        description: Operational suffix of flight segment. Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+        required: false
+        schema:
+          type: string
+      - name: origin-date
+        in: query
+        description: The day of operation, i.e. local day of schedule off-block time in UTC at first departure airport of flight.
+        required: false
+        schema:
+          type: string
+      - name: origin-iata-code
+        in: query
+        description: The iata code of an airport as origin airport of a flight leg the bag is booked on.
+        required: false
+        schema:
+          type: string
+      - name: destination-iata-code
+        in: query
+        description: The iata code of an airport as destination airport of a flight leg the bag is booked on.
+        required: false
+        schema:
+          type: string
+      - name: created-from
+        in: query
+        description: 'Object creation time by ADH: the start point of the interval in UTC (included). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: created-to
+        in: query
+        description: 'Object creation time by ADH: the end point of the interval in UTC (excluded). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: updated-from
+        in: query
+        description: 'Last object modification time by ADH: the start point of the interval in UTC (included). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: updated-to
+        in: query
+        description: 'Last object modification time by ADH: the end point of the interval in UTC (excluded). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: secondary-identifier
+        in: query
+        description: A secondary identifier given to the bag tag.
+        required: false
+        schema:
+          type: string
+      - name: bag-tag-id
+        in: query
+        description: The unique bag-tag-id provided by adh. Looked up in bag-tag-id and merged-bag-tag-id.
+        required: false
+        schema:
+          type: string
+      - name: container-tag
+        in: query
+        description: The container tag that was submitted in containerization events.
+        required: false
+        schema:
+          type: string
+      - name: max-results
+        in: query
+        description: The maximum number of results.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BagTag'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ModelAndView'
+      security:
+      - aviationdatahub:
+        - ADH.BT.R
+components:
+  schemas:
+    BagSegment:
+      type: object
+      description: Object holding a the state of a bag represented by bag tag for a flight segment.
+      properties:
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence number of bag segment within bag journey.
+        tag:
+          type: string
+          description: Tag number of the bag tag used on this segment.
+          example: B12345678
+        class-of-travel:
+          type: string
+          description: Class of travel.
+          example: M
+        is-rush-bag:
+          type: boolean
+          description: Flags if this is a rush bag.
+        passenger-is-crew-member:
+          type: boolean
+          description: Flags if bag belongs to a crew member. Put false or 0 to set it to non-crew member. Everything greater than 0 will be interpreted as true.
+        bag-activities:
+          $ref: '#/components/schemas/BagActivities'
+          description: Activities captured for this bag.
+        oldest-inbound-activity-type:
+          type: string
+          description: Type of oldest inbound activity.
+        oldest-inbound-activity:
+          $ref: '#/components/schemas/BagActivity'
+          description: Oldest inbound activity.
+        newest-inbound-activity-type:
+          type: string
+          description: Type of newest inbound activity.
+        newest-inbound-activity:
+          $ref: '#/components/schemas/BagActivity'
+          description: Newest inbound activity.
+        oldest-outbound-activity-type:
+          type: string
+          description: Type of oldest outbound activity.
+        oldest-outbound-activity:
+          $ref: '#/components/schemas/BagActivity'
+          description: Oldest outbound activity.
+        newest-outbound-activity-type:
+          type: string
+          description: Type of newest outbound activity.
+        newest-outbound-activity:
+          $ref: '#/components/schemas/BagActivity'
+          description: Newest outbound activity.
+        identifier:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Bag segment identifier.
+        newest-activity-type:
+          type: string
+          description: Newest activity type either outbound, inbound or segment
+        state:
+          type: string
+          description: 'State of the bag segment. '
+          enum:
+          - ACTIVE
+          - COMPLETED
+          - DELETED
+          example: ACTIVE, COMPLETED or DELETED
+        enriched:
+          type: boolean
+          description: Indication if this Bag Segment was Enriched.
+      required:
+      - identifier
+    BagActivity:
+      type: object
+      description: Details on a specific bag activity on a bag segment.
+      properties:
+        location-type:
+          type: string
+          description: Type of location.
+          enum:
+          - SEGMENT
+          - OUTBOUND
+          - INBOUND
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp in UTC.
+        location:
+          type: string
+          description: Location.
+    User:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        user-id:
+          type: string
+          description: Unique user id.
+          readOnly: true
+        user-name:
+          type: string
+          description: Readable user name
+          readOnly: true
+      readOnly: true
+    BagJourney:
+      type: object
+      properties:
+        bag-initialized:
+          $ref: '#/components/schemas/BagPhase'
+        inbound:
+          $ref: '#/components/schemas/BagJourneyPhase'
+        transfer:
+          $ref: '#/components/schemas/BagJourneyPhase'
+        in-system:
+          $ref: '#/components/schemas/BagJourneyPhase'
+        outbound:
+          $ref: '#/components/schemas/BagJourneyPhase'
+    ContainerizationActivity:
+      type: object
+      description: BagActivity for Containerization.
+      properties:
+        location-type:
+          type: string
+          description: Type of location.
+          enum:
+          - SEGMENT
+          - OUTBOUND
+          - INBOUND
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp in UTC.
+        location:
+          type: string
+          description: Location.
+        container-tag:
+          type: string
+          description: Container tag.
+          example: A12345678
+        container-activity:
+          type: string
+          description: Container activity.
+          enum:
+          - LOAD
+          - OFFLOAD
+          - REMOVE
+          - MERGE
+        container-type:
+          type: string
+          description: Container type like ULD/dolly/aircraft. The activity is dependent to this type.
+          example: ULD
+    BagLoadIntoUldEvent:
+      allOf:
+      - $ref: '#/components/schemas/BagEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAG_LOAD_INTO_ULD_EVENT
+          uld-tag:
+            type: string
+            description: ULD tag.
+            example: A12345678
+          sequence-number:
+            type: integer
+            format: int32
+            description: Loading sequence number of bag in uld. Must be 1 or greater.
+            example: 1
+            minimum: 1
+      description: Entity for bag load into uld Business Events.
+      required:
+      - event-time
+      - event-type
+      - source
+      - tag
+      - uld-tag
+    HttpStatusCode:
+      type: object
+      properties:
+        error:
+          type: boolean
+        is4xxClientError:
+          type: boolean
+        is5xxServerError:
+          type: boolean
+        is1xxInformational:
+          type: boolean
+        is2xxSuccessful:
+          type: boolean
+        is3xxRedirection:
+          type: boolean
+    SecondaryIdentifier:
+      type: object
+      description: Additional identifiers for flight legs or segments used by airport systems etc.
+      properties:
+        identifier:
+          type: string
+          description: Secondary identifier .
+        created:
+          type: string
+          format: date-time
+          description: Timestamp of creation of secondary identifier in UTC.
+        source:
+          type: string
+          description: Source creating the secondary identifier.
+      required:
+      - created
+      - identifier
+      - source
+    BagScreeningEvent:
+      allOf:
+      - $ref: '#/components/schemas/BagEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAG_SCREENING_EVENT
+          screening-level:
+            type: integer
+            format: int32
+            description: Screening level.
+          cleared:
+            type: boolean
+            description: Cleared.
+      description: Entity for Bag Screening Business Events.
+      required:
+      - cleared
+      - event-time
+      - event-type
+      - screening-level
+      - source
+      - tag
+    BagContainerizationEvent:
+      allOf:
+      - $ref: '#/components/schemas/BagEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAG_CONTAINERIZATION_EVENT
+          function:
+            type: string
+            description: Type of event activity.
+            enum:
+            - LOAD
+            - OFFLOAD
+            - REMOVE
+            - MERGE
+          container-tag:
+            type: string
+            description: Identifier for journey of the Container.
+            example: A234223423
+          container-type:
+            type: string
+            description: Container type like ULD/dolly/aircraft.
+            example: ULD
+          sequence-number:
+            type: integer
+            format: int32
+            description: Loading sequence number of bag into container.
+            example: 2
+          bag-segments:
+            type: array
+            description: Segments.
+            items:
+              $ref: '#/components/schemas/BagSegment'
+            maxItems: 15
+            minItems: 1
+          container-direction:
+            type: string
+            description: Direction of the container event.
+            enum:
+            - INBOUND
+            - OUTBOUND
+            - TRANSFER
+            example: inbound
+      description: Entity for bag containerization Business Events.
+      required:
+      - bag-segments
+      - event-time
+      - event-type
+      - function
+      - source
+      - tag
+    ScreeningActivity:
+      type: object
+      description: BagActivity for screening.
+      properties:
+        location-type:
+          type: string
+          description: Type of location.
+          enum:
+          - SEGMENT
+          - OUTBOUND
+          - INBOUND
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp in UTC.
+        location:
+          type: string
+          description: Location.
+        level:
+          type: integer
+          format: int32
+          description: Screening level.
+        cleared:
+          type: boolean
+          description: Cleared.
+    FlightIdentifier:
+      type: object
+      description: Object holding identifying information for a flight.
+      properties:
+        carrier:
+          type: string
+          description: 2-digit IATA code of operating carrier.
+          example: ZZ
+        flight-number:
+          type: string
+          description: The flight number of the operating carrier. Should contain not more than 4 chars and must not include whitespaces. If less than 4 chars leading zeros will be added to normalize it to 4 chars.
+          example: 997
+        operational-suffix:
+          type: string
+          description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+          example: B
+        origin-date:
+          type: string
+          format: date
+          description: UTC scheduled date of departure of the first leg of the flight. Must be between 2010-01-01 and 2210-01-01.
+        identifier-string:
+          type: string
+          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-DATE-ORIGIN-DESTINATION.
+        iata-message-key:
+          type: string
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT in the origin timezone
+        iata-message-key-utc:
+          type: string
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT coverted to UTC
+        origin-iata-code:
+          type: string
+          description: 3-digit IATA code of origin airport.
+          example: AAA
+        destination-iata-code:
+          type: string
+          description: 3-digit IATA code of destination airport.
+          example: ZZZ
+      required:
+      - carrier
+      - destination-iata-code
+      - flight-number
+      - origin-date
+      - origin-iata-code
+    BagReFlightEvent:
+      allOf:
+      - $ref: '#/components/schemas/BagEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAG_REFLIGHT_EVENT
+          bag-segments:
+            type: array
+            description: New or updated bag segments.
+            items:
+              $ref: '#/components/schemas/BagSegment'
+            maxItems: 15
+            minItems: 1
+          retired-tag:
+            type: string
+            description: Retired tag number for the bag, if tag number has been updated.
+            example: R12345678
+      description: Entity for Bag Re-Flight Business Events.
+      required:
+      - bag-segments
+      - event-time
+      - event-type
+      - source
+      - tag
+    View:
+      type: object
+      properties:
+        contentType:
+          type: string
+    AggregatedMeta:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        created-at:
+          type: string
+          format: date-time
+          description: Timestamp when object was first created in DH.
+          readOnly: true
+        created-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be created.
+          readOnly: true
+        created-event-type:
+          type: string
+          description: Event-type of event which caused the object to be created.
+          readOnly: true
+        created-event-time:
+          type: string
+          format: date-time
+          description: Event-time of event which caused the object to be created.
+          readOnly: true
+        modified-count:
+          type: integer
+          format: int64
+          description: Number of modifications in DH.
+          readOnly: true
+        modified-at:
+          type: string
+          format: date-time
+          description: Timestamp of last modification in DH.
+          readOnly: true
+        modified-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be modified.
+          readOnly: true
+        modified-event-type:
+          type: string
+          description: Event-type of event which caused the object to be modified.
+          readOnly: true
+        modified-event-time:
+          type: string
+          format: date-time
+          description: Event-time of event which caused the object to be modified.
+          readOnly: true
+        tag-id:
+          type: string
+          deprecated: true
+          description: Unique id of the bag tag in the data hub for an unlimited period of time.
+        skip-datawarehouse:
+          type: boolean
+          description: Skip Datawarehouse processing.
+          readOnly: true
+        skip-report-flight:
+          type: boolean
+          description: Skip Report Flight processing.
+          readOnly: true
+      readOnly: true
+    BagChangeEvent:
+      allOf:
+      - $ref: '#/components/schemas/BagEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAG_CHANGE_EVENT
+          bag-segments:
+            type: array
+            description: Changed bag segments.
+            items:
+              $ref: '#/components/schemas/BagSegment'
+            maxItems: 15
+            minItems: 1
+          authorized-to-load:
+            type: boolean
+            description: Authorized to load that comes with BSM reconciliation data element.
+            example: true
+      description: Entity for Bag Change Business Events.
+      required:
+      - bag-segments
+      - event-time
+      - event-type
+      - source
+      - tag
+    ModelAndView:
+      type: object
+      properties:
+        view:
+          $ref: '#/components/schemas/View'
+        model:
+          type: object
+          additionalProperties:
+            type: object
+        status:
+          $ref: '#/components/schemas/HttpStatusCode'
+        empty:
+          type: boolean
+        viewName:
+          type: string
+        reference:
+          type: boolean
+        modelMap:
+          type: object
+          additionalProperties:
+            type: object
+          properties:
+            empty:
+              type: boolean
+    BagJourneyPhase:
+      type: object
+      properties:
+        uld-driving:
+          $ref: '#/components/schemas/BagPhase'
+        uld-tralat:
+          $ref: '#/components/schemas/BagPhase'
+        bhs-ebs-in:
+          $ref: '#/components/schemas/BagPhase'
+        bhs-ebs-out:
+          $ref: '#/components/schemas/BagPhase'
+        bhs-mup:
+          $ref: '#/components/schemas/BagPhase'
+        bhs-processing:
+          $ref: '#/components/schemas/BagPhase'
+        bhs-reclaim:
+          $ref: '#/components/schemas/BagPhase'
+        aircraft-landed:
+          $ref: '#/components/schemas/BagPhase'
+        bag-clear:
+          $ref: '#/components/schemas/BagPhase'
+        bag-driving:
+          $ref: '#/components/schemas/BagPhase'
+        bag-offloaded:
+          $ref: '#/components/schemas/BagPhase'
+        bag-reclaim:
+          $ref: '#/components/schemas/BagPhase'
+        mup-bulk:
+          $ref: '#/components/schemas/BagPhase'
+        mup-uld:
+          $ref: '#/components/schemas/BagPhase'
+        aircraft-air:
+          $ref: '#/components/schemas/BagPhase'
+        bag-aircraft:
+          $ref: '#/components/schemas/BagPhase'
+        bag-bay:
+          $ref: '#/components/schemas/BagPhase'
+        passenger-bag:
+          $ref: '#/components/schemas/BagPhase'
+        uld-aircraft:
+          $ref: '#/components/schemas/BagPhase'
+        uld-bay:
+          $ref: '#/components/schemas/BagPhase'
+        uld-off-loaded:
+          $ref: '#/components/schemas/BagPhase'
+        bag-tralat:
+          $ref: '#/components/schemas/BagPhase'
+        uld-reclaim:
+          $ref: '#/components/schemas/BagPhase'
+        bhs-mes:
+          $ref: '#/components/schemas/BagPhase'
+    LoadIntoUldActivity:
+      type: object
+      description: BagActivity for ULD load/unload.
+      properties:
+        location-type:
+          type: string
+          description: Type of location.
+          enum:
+          - SEGMENT
+          - OUTBOUND
+          - INBOUND
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp in UTC.
+        location:
+          type: string
+          description: Location.
+        uld-tag:
+          type: string
+          deprecated: true
+          description: ULD tag . Deprecated - use containerTag instead.
+        container-tag:
+          type: string
+          description: Container tag.
+          example: A12345678
+        container-type:
+          type: string
+          description: Container type like ULD/dolly/aircraft. The activity is dependent to this type.
+          example: ULD
+        container-activity:
+          type: string
+          description: Container activity.
+          enum:
+          - LOAD
+          - OFFLOAD
+          - REMOVE
+          - MERGE
+    BagCheckInEvent:
+      allOf:
+      - $ref: '#/components/schemas/BagEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAG_CHECK_IN_EVENT
+          bag-segments:
+            type: array
+            description: 'bag segments. Additional constraints apply: Must contain between 1 and 15 segments. Difference in origin-date of first and last segment must be no more than 30 days, event-time must be no more than 30 days before first segment and no more than 3030 days after last segment.'
+            items:
+              $ref: '#/components/schemas/BagSegment'
+            maxItems: 15
+            minItems: 1
+          authorized-to-load:
+            type: boolean
+            description: Authorized to load that comes with BSM reconciliation data element.
+            example: true
+          authorized-to-transport:
+            type: boolean
+            description: Authorized to transport that comes with BSM reconciliation data element.
+            example: false
+          exception:
+            type: string
+            description: 'Exceptions: RUSH, GATE, etc.'
+            example: GATE;
+      description: Entity for Bag Check-In Business Events.
+      required:
+      - bag-segments
+      - event-time
+      - event-type
+      - source
+      - tag
+    BagActivities:
+      type: object
+      description: Information on performed BagActivities on a bag segment.
+      properties:
+        check-in:
+          $ref: '#/components/schemas/BagActivity'
+          description: Check-in.
+        cancel:
+          $ref: '#/components/schemas/BagActivity'
+          description: Cancel.
+        reflight:
+          $ref: '#/components/schemas/BagActivity'
+          description: Reflight.
+        reroute:
+          $ref: '#/components/schemas/BagActivity'
+          description: Reroute.
+        screening:
+          $ref: '#/components/schemas/ScreeningActivity'
+          description: Screening.
+        bhs-induction:
+          $ref: '#/components/schemas/BagActivity'
+          description: BHS_INDUCTION.
+        atr:
+          $ref: '#/components/schemas/BagActivity'
+          description: ATR.
+        bvs:
+          $ref: '#/components/schemas/BagActivity'
+          description: BVS.
+        mes:
+          $ref: '#/components/schemas/BagActivity'
+          description: MES.
+        ebs-in:
+          $ref: '#/components/schemas/BagActivity'
+          description: Early bag store in.
+        ebs-out:
+          $ref: '#/components/schemas/BagActivity'
+          description: Early bag store out.
+        mup-discharge:
+          $ref: '#/components/schemas/BagActivity'
+          description: MUP discharge.
+        depart-mup:
+          $ref: '#/components/schemas/BagActivity'
+          description: Depart from MUP.
+        arrive-bay:
+          $ref: '#/components/schemas/BagActivity'
+          description: Arrive at bay.
+        depart-bay:
+          $ref: '#/components/schemas/BagActivity'
+          description: Depart from bay.
+        arrive-transfer-lateral:
+          $ref: '#/components/schemas/BagActivity'
+          description: Arrive at transfer lateral.
+        arrive-reclaim-belt:
+          $ref: '#/components/schemas/BagActivity'
+          description: Arrive at reclaim belt.
+        load-into-uld:
+          $ref: '#/components/schemas/LoadIntoUldActivity'
+          description: Load into uld.
+        unload-uld:
+          $ref: '#/components/schemas/ContainerizationActivity'
+          description: Unload from uld.
+        remove-from-uld:
+          $ref: '#/components/schemas/ContainerizationActivity'
+          description: Remove from uld.
+        remove-from-aircraft:
+          $ref: '#/components/schemas/ContainerizationActivity'
+          description: Remove from aircraft.
+        reconciled:
+          $ref: '#/components/schemas/BagActivity'
+          description: Reconcilation.
+        unload:
+          $ref: '#/components/schemas/ContainerizationActivity'
+          description: Unload from aircraft.
+        delivered:
+          $ref: '#/components/schemas/BagActivity'
+          description: Delivery confirmed.
+        load-into-aircraft:
+          $ref: '#/components/schemas/ContainerizationActivity'
+          description: Load into aircraft.
+        merge:
+          $ref: '#/components/schemas/ContainerizationActivity'
+          description: Load into aircraft.
+        induct-reclaim-belt:
+          $ref: '#/components/schemas/BagActivity'
+          description: Bag place on arrival Belt.
+        risk-level:
+          $ref: '#/components/schemas/BagActivity'
+          description: Bag Risk Level Calculated.
+    BagEvent:
+      type: object
+      description: Entity for bag Business Events. Use concrete subclass.
+      discriminator:
+        propertyName: event-type
+      oneOf:
+      - $ref: '#/components/schemas/BagCheckInEvent'
+      - $ref: '#/components/schemas/BagCancelEvent'
+      - $ref: '#/components/schemas/BagChangeEvent'
+      - $ref: '#/components/schemas/BagReRouteEvent'
+      - $ref: '#/components/schemas/BagReFlightEvent'
+      - $ref: '#/components/schemas/BagTrackingEvent'
+      - $ref: '#/components/schemas/BagScreeningEvent'
+      - $ref: '#/components/schemas/BagLoadIntoUldEvent'
+      - $ref: '#/components/schemas/BagContainerizationEvent'
+      properties:
+        meta:
+          $ref: '#/components/schemas/BasicMeta'
+          description: Event metadata, generated by DataHub. May not be passed in.
+          readOnly: true
+        event-type:
+          type: string
+          description: Type of event, must match the type defined for the concrete subclass.
+        event-time:
+          type: string
+          format: date-time
+          description: Timestamp when the event occurred in UTC.
+        location:
+          type: string
+          description: Location id where the event occured.
+          example: TRA_12
+        source:
+          type: string
+          description: System generating the event.
+          example: Scanner TRA_12
+        bag-id:
+          type: string
+          description: Unique id for the bag. Can be used for an unlimited period of time.
+          example: EK0123-20250212-HKG-DXB-0123456789
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers used by BHS etc.
+          items:
+            $ref: '#/components/schemas/BagTagIdentifier'
+          uniqueItems: true
+        tag:
+          type: string
+          description: Tag number of the bag tag. Latest tag number in case of re-tagging. Must not start or end with space.
+          example: Tag1234
+        previous-segments:
+          type: array
+          description: Previous segments.
+          items:
+            $ref: '#/components/schemas/BagSegment'
+        inbound-segment:
+          $ref: '#/components/schemas/BagSegment'
+          description: Inbound segment.
+        outbound-segment:
+          $ref: '#/components/schemas/BagSegment'
+          description: Outbound segment.
+        onward-segments:
+          type: array
+          description: Onward segments.
+          items:
+            $ref: '#/components/schemas/BagSegment'
+        bag-type:
+          type: string
+          description: Bag type identifier.
+          example: Hard Shell
+        passenger:
+          $ref: '#/components/schemas/Passenger'
+          description: Passenger information for the bag.
+        sourceId:
+          type: string
+        adhId:
+          type: string
+        correlationId:
+          type: string
+        passenger-status:
+          type: string
+          description: Passenger Status
+        direction:
+          type: string
+          description: The direction of the bag.
+          enum:
+          - INBOUND
+          - OUTBOUND
+          - TRANSFER
+      required:
+      - event-time
+      - event-type
+      - source
+      - tag
+    BagTag:
+      type: object
+      description: Object holding the state of a bag journey represented by bag tag.
+      properties:
+        meta:
+          $ref: '#/components/schemas/AggregatedMeta'
+          description: Metadata, generated by ADH.
+          readOnly: true
+        bag-tag-id:
+          type: string
+          description: Unique id of the bag tag in the data hub for an unlimited period of time.
+          example: ABCD-1234
+        merged-bag-tag-id:
+          type: array
+          description: Unique IDs of bag tags that have ended their life cycle and are merged into this one.
+          items:
+            type: string
+          uniqueItems: true
+        tag:
+          type: string
+          description: Tag number of the bag tag. Latest tag number in case of re-tagging.
+          example: B12345678
+        secondary-identifiers:
+          type: array
+          description: Additional identifiers for the bag tag used by BHS etc.
+          items:
+            $ref: '#/components/schemas/BagTagIdentifier'
+          uniqueItems: true
+        bag-type:
+          type: string
+          description: Bag type identifier.
+          example: Hard Shell
+        passenger:
+          $ref: '#/components/schemas/Passenger'
+          description: Passenger information for the bag.
+        bag-segments:
+          type: array
+          deprecated: true
+          description: Bag segments.
+          items:
+            $ref: '#/components/schemas/BagSegment'
+        inbound-segment:
+          $ref: '#/components/schemas/BagSegment'
+          description: Inbound segment.
+        outbound-segment:
+          $ref: '#/components/schemas/BagSegment'
+          description: Outbound segment.
+        direction:
+          type: string
+          description: Direction that characterizes a bag tag
+          enum:
+          - INBOUND
+          - OUTBOUND
+          - TRANSFER
+          example: INBOUND, OUTBOUND, TRANSFER
+        runningAirportIataCode:
+          type: string
+        onward-segments:
+          type: array
+          description: Onward segments.
+          items:
+            $ref: '#/components/schemas/BagSegment'
+        previous-segments:
+          type: array
+          description: Previous segments.
+          items:
+            $ref: '#/components/schemas/BagSegment'
+        bag-risk:
+          $ref: '#/components/schemas/BagTagRiskLevel'
+        bag-journey:
+          $ref: '#/components/schemas/BagJourney'
+        global-state:
+          type: string
+          description: Global state of the bag tag, ACTIVE, COMPLETED or DELETED. It has into account inbound and outbound segment
+          enum:
+          - ACTIVE
+          - COMPLETED
+          - DELETED
+          example: ACTIVE
+    BagPhase:
+      type: object
+      properties:
+        estimated-time:
+          type: string
+          format: date-time
+        actual-time:
+          type: string
+          format: date-time
+    BasicMeta:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        created-at:
+          type: string
+          format: date-time
+          description: Timestamp when object was first created in DH.
+          readOnly: true
+        created-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be created.
+          readOnly: true
+        modified-count:
+          type: integer
+          format: int64
+          description: Number of modifications in DH.
+          readOnly: true
+        modified-at:
+          type: string
+          format: date-time
+          description: Timestamp of last modification in DH.
+          readOnly: true
+        modified-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be modified.
+          readOnly: true
+        tag-id:
+          type: string
+          deprecated: true
+          description: Unique id of the bag tag in the data hub for an unlimited period of time.
+        skip-datawarehouse:
+          type: boolean
+          description: Skip Datawarehouse processing.
+          readOnly: true
+        skip-report-flight:
+          type: boolean
+          description: Skip Report Flight processing.
+          readOnly: true
+      readOnly: true
+    BagTagRiskLevel:
+      type: object
+      properties:
+        standard-operating-procedure:
+          $ref: '#/components/schemas/BagRisk'
+          description: Standard Operating Procedure Risk Level
+        minimum-connecting-time:
+          $ref: '#/components/schemas/BagRisk'
+          description: Minimum Connecting Time Risk level.
+        quick-chute:
+          $ref: '#/components/schemas/BagRisk'
+          description: Quick Chute Risk Level.
+      required:
+      - minimum-connecting-time
+      - quick-chute
+      - standard-operating-procedure
+    BagCancelEvent:
+      allOf:
+      - $ref: '#/components/schemas/BagEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAG_CANCEL_EVENT
+          bag-segments:
+            type: array
+            description: Bag segments.
+            items:
+              $ref: '#/components/schemas/BagSegment'
+            maxItems: 15
+            minItems: 1
+      description: Entity for Bag Cancel Business Events.
+      required:
+      - bag-segments
+      - event-time
+      - event-type
+      - source
+      - tag
+    BagRiskLocation:
+      type: object
+      properties:
+        assigned:
+          type: string
+          description: Assigned Location
+          example: CHUTE 03
+        time:
+          type: string
+          format: date-time
+          description: Assignation Timestamp
+          example: '2024-08-20T12:26:47.565851810Z'
+      required:
+      - assigned
+      - time
+    BagReRouteEvent:
+      allOf:
+      - $ref: '#/components/schemas/BagEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAG_ROUTE_EVENT
+          bag-segments:
+            type: array
+            description: New bag segments.
+            items:
+              $ref: '#/components/schemas/BagSegment'
+            maxItems: 15
+            minItems: 1
+          retired-tag:
+            type: string
+            description: Retired tag number for the bag, if tag number has changed.
+      description: Entity for Bag Re-Route Business Events.
+      required:
+      - bag-segments
+      - event-time
+      - event-type
+      - source
+      - tag
+    Passenger:
+      type: object
+      description: Passenger attributes for bag tag.
+      properties:
+        pnr:
+          type: string
+          description: Unique passenger number.
+        name:
+          type: string
+          description: Passenger name.
+          example: Smith
+        first-name:
+          type: string
+          description: Passenger first name.
+          example: John
+        gender:
+          type: string
+          description: Passenger gender.
+          example: male
+        title:
+          type: string
+          description: Passenger title.
+          example: Mr.
+        phone:
+          type: string
+          description: Passenger contact phone number.
+          example: 001 123 456 789
+        email:
+          type: string
+          description: Passenger contact email adress.
+          example: passenger@test.com
+        id:
+          type: string
+          description: Unique id of the passenger in the data hub for an unlimited period of time.
+          example: ABCD-1234
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers for the passenger used by airports etc.
+          items:
+            $ref: '#/components/schemas/SecondaryIdentifier'
+          uniqueItems: true
+      required:
+      - name
+    BagTrackingEvent:
+      allOf:
+      - $ref: '#/components/schemas/BagEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAG_TRACKING_EVENT
+          tracking-point-type:
+            type: string
+            description: Type of tracking point. Depending on the type use either outbound-segment(BHS_INDUCTION, ATR, MES, BVS, EBS_IN, EBS_OUT, MUP_DISCHARGE, RECONCILED, CART_LOAD, LOAD, DEPARTED_FROM_MUP, ARRIVED_AT_BAY, ULD_SECURE_STORE_IN, ULD_SECURE_STORE_OUT)or inbound-segment(ATR, DEPARTED_FROM_BAY, ARRIVED_AT_TRANSFER_LATERAL, ARRIVED_AT_RECLAIM_BELT, UNLOAD, ULD_UNLOAD, RECLAIM_BELT_INDUCTION, DELIVERED, PROBLEM_AREA_DISCHARGE, DEPARTED_FROM_PROBLEM_AREA), never fill both.
+            enum:
+            - BHS_INDUCTION
+            - ATR
+            - MES
+            - BVS
+            - EBS_IN
+            - EBS_OUT
+            - MUP_DISCHARGE
+            - RECONCILED
+            - CART_LOAD
+            - LOAD
+            - DEPARTED_FROM_MUP
+            - ARRIVED_AT_BAY
+            - ULD_SECURE_STORE_IN
+            - ULD_SECURE_STORE_OUT
+            - DEPARTED_FROM_BAY
+            - ARRIVED_AT_TRANSFER_LATERAL
+            - ARRIVED_AT_RECLAIM_BELT
+            - UNLOAD
+            - ULD_UNLOAD
+            - RECLAIM_BELT_INDUCTION
+            - DELIVERED
+            - PROBLEM_AREA_DISCHARGE
+            - DEPARTED_FROM_PROBLEM_AREA
+          tracking-state:
+            type: string
+            description: State of tracking.
+            enum:
+            - SUCCESS
+            - NO_READ
+            - TRACKING_LOST
+            - MULTIPLE_READ
+            - NO_BSM
+            - SEND_TO_PROBLEM
+          transport-state:
+            type: string
+            description: State of transport within BHS.
+      description: Entity for Bag Tracking Business Events. Be aware that either the inbound or the outbound segement needs to be set.
+      required:
+      - event-time
+      - event-type
+      - source
+      - tag
+      - tracking-point-type
+    BagTagIdentifier:
+      type: object
+      description: Additional identifiers for bag tags used by airport systems etc.
+      properties:
+        identifier:
+          type: string
+          description: Internal identifier for the bag.
+          example: ABCD-1234
+        created:
+          type: string
+          format: date-time
+          description: Timestamp of creation of internal identifier for the bag.
+        source:
+          type: string
+          description: Source creating the internal identifier for the bag.
+      required:
+      - created
+      - identifier
+      - source
+    BagRisk:
+      type: object
+      properties:
+        calculation-time:
+          type: string
+          format: date-time
+          description: Time of calculation of the risk level
+          example: '2024-08-20T12:26:47.565851810Z'
+        risk-level:
+          type: string
+          description: Risk Level Calculated
+          enum:
+          - UNKNOWN
+          - MISSED
+          - CRITICAL
+          - AT_RISK
+          - ON_TIME
+          - EARLY
+          example: ON_TIME
+        previousRiskLevel:
+          type: string
+          description: Risk Level Calculated
+          enum:
+          - UNKNOWN
+          - MISSED
+          - CRITICAL
+          - AT_RISK
+          - ON_TIME
+          - EARLY
+          example: ON_TIME
+        validity:
+          type: string
+          format: date-time
+          description: Validity Date of the Risk Level
+          example: '2024-08-20T12:26:47.565851810Z'
+        mup:
+          $ref: '#/components/schemas/BagRiskLocation'
+          description: Assigned Mup
+        inbound-bay:
+          $ref: '#/components/schemas/BagRiskLocation'
+          description: Assigned Inbound Bay
+        outbound-bay:
+          $ref: '#/components/schemas/BagRiskLocation'
+          description: Assigned Outbound Bay
+        tl:
+          $ref: '#/components/schemas/BagRiskLocation'
+          description: Assigned Transfer Lateral
+        carousel:
+          $ref: '#/components/schemas/BagRiskLocation'
+          description: Assigned Carousel
+        check-in:
+          $ref: '#/components/schemas/BagRiskLocation'
+          description: Assigned Check In Desk
+      required:
+      - calculation-time
+      - carousel
+      - check-in
+      - inbound-bay
+      - mup
+      - outbound-bay
+      - previousRiskLevel
+      - risk-level
+      - tl
+      - validity
+    FlightSegmentBagTag:
+      type: object
+      description: Object holding a the state of a bag represented by bag tag assigned to a flight segment.
+      properties:
+        meta:
+          $ref: '#/components/schemas/AggregatedMeta'
+          description: Metadata, generated by ADH.
+          readOnly: true
+        bag-tag-id:
+          type: string
+          description: Unique id of the bag tag in the data hub for an unlimited period of time.
+          example: ABCD-1234
+        merged-bag-tag-id:
+          type: array
+          description: Unique ids of bag tags that have ended their live cycle and are merged into this one.
+          items:
+            type: string
+          uniqueItems: true
+        tag:
+          type: string
+          description: Tag number of the bag tag. Latest tag number in case of re-tagging.
+          example: B12345678
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers for the bag tag used by BHS etc.
+          items:
+            $ref: '#/components/schemas/BagTagIdentifier'
+          uniqueItems: true
+        bag-type:
+          type: string
+          description: Bag type identifier.
+        passenger:
+          $ref: '#/components/schemas/Passenger'
+          description: Passenger information for the bag.
+        bag-segment:
+          $ref: '#/components/schemas/BagSegment'
+          description: Bag segment.
+        previous-segment:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Previous flight segment.
+        next-segment:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Next flight segment.

@@ -1,0 +1,40 @@
+{
+  "provider": "automated-sorting-systems",
+  "sources": [
+    "_original/automated-sorting-systems-vanderlande-datahub-openapi.json"
+  ],
+  "outputs": [
+    "automated-sorting-systems-bag-tag-store-api-openapi.yml",
+    "automated-sorting-systems-bpm-parser-store-api-openapi.yml",
+    "automated-sorting-systems-bsm-parser-store-api-openapi.yml",
+    "automated-sorting-systems-bum-parser-store-api-openapi.yml",
+    "automated-sorting-systems-container-tag-store-api-openapi.yml",
+    "automated-sorting-systems-cpm-parser-store-api-openapi.yml",
+    "automated-sorting-systems-flight-leg-store-api-openapi.yml",
+    "automated-sorting-systems-info-api-openapi.yml",
+    "automated-sorting-systems-pax-store-api-openapi.yml",
+    "automated-sorting-systems-report-flight-store-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "automated-sorting-systems-vanderlande-datahub-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/automated-sorting-systems-vanderlande-datahub-openapi.yml: archived document superseded by a larger archived document",
+    "automated-sorting-systems-bag-tag-store-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "automated-sorting-systems-bpm-parser-store-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "automated-sorting-systems-bsm-parser-store-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "automated-sorting-systems-bum-parser-store-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "automated-sorting-systems-container-tag-store-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "automated-sorting-systems-cpm-parser-store-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "automated-sorting-systems-flight-leg-store-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "automated-sorting-systems-info-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "automated-sorting-systems-pax-store-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "automated-sorting-systems-report-flight-store-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

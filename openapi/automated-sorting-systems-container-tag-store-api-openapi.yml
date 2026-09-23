@@ -1,0 +1,1326 @@
+openapi: 3.2.0
+info:
+  title: Datahub Container Tag Store API
+  description: OpenAir Datahub acts as a central data repository for all functions, which affect the efficient functioning of an airport. Data can be ingested from various sources via standardized interfaces. The way of getting data out of it is similar; there are standardized REST and MQTT interfaces to fetch the data. The data structure is based on industry standards such as IATA's AIDM and ACI's ACRIS combined with decades of Vanderlande Logistics industry knowledge.
+  contact:
+    name: Vanderlande Logistics GmbH
+    url: https://www.vanderlande.com
+    email: info.digital@vanderlande-logistics.com
+  license:
+    name: Property of Vanderlande Logistics GmbH
+  version: 6.6.0
+tags:
+- name: Container Tag Store
+  externalDocs:
+    description: The container tag store contains methods to access and insert or modify container tag data.
+paths:
+  /containertags/events/storage:
+    post:
+      tags:
+      - Container Tag Store
+      summary: Post a container storage event
+      description: Transfers a container storage event to ADH. This may change the state of the container tag. New data is processed asynchronously and may need some time to be updated.
+      operationId: postContainerStorageEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContainerStorageEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+      security:
+      - aviationdatahub:
+        - ADH.CT.W
+  /containertags/events/security:
+    post:
+      tags:
+      - Container Tag Store
+      summary: Post a container security event
+      description: Transfers a container security event to ADH. This may change the state of the container tag. New data is processed asynchronously and may need some time to be updated.
+      operationId: postContainerSecurityEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContainerSecurityEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+      security:
+      - aviationdatahub:
+        - ADH.CT.W
+  /containertags/events/registration:
+    post:
+      tags:
+      - Container Tag Store
+      summary: Post a container registration event
+      description: Transfers a container registration event to ADH. This may change the state of the container tag. New data is processed asynchronously and may need some time to be updated.
+      operationId: postContainerRegistrationEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContainerRegistrationEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+      security:
+      - aviationdatahub:
+        - ADH.CT.W
+  /containertags/events/movement:
+    post:
+      tags:
+      - Container Tag Store
+      summary: Post a container movement event
+      description: Transfers a container movement event to ADH. This may change the state of the container tag. New data is processed asynchronously and may need some time to be updated.
+      operationId: postContainerMovementEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContainerMovementEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+      security:
+      - aviationdatahub:
+        - ADH.CT.W
+  /containertags/events/containerization:
+    post:
+      tags:
+      - Container Tag Store
+      summary: Post a container containerization event
+      description: Transfers a container containerization event to ADH. This may change the state of the container tag. New data is processed asynchronously and may need some time to be updated.
+      operationId: postContainerContainerizationEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContainerContainerizationEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+      security:
+      - aviationdatahub:
+        - ADH.CT.W
+  /containertags/{id}:
+    get:
+      tags:
+      - Container Tag Store
+      summary: Query container tag by unique container-tag-id provided by adh
+      description: In case of merged container tags, the container-tag where it is merged to is returned.
+      operationId: getContainerTagREST
+      parameters:
+      - name: id
+        in: path
+        description: The unique container tag-id provided by adh.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Ok: Default response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContainerTag'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+      security:
+      - aviationdatahub:
+        - ADH.CT.R
+  /containertags/{id}/events:
+    get:
+      tags:
+      - Container Tag Store
+      summary: Query container events based on given search criteria
+      description: If no query parameter is set the search will be reduced to the last 24 hours. If no maxResult is set a maximum of 1000 records will be returned.
+      operationId: queryContainerEventsForContainerTag
+      parameters:
+      - name: id
+        in: path
+        description: The unique container tag-id provided by adh.
+        required: true
+        schema:
+          type: string
+      - name: tag
+        in: query
+        description: The tag number of the container tag.
+        required: false
+        schema:
+          type: string
+      - name: from
+        in: query
+        description: The start point of the interval in UTC. e.g. 2020-01-31T12:30:00.000Z. If used the from and the to parameter has to be set.
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        description: The end point of the interval in UTC. e.g. 2020-01-31T12:30:00.000Z. If used the from and the to parameter has to be set.
+        required: false
+        schema:
+          type: string
+      - name: carrier
+        in: query
+        description: IATA code of the operating carrierv.
+        required: false
+        schema:
+          type: string
+      - name: flight-number
+        in: query
+        description: The (numeric part of) flight number of operating airlinev.
+        required: false
+        schema:
+          type: string
+      - name: operational-suffix
+        in: query
+        description: Used to distinguish two flights having the same flight number and departing from their respective Origin Stations on the same date.
+        required: false
+        schema:
+          type: string
+      - name: origin-date
+        in: query
+        description: The day of operation, i.e. local day of schedule off-block time in UTC at first departure airport of flight. e.g. 2020-01-31T12:30:00.000Z.
+        required: false
+        schema:
+          type: string
+      - name: origin-iata-code
+        in: query
+        description: The IATA code of the departure airport.
+        required: false
+        schema:
+          type: string
+      - name: destination-iata-code
+        in: query
+        description: The IATA code of the arrival airport.
+        required: false
+        schema:
+          type: string
+      - name: event-type
+        in: query
+        description: 'The event type: '
+        required: false
+        schema:
+          type: string
+          enum:
+          - CONTAINERIZATION
+          - MOVEMENT
+          - REGISTRATION
+          - SECURITY
+          - STORAGE
+      - name: event-function
+        in: query
+        description: 'The event function: '
+        required: false
+        schema:
+          type: string
+          enum:
+          - LOAD
+          - OFFLOAD
+          - REMOVE
+          - ACQUIRE
+          - TRACK
+          - DELIVER
+          - REGISTER
+          - SCREEN
+          - CLOSE
+          - OPEN
+          - SEAL
+          - UNSEAL
+          - RECEIPT
+          - PUT_AWAY
+          - WITHDRAW
+      - name: secondary-identifier
+        in: query
+        description: A secondary identifier given to the container tag.
+        required: false
+        schema:
+          type: string
+      - name: location
+        in: query
+        description: Location of the event to search for.
+        required: false
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Source of the event to search for.
+        required: false
+        schema:
+          type: string
+      - name: max-results
+        in: query
+        description: The maximum number of results.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                  - $ref: '#/components/schemas/ContainerEvent'
+                  - $ref: '#/components/schemas/ContainerContainerizationEvent'
+                  - $ref: '#/components/schemas/ContainerMovementEvent'
+                  - $ref: '#/components/schemas/ContainerRegistrationEvent'
+                  - $ref: '#/components/schemas/ContainerSecurityEvent'
+                  - $ref: '#/components/schemas/ContainerStorageEvent'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+      security:
+      - aviationdatahub:
+        - ADH.CT.R
+  /containertags/events:
+    get:
+      tags:
+      - Container Tag Store
+      summary: Query container events based on given search criteria
+      description: If no query parameter is set the search will be reduced to the last 24 hours. If no maxResult is set a maximum of 1000 records will be returned.
+      operationId: queryContainerEvents
+      parameters:
+      - name: tag
+        in: query
+        description: The tag number of the container tag.
+        required: false
+        schema:
+          type: string
+      - name: from
+        in: query
+        description: The start point of the interval in UTC. e.g. 2020-01-31T12:30:00.000Z. If used the from and the to parameter has to be set.
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        description: The end point of the interval in UTC. e.g. 2020-01-31T12:30:00.000Z. If used the from and the to parameter has to be set.
+        required: false
+        schema:
+          type: string
+      - name: carrier
+        in: query
+        description: IATA code of the operating carrier.
+        required: false
+        schema:
+          type: string
+      - name: Flight-number
+        in: query
+        description: The (numeric part of) flight number of operating airline.
+        required: false
+        schema:
+          type: string
+      - name: operational-suffix
+        in: query
+        description: Used to distinguish two flights having the same flight number and departing from their respective Origin Stations on the same date.
+        required: false
+        schema:
+          type: string
+      - name: origin-date
+        in: query
+        description: The day of operation, i.e. local day of schedule off-block time in UTC at first departure airport of flight. e.g. 2020-01-31T12:30:00.000Z.
+        required: false
+        schema:
+          type: string
+      - name: origin-iata-code
+        in: query
+        description: The IATA code of the departure airport.
+        required: false
+        schema:
+          type: string
+      - name: destination-iata-code
+        in: query
+        description: The IATA code of the arrival airport.
+        required: false
+        schema:
+          type: string
+      - name: event-type
+        in: query
+        description: 'The event type: '
+        required: false
+        schema:
+          type: string
+          enum:
+          - CONTAINERIZATION
+          - MOVEMENT
+          - REGISTRATION
+          - SECURITY
+          - STORAGE
+      - name: event-function
+        in: query
+        description: 'The event function: '
+        required: false
+        schema:
+          type: string
+          enum:
+          - LOAD
+          - OFFLOAD
+          - REMOVE
+          - ACQUIRE
+          - TRACK
+          - DELIVER
+          - REGISTER
+          - SCREEN
+          - CLOSE
+          - OPEN
+          - SEAL
+          - UNSEAL
+          - RECEIPT
+          - PUT_AWAY
+          - WITHDRAW
+      - name: secondary-identifier
+        in: query
+        description: A secondary identifier given to the container tag.
+        required: false
+        schema:
+          type: string
+      - name: tag-id
+        in: query
+        description: One or more container-tag-ids. If searching for events of a containerTag pass in container-tag-id and all merged-container-tag-id to find all events, even merged ones.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: location
+        in: query
+        description: Location of the event to search for.
+        required: false
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: Source of the event to search for.
+        required: false
+        schema:
+          type: string
+      - name: max-results
+        in: query
+        description: The maximum number of results.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                  - $ref: '#/components/schemas/ContainerEvent'
+                  - $ref: '#/components/schemas/ContainerContainerizationEvent'
+                  - $ref: '#/components/schemas/ContainerMovementEvent'
+                  - $ref: '#/components/schemas/ContainerRegistrationEvent'
+                  - $ref: '#/components/schemas/ContainerSecurityEvent'
+                  - $ref: '#/components/schemas/ContainerStorageEvent'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+      security:
+      - aviationdatahub:
+        - ADH.CT.R
+  /containertags/:
+    get:
+      tags:
+      - Container Tag Store
+      summary: Query container tags based on given search criteria
+      description: If no query parameter is set the search will be reduced to the last 24 hours. If no maxResult is set a maximum of 1000 records will be returned.
+      operationId: queryContainertags
+      parameters:
+      - name: tag
+        in: query
+        description: The tag number of the container tag.
+        required: false
+        schema:
+          type: string
+      - name: carrier
+        in: query
+        description: Iata code of the operating carrier. 2-digit code is expected.
+        required: false
+        schema:
+          type: string
+      - name: flight-number
+        in: query
+        description: The (numeric) flight number of operating airline.
+        required: false
+        schema:
+          type: string
+      - name: operational-suffix
+        in: query
+        description: Operational suffix of flight segment. Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+        required: false
+        schema:
+          type: string
+      - name: origin-date
+        in: query
+        description: The day of operation, i.e. local day of schedule off-block time in UTC at first departure airport of flight.
+        required: false
+        schema:
+          type: string
+      - name: origin-iata-code
+        in: query
+        description: The iata code of an airport as origin airport of a flight leg the container is booked on.
+        required: false
+        schema:
+          type: string
+      - name: destination-iata-code
+        in: query
+        description: The iata code of an airport as destination airport of a flight leg the container is booked on.
+        required: false
+        schema:
+          type: string
+      - name: created-from
+        in: query
+        description: 'Object creation time by ADH: the start point of the interval in UTC (included). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: created-to
+        in: query
+        description: 'Object creation time by ADH: the end point of the interval in UTC (excluded). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: updated-from
+        in: query
+        description: 'Last object modification time by ADH: the start point of the interval in UTC (included). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: updated-to
+        in: query
+        description: 'Last object modification time by ADH: the end point of the interval in UTC (excluded). e.g. 2020-01-31T12:30:00.000Z.'
+        required: false
+        schema:
+          type: string
+      - name: secondary-identifier
+        in: query
+        description: A secondary identifier given to the container tag.
+        required: false
+        schema:
+          type: string
+      - name: tag-id
+        in: query
+        description: The unique tag-id provided by adh.
+        required: false
+        schema:
+          type: string
+      - name: max-results
+        in: query
+        description: The maximum number of results.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContainerTag'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+      security:
+      - aviationdatahub:
+        - ADH.CT.R
+components:
+  schemas:
+    ContainerEventSegment:
+      type: object
+      description: Description of container segment. For use in container events.
+      properties:
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence number of segment.
+        identifier:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Segment identifier.
+      required:
+      - identifier
+    ContainerMovementActivity:
+      type: object
+      description: Entity for CONTAINER Movement Business Activities.
+      properties:
+        type:
+          type: string
+          description: Type of activity, must match the type defined for the concrete subclass.
+          enum:
+          - MOVEMENT
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event in UTC.
+        location:
+          type: string
+          description: Location id of event.
+          example: TRA_14
+        source:
+          type: string
+          description: System generating the event.
+          example: TRA Scanner 12
+        function:
+          type: string
+          description: Movement function.
+          enum:
+          - ACQUIRE
+          - TRACK
+          - DELIVER
+        location-type:
+          type: string
+          description: Location type.
+          enum:
+          - MUP
+          - BAY
+          - STORE
+          - TRANSFER_LATERAL
+          - RECLAIM_BELT
+      required:
+      - function
+      - location-type
+      - source
+      - timestamp
+      - type
+    User:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        user-id:
+          type: string
+          description: Unique user id.
+          readOnly: true
+        user-name:
+          type: string
+          description: Readable user name
+          readOnly: true
+      readOnly: true
+    ContainerStorageActivity:
+      type: object
+      description: Entity for Container Storage Business Events.
+      properties:
+        type:
+          type: string
+          description: Type of activity, must match the type defined for the concrete subclass.
+          enum:
+          - STORAGE
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event in UTC.
+        location:
+          type: string
+          description: Location id of event.
+          example: TRA_14
+        source:
+          type: string
+          description: System generating the event.
+          example: TRA Scanner 12
+        function:
+          type: string
+          description: Storage function.
+          enum:
+          - RECEIPT
+          - PUT_AWAY
+          - WITHDRAW
+        storage-position:
+          type: string
+          description: Position in storage.
+          example: UL3
+      required:
+      - function
+      - source
+      - timestamp
+      - type
+    ContainerRegistrationEvent:
+      allOf:
+      - $ref: '#/components/schemas/ContainerEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - REGISTRATION
+          activity:
+            $ref: '#/components/schemas/ContainerRegistrationActivity'
+            description: Container registration activity for which the event occurred.
+      description: Entity for Container Registration Business Events.
+      required:
+      - activity
+      - event-type
+      - segments
+      - tag
+    ContainerMovementEvent:
+      allOf:
+      - $ref: '#/components/schemas/ContainerEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - MOVEMENT
+          activity:
+            $ref: '#/components/schemas/ContainerMovementActivity'
+            description: Movement activity for which the event occurred.
+      description: Entity for CONTAINER Movement Business Events.
+      required:
+      - activity
+      - event-type
+      - segments
+      - tag
+    ContainerRegistrationActivity:
+      type: object
+      description: Entity for Container Registration Business Activities.
+      properties:
+        type:
+          type: string
+          description: Type of activity, must match the type defined for the concrete subclass.
+          enum:
+          - REGISTRATION
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event in UTC.
+        location:
+          type: string
+          description: Location id of event.
+          example: TRA_14
+        source:
+          type: string
+          description: System generating the event.
+          example: TRA Scanner 12
+        function:
+          type: string
+          description: Registration function.
+          enum:
+          - REGISTER
+        container-number:
+          type: string
+          description: Static unique identifier printed on the container.
+        container-type:
+          type: string
+          description: Container type identifier
+          example: ULD
+        container-subtype:
+          type: string
+          description: Container subtype identifier
+          example: AKE
+        commodity-code:
+          type: string
+          description: Commodity Code.
+          example: BTA1
+      required:
+      - function
+      - source
+      - timestamp
+      - type
+    SecondaryIdentifier:
+      type: object
+      description: Additional identifiers for flight legs or segments used by airport systems etc.
+      properties:
+        identifier:
+          type: string
+          description: Secondary identifier .
+        created:
+          type: string
+          format: date-time
+          description: Timestamp of creation of secondary identifier in UTC.
+        source:
+          type: string
+          description: Source creating the secondary identifier.
+      required:
+      - created
+      - identifier
+      - source
+    AircraftCompartment:
+      type: object
+      properties:
+        hold:
+          type: string
+        compartment:
+          type: string
+    FlightIdentifier:
+      type: object
+      description: Object holding identifying information for a flight.
+      properties:
+        carrier:
+          type: string
+          description: 2-digit IATA code of operating carrier.
+          example: ZZ
+        flight-number:
+          type: string
+          description: The flight number of the operating carrier. Should contain not more than 4 chars and must not include whitespaces. If less than 4 chars leading zeros will be added to normalize it to 4 chars.
+          example: 997
+        operational-suffix:
+          type: string
+          description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+          example: B
+        origin-date:
+          type: string
+          format: date
+          description: UTC scheduled date of departure of the first leg of the flight. Must be between 2010-01-01 and 2210-01-01.
+        identifier-string:
+          type: string
+          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-DATE-ORIGIN-DESTINATION.
+        iata-message-key:
+          type: string
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT in the origin timezone
+        iata-message-key-utc:
+          type: string
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT coverted to UTC
+        origin-iata-code:
+          type: string
+          description: 3-digit IATA code of origin airport.
+          example: AAA
+        destination-iata-code:
+          type: string
+          description: 3-digit IATA code of destination airport.
+          example: ZZZ
+      required:
+      - carrier
+      - destination-iata-code
+      - flight-number
+      - origin-date
+      - origin-iata-code
+    AggregatedMeta:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        created-at:
+          type: string
+          format: date-time
+          description: Timestamp when object was first created in DH.
+          readOnly: true
+        created-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be created.
+          readOnly: true
+        created-event-type:
+          type: string
+          description: Event-type of event which caused the object to be created.
+          readOnly: true
+        created-event-time:
+          type: string
+          format: date-time
+          description: Event-time of event which caused the object to be created.
+          readOnly: true
+        modified-count:
+          type: integer
+          format: int64
+          description: Number of modifications in DH.
+          readOnly: true
+        modified-at:
+          type: string
+          format: date-time
+          description: Timestamp of last modification in DH.
+          readOnly: true
+        modified-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be modified.
+          readOnly: true
+        modified-event-type:
+          type: string
+          description: Event-type of event which caused the object to be modified.
+          readOnly: true
+        modified-event-time:
+          type: string
+          format: date-time
+          description: Event-time of event which caused the object to be modified.
+          readOnly: true
+        tag-id:
+          type: string
+          deprecated: true
+          description: Unique id of the bag tag in the data hub for an unlimited period of time.
+        skip-datawarehouse:
+          type: boolean
+          description: Skip Datawarehouse processing.
+          readOnly: true
+        skip-report-flight:
+          type: boolean
+          description: Skip Report Flight processing.
+          readOnly: true
+      readOnly: true
+    ContainerSecurityActivity:
+      type: object
+      description: Entity for Container Security Business Activities.
+      properties:
+        type:
+          type: string
+          description: Type of activity, must match the type defined for the concrete subclass.
+          enum:
+          - SECURITY
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event in UTC.
+        location:
+          type: string
+          description: Location id of event.
+          example: TRA_14
+        source:
+          type: string
+          description: System generating the event.
+          example: TRA Scanner 12
+        function:
+          type: string
+          description: Security function.
+          enum:
+          - SCREEN
+          - CLOSE
+          - OPEN
+          - SEAL
+          - UNSEAL
+      required:
+      - function
+      - source
+      - timestamp
+      - type
+    ContainerStorageEvent:
+      allOf:
+      - $ref: '#/components/schemas/ContainerEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - STORAGE
+          activity:
+            $ref: '#/components/schemas/ContainerStorageActivity'
+            description: Container storage activity for which the event occurred.
+      description: Entity for Container Storage Business Events.
+      required:
+      - activity
+      - event-type
+      - segments
+      - tag
+    ContainerContainerizationActivity:
+      type: object
+      description: Entity for Container Containerization Business Activities.
+      properties:
+        type:
+          type: string
+          description: Type of activity, must match the type defined for the concrete subclass.
+          enum:
+          - CONTAINERIZATION
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event in UTC.
+        location:
+          type: string
+          description: Location id of event.
+          example: TRA_14
+        source:
+          type: string
+          description: System generating the event.
+          example: TRA Scanner 12
+        function:
+          type: string
+          description: Containerization function.
+          enum:
+          - LOAD
+          - OFFLOAD
+          - REMOVE
+        aircraft-compartment:
+          $ref: '#/components/schemas/AircraftCompartment'
+          description: Compartment and hold of container in aircraft. .
+        load-position:
+          type: string
+          description: Position of container in within compartment of aircraft.
+          example: L2
+        load-remarks:
+          type: array
+          description: Load remarks related with the container to which the event was triggered
+          example: '[CRT/0, AVI]'
+          items:
+            type: string
+      required:
+      - function
+      - source
+      - timestamp
+      - type
+    BasicMeta:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        created-at:
+          type: string
+          format: date-time
+          description: Timestamp when object was first created in DH.
+          readOnly: true
+        created-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be created.
+          readOnly: true
+        modified-count:
+          type: integer
+          format: int64
+          description: Number of modifications in DH.
+          readOnly: true
+        modified-at:
+          type: string
+          format: date-time
+          description: Timestamp of last modification in DH.
+          readOnly: true
+        modified-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be modified.
+          readOnly: true
+        tag-id:
+          type: string
+          deprecated: true
+          description: Unique id of the bag tag in the data hub for an unlimited period of time.
+        skip-datawarehouse:
+          type: boolean
+          description: Skip Datawarehouse processing.
+          readOnly: true
+        skip-report-flight:
+          type: boolean
+          description: Skip Report Flight processing.
+          readOnly: true
+      readOnly: true
+    ContainerSegment:
+      type: object
+      description: Object holding a the state of a uld journey represented by container tag for a flight segment.
+      properties:
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence number of flight segment within container journey.
+        identifier:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Flight segment identifier.
+        tag:
+          type: string
+          description: Tag number of the uld tag used on this segment.
+          example: A12345678
+        activities:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ContainerActivity'
+          description: Activities of the conatiner on this segment.
+          properties:
+            register:
+              $ref: '#/components/schemas/ContainerRegistrationActivity'
+              description: Register.
+            close:
+              $ref: '#/components/schemas/ContainerSecurityActivity'
+              description: Close.
+            deliver-at-mup:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Deliver at handover place at MUP for transport to aircraft / store.
+            acquire-at-mup:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Acquire at MUP.
+            deliver-at-store:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Deliver at store.
+            receipt:
+              $ref: '#/components/schemas/ContainerStorageActivity'
+              description: Receipt at store.
+            put-away:
+              $ref: '#/components/schemas/ContainerStorageActivity'
+              description: Put away at store.
+            withdraw:
+              $ref: '#/components/schemas/ContainerStorageActivity'
+              description: Withdraw from store.
+            acquire-at-store:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Acquire at store.
+            deliver-at-bay:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Deliver at bay.
+            load:
+              $ref: '#/components/schemas/ContainerContainerizationActivity'
+              description: Load into aircraft.
+            offload:
+              $ref: '#/components/schemas/ContainerContainerizationActivity'
+              description: Offload from aircraft.
+            acquire-at-bay:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Acquire at bay.
+            deliver-at-transfer-lateral:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Deliver at transfer lateral.
+            deliver-at-reclaim-belt:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Deliver at reclaim belt.
+            open:
+              $ref: '#/components/schemas/ContainerSecurityActivity'
+              description: Open.
+            empty:
+              type: boolean
+            remove:
+              $ref: '#/components/schemas/ContainerContainerizationActivity'
+              description: Remove from aircraft.
+    ContainerActivity:
+      type: object
+      description: Details on a specific container activity on a container segment.
+      discriminator:
+        propertyName: type
+        mapping:
+          REGISTRATION: '#/components/schemas/ContainerRegistrationActivity'
+          SECURITY: '#/components/schemas/ContainerSecurityActivity'
+          MOVEMENT: '#/components/schemas/ContainerMovementActivity'
+          STORAGE: '#/components/schemas/ContainerStorageActivity'
+          CONTAINERIZATION: '#/components/schemas/ContainerContainerizationActivity'
+      oneOf:
+      - $ref: '#/components/schemas/ContainerRegistrationActivity'
+      - $ref: '#/components/schemas/ContainerSecurityActivity'
+      - $ref: '#/components/schemas/ContainerMovementActivity'
+      - $ref: '#/components/schemas/ContainerStorageActivity'
+      - $ref: '#/components/schemas/ContainerContainerizationActivity'
+      properties:
+        type:
+          type: string
+          description: Type of activity, must match the type defined for the concrete subclass.
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event in UTC.
+        location:
+          type: string
+          description: Location id of event.
+          example: TRA_14
+        source:
+          type: string
+          description: System generating the event.
+          example: TRA Scanner 12
+      required:
+      - source
+      - timestamp
+      - type
+    ContainerContainerizationEvent:
+      allOf:
+      - $ref: '#/components/schemas/ContainerEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - CONTAINERIZATION
+          activity:
+            $ref: '#/components/schemas/ContainerContainerizationActivity'
+            description: Containerization activity for which the event occurred.
+      description: Entity for Container Containerization Business Events.
+      required:
+      - activity
+      - event-type
+      - segments
+      - tag
+    ContainerEvent:
+      type: object
+      description: Entity for Container Business Events. Use concrete subclass.
+      discriminator:
+        propertyName: event-type
+      properties:
+        meta:
+          $ref: '#/components/schemas/BasicMeta'
+          description: Event metadata, generated by ADH. May not be passed in.
+          readOnly: true
+        event-type:
+          type: string
+          description: Type of event, must match the type defined for the concrete subclass.
+        container-id:
+          type: string
+          description: Unique id for the container. Can be used for an unlimited period of time.
+        tag:
+          type: string
+          description: Tag number of the container for the current journey/usage .
+          example: AKE12345678
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers for the container journey/usage used by airports etc.
+          items:
+            $ref: '#/components/schemas/SecondaryIdentifier'
+          uniqueItems: true
+        segments:
+          type: array
+          description: Flight segment(s) for which the event occurred.
+          items:
+            $ref: '#/components/schemas/ContainerEventSegment'
+        activity:
+          $ref: '#/components/schemas/ContainerActivity'
+          description: Container activity for which the event occurred. Using different subtypes depending on event-type.
+        adh-id:
+          type: string
+          description: Unique event id within ADH.
+        correlation-id:
+          type: string
+          description: The global id which identifies this object across multiple applications.
+      required:
+      - activity
+      - event-type
+      - segments
+      - tag
+    ContainerSecurityEvent:
+      allOf:
+      - $ref: '#/components/schemas/ContainerEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - SECURITY
+          activity:
+            $ref: '#/components/schemas/ContainerSecurityActivity'
+            description: Container security activity for which the event occurred.
+      description: Entity for Container Security Business Events.
+      required:
+      - activity
+      - event-type
+      - segments
+      - tag
+    ContainerTag:
+      type: object
+      description: Object holding a the state of an container journey represented by ContainerTag.
+      properties:
+        meta:
+          $ref: '#/components/schemas/AggregatedMeta'
+          description: Metadata, generated by ADH.
+          readOnly: true
+        tag-id:
+          type: string
+          description: Unique id of the container tag in the data hub for an unlimited period of time.
+        tag:
+          type: string
+          description: Tag number of the container tag. Latest tag number in case of re-tagging.
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers for the container tag, i.e. container journey, used by airports etc.
+          items:
+            $ref: '#/components/schemas/SecondaryIdentifier'
+          uniqueItems: true
+        container-type:
+          type: string
+          description: Container type identifier.
+          example: ULD
+        container-subtype:
+          type: string
+          description: Container subtype identifier
+          example: AKE
+        segments:
+          type: array
+          description: Container segments.
+          items:
+            $ref: '#/components/schemas/ContainerSegment'
+          uniqueItems: true

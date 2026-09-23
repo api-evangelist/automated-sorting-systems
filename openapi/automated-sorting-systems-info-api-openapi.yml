@@ -1,0 +1,36 @@
+openapi: 3.2.0
+info:
+  title: Datahub Info API
+  description: OpenAir Datahub acts as a central data repository for all functions, which affect the efficient functioning of an airport. Data can be ingested from various sources via standardized interfaces. The way of getting data out of it is similar; there are standardized REST and MQTT interfaces to fetch the data. The data structure is based on industry standards such as IATA's AIDM and ACI's ACRIS combined with decades of Vanderlande Logistics industry knowledge.
+  contact:
+    name: Vanderlande Logistics GmbH
+    url: https://www.vanderlande.com
+    email: info.digital@vanderlande-logistics.com
+  license:
+    name: Property of Vanderlande Logistics GmbH
+  version: 6.6.0
+tags:
+- name: Info
+  externalDocs:
+    description: It contains methods for testing purposes.
+paths:
+  /reportflight/ping:
+    get:
+      tags:
+      - Info
+      summary: Test connection
+      description: A simple method uses to confirm connectivity with Aviation Data Hub API. It returns information with current timestamp.
+      operationId: doPing
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+      security:
+      - aviationdatahub:
+        - ADH.BT.R
+        - ADH.AR.R
+        - ADH.CT.R
+        - ADH.FL.R

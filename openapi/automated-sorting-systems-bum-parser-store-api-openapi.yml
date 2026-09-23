@@ -1,0 +1,496 @@
+openapi: 3.2.0
+info:
+  title: Datahub Bum Parser Store API
+  description: OpenAir Datahub acts as a central data repository for all functions, which affect the efficient functioning of an airport. Data can be ingested from various sources via standardized interfaces. The way of getting data out of it is similar; there are standardized REST and MQTT interfaces to fetch the data. The data structure is based on industry standards such as IATA's AIDM and ACI's ACRIS combined with decades of Vanderlande Logistics industry knowledge.
+  contact:
+    name: Vanderlande Logistics GmbH
+    url: https://www.vanderlande.com
+    email: info.digital@vanderlande-logistics.com
+  license:
+    name: Property of Vanderlande Logistics GmbH
+  version: 6.6.0
+tags:
+- name: Bum Parser Store
+  externalDocs:
+    description: The bum parser store contains methods to access and insert BUM's
+paths:
+  /parser/bum:
+    get:
+      tags:
+      - Bum Parser Store
+      summary: Get parsed BUM's
+      description: Return empty result if there are no BUM. If no query parameter is set the search will be reduced to the last 24 hours. If no maxResult is set a maximum of 1000 records will be returned.
+      operationId: getBums
+      parameters:
+      - name: from
+        in: query
+        description: The start point of the interval in UTC. e.g. 2020-01-31T12:30:00.000Z. If used the from and the to parameter has to be set.
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        description: The end point of the interval in UTC. e.g. 2020-01-31T12:30:00.000Z. If used the from and the to parameter has to be set.
+        required: false
+        schema:
+          type: string
+      - name: carrier
+        in: query
+        description: IATA 2-digit code of the operating carrier.
+        required: false
+        schema:
+          type: string
+      - name: flight-number
+        in: query
+        description: The numeric flight number of operating airline.
+        required: false
+        schema:
+          type: string
+      - name: operational-suffix
+        in: query
+        description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+        required: false
+        schema:
+          type: string
+      - name: origin-date
+        in: query
+        description: The day of operation, i.e. local day of schedule off-block time in UTC at first departure airport of flight. e.g. 2020-01-31T12:30:00.000Z.
+        required: false
+        schema:
+          type: string
+      - name: origin-iata-code
+        in: query
+        description: The IATA code of an airport as origin airport for a flight leg.
+        required: false
+        schema:
+          type: string
+      - name: destination-iata-code
+        in: query
+        description: The IATA code of an airport as destination airport for a flight leg.
+        required: false
+        schema:
+          type: string
+      - name: max-results
+        in: query
+        description: The maximum number of results.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bum'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+      security:
+      - aviationdatahub:
+        - ADH.FL.R
+    post:
+      tags:
+      - Bum Parser Store
+      summary: Post a BUM
+      description: Parses a BUM (baggage processed message) and generates a bag event. New data is processed asynchronously and may need some time to be updated.
+      operationId: parserBum
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BumRawMessage'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+  /parser/bum/{id}:
+    get:
+      tags:
+      - Bum Parser Store
+      summary: This endopint queries BUMs that have been posted to ADH
+      operationId: getBumById
+      parameters:
+      - name: id
+        in: path
+        description: UUID that was provided upon creation.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: BUM message was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bum'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: object
+                - type: object
+                  additionalProperties:
+                    type: string
+        '404':
+          description: BUM message not found.
+          content:
+            application/json:
+              example:
+                id: 78ce2036-cd5f-11ed-afa1-0242ac120002
+      security:
+      - aviationdatahub:
+        - ADH.FL.R
+components:
+  schemas:
+    VersionData:
+      type: object
+      properties:
+        version:
+          type: string
+        encryption:
+          type: string
+          example: 123ABC456Z
+        baggage-source-indicator:
+          type: string
+          description: L = Local; T = Transfer; X = Terminating; R = Remote
+          example: L
+        origin-iata-code:
+          type: string
+          description: Origin airport IATA code
+          example: DXB
+        part-number:
+          type: string
+          description: Origin airport IATA code
+          example: PART1
+        message-reference-number:
+          type: string
+          example: BA21900123
+        acknowledgement-request:
+          type: boolean
+          example: A
+      required:
+      - baggage-source-indicator
+      - origin-iata-code
+      - part-number
+    SecurityScreening:
+      type: object
+      properties:
+        screen-instructor:
+          type: string
+          enum:
+          - DEF
+          - SEL
+          - NON
+        screen-result:
+          type: string
+          enum:
+          - CLR
+          - REJ
+          - UCL
+        screen-result-reason:
+          type: string
+          enum:
+          - D
+          - E
+          - C
+          - N
+          - T
+        screen-method:
+          type: string
+        screen-autograph:
+          type: string
+        screen-comment:
+          type: string
+    HandlingLocation:
+      type: object
+      properties:
+        handling-terminal:
+          type: string
+          description: Handling Terminal
+          example: T1
+        handling-bay:
+          type: string
+          description: Handling Bay/Pier, m[1-6]
+          example: NORTH
+        handling-gate-stand-claim:
+          type: string
+          description: Handling Gate/Stand/Claim Area, m[1-8]
+          example: 16
+    Bum:
+      type: object
+      properties:
+        version-data:
+          $ref: '#/components/schemas/VersionData'
+          description: .V element
+          example: .V/1TDFW/1234567890//A/123ABC456Z
+        outbound-flight:
+          $ref: '#/components/schemas/FlightDataBum'
+          description: .F element
+        loading-data:
+          $ref: '#/components/schemas/LoadingData'
+          description: .U element
+          example: .U/AKE123456//M//SYD
+        bag-tag:
+          type: string
+        inbound-flight:
+          $ref: '#/components/schemas/FlightDataBum'
+          description: .I element
+        onward-flights:
+          type: array
+          description: .O element
+          items:
+            $ref: '#/components/schemas/FlightDataBum'
+        load-sequence-number:
+          type: string
+          description: .Q element
+          example: 9
+        reconciliation-data:
+          $ref: '#/components/schemas/ReconciliationData'
+          description: .S element
+          example: /Y//C/003/003
+        handling-location:
+          $ref: '#/components/schemas/HandlingLocation'
+          description: .H element
+          example: /T1/CENTAL/E20
+        bag-exception:
+          type: array
+          description: .E element
+          example: RUSH
+          items:
+            type: string
+        internal-airline-data:
+          type: array
+          description: .R element
+          example: SCANNED
+          items:
+            type: string
+        security-screening:
+          $ref: '#/components/schemas/SecurityScreening'
+          description: .X element
+          example: .X/SEL
+      required:
+      - outbound-flight
+      - version-data
+    LoadingData:
+      type: object
+      properties:
+        container-tag:
+          type: string
+          description: Stowage Device ID
+          example: AKE123456
+        loading-location:
+          type: string
+          description: Aircraft Compartment or Loading Location
+          example: 11L
+        type-of-baggage:
+          type: string
+          description: Type of Baggage in Container/Location.
+          enum:
+          - M
+          - T
+          - S
+          - X
+          example: T
+        class-of-travel:
+          type: string
+          description: Class(es) of Travel
+          example: Y
+        destination-airport-code:
+          type: string
+          description: Destination or Transfer Airport Code of the Container
+          example: NRT
+        sealed-container-indicator:
+          type: string
+          description: Sealed Container Indicator
+          example: Y
+        connection-flight:
+          $ref: '#/components/schemas/ConnectionFlightDataBpm'
+        container-handling-type:
+          type: string
+          description: Container Handling Type up to 8 characters
+          example: PRIO
+      required:
+      - container-tag
+    ReconciliationData:
+      type: object
+      properties:
+        authority-to-load:
+          type: boolean
+          description: Authority To Load
+          example: Y
+        seat-number:
+          type: string
+          description: Seat Number
+          example: 10A
+        passenger-status:
+          type: string
+          description: Passenger Status
+          enum:
+          - B
+          - C
+          - N
+          - S
+          example: C
+        sequence-number:
+          type: string
+          description: Sequence Number
+          example: 98
+        security-number:
+          type: string
+          description: Security Number
+          example: 88
+        passenger-profile-status:
+          type: string
+          description: Passenger Profile Status
+          example: Y
+        authority-to-transport:
+          type: boolean
+          description: Authority To Transport
+          example: Y
+        bagtag-status:
+          type: string
+          description: Baggage Tag Status
+          enum:
+          - I
+          - A
+          - V
+          example: A
+      required:
+      - authority-to-load
+    ConnectionFlightDataBpm:
+      type: object
+      properties:
+        flight-designator:
+          type: string
+          description: Airline and Flight Number
+          example: UA423
+        origin-date:
+          type: string
+          description: Scheduled date for departure date. Format is YYYY-MM-DD.
+          example: '2023-03-30'
+        carrier:
+          type: string
+          description: The flight carrier
+          example: UA
+        flight-number:
+          type: string
+          description: The flight number
+          example: 423
+        operational-suffix:
+          type: string
+          example: A
+        origin-iata-code:
+          type: string
+          description: Origin Airport IATA code
+          example: SIN
+        destination-iata-code:
+          type: string
+          description: Destination Airport IATA code
+          example: DXB
+        class-of-travel:
+          type: string
+          description: Y, F, etc.
+          example: F
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence Flight Number
+          example: 1
+    BumRawMessage:
+      type: object
+      description: A BUM encapsulated in a JSON structure.
+      properties:
+        message:
+          type: string
+          description: Content of a BUM
+          example: 'BUM
+
+            .V/1TDOH
+
+            .F/QR0031/18JUL/EDI/Y
+
+            .N/0749328870002
+
+            .S/N/18H/C/051/051//N/A
+
+            ENDBUM'
+        pipeline:
+          type: string
+        correlation-id:
+          type: string
+          description: The global id which identifies this object across multiple applications. If no correlation id is provided, ADH will generate one.
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+      required:
+      - message
+    FlightDataBum:
+      type: object
+      properties:
+        flight-designator:
+          type: string
+          description: Airline and Flight Number
+          example: UA423
+        origin-date:
+          type: string
+          description: Scheduled date for departure date. Format is YYYY-MM-DD.
+          example: '2023-03-30'
+        carrier:
+          type: string
+          description: The flight carrier
+          example: UA
+        flight-number:
+          type: string
+          description: The flight number
+          example: 423
+        operational-suffix:
+          type: string
+          example: A
+        origin-iata-code:
+          type: string
+          description: Origin Airport IATA code
+          example: SIN
+        destination-iata-code:
+          type: string
+          description: Destination Airport IATA code
+          example: DXB
+        class-of-travel:
+          type: string
+          description: Y, F, etc.
+          example: F
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence Flight Number
+          example: 1
