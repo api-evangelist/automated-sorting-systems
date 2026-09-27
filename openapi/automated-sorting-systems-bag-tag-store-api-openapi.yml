@@ -882,153 +882,50 @@ paths:
         - ADH.BT.R
 components:
   schemas:
-    BagSegment:
+    FlightIdentifier:
       type: object
-      description: Object holding a the state of a bag represented by bag tag for a flight segment.
+      description: Object holding identifying information for a flight.
       properties:
-        sequence-number:
-          type: integer
-          format: int32
-          description: Sequence number of bag segment within bag journey.
-        tag:
+        carrier:
           type: string
-          description: Tag number of the bag tag used on this segment.
-          example: B12345678
-        class-of-travel:
+          description: 2-digit IATA code of operating carrier.
+          example: ZZ
+        flight-number:
           type: string
-          description: Class of travel.
-          example: M
-        is-rush-bag:
-          type: boolean
-          description: Flags if this is a rush bag.
-        passenger-is-crew-member:
-          type: boolean
-          description: Flags if bag belongs to a crew member. Put false or 0 to set it to non-crew member. Everything greater than 0 will be interpreted as true.
-        bag-activities:
-          $ref: '#/components/schemas/BagActivities'
-          description: Activities captured for this bag.
-        oldest-inbound-activity-type:
+          description: The flight number of the operating carrier. Should contain not more than 4 chars and must not include whitespaces. If less than 4 chars leading zeros will be added to normalize it to 4 chars.
+          example: 997
+        operational-suffix:
           type: string
-          description: Type of oldest inbound activity.
-        oldest-inbound-activity:
-          $ref: '#/components/schemas/BagActivity'
-          description: Oldest inbound activity.
-        newest-inbound-activity-type:
+          description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+          example: B
+        origin-date:
           type: string
-          description: Type of newest inbound activity.
-        newest-inbound-activity:
-          $ref: '#/components/schemas/BagActivity'
-          description: Newest inbound activity.
-        oldest-outbound-activity-type:
+          format: date
+          description: UTC scheduled date of departure of the first leg of the flight. Must be between 2010-01-01 and 2210-01-01.
+        identifier-string:
           type: string
-          description: Type of oldest outbound activity.
-        oldest-outbound-activity:
-          $ref: '#/components/schemas/BagActivity'
-          description: Oldest outbound activity.
-        newest-outbound-activity-type:
+          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-DATE-ORIGIN-DESTINATION.
+        iata-message-key:
           type: string
-          description: Type of newest outbound activity.
-        newest-outbound-activity:
-          $ref: '#/components/schemas/BagActivity'
-          description: Newest outbound activity.
-        identifier:
-          $ref: '#/components/schemas/FlightIdentifier'
-          description: Bag segment identifier.
-        newest-activity-type:
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT in the origin timezone
+        iata-message-key-utc:
           type: string
-          description: Newest activity type either outbound, inbound or segment
-        state:
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT coverted to UTC
+        origin-iata-code:
           type: string
-          description: 'State of the bag segment. '
-          enum:
-          - ACTIVE
-          - COMPLETED
-          - DELETED
-          example: ACTIVE, COMPLETED or DELETED
-        enriched:
-          type: boolean
-          description: Indication if this Bag Segment was Enriched.
+          description: 3-digit IATA code of origin airport.
+          example: AAA
+        destination-iata-code:
+          type: string
+          description: 3-digit IATA code of destination airport.
+          example: ZZZ
       required:
-      - identifier
-    BagActivity:
-      type: object
-      description: Details on a specific bag activity on a bag segment.
-      properties:
-        location-type:
-          type: string
-          description: Type of location.
-          enum:
-          - SEGMENT
-          - OUTBOUND
-          - INBOUND
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp in UTC.
-        location:
-          type: string
-          description: Location.
-    User:
-      type: object
-      description: Metadata of DH objects.
-      properties:
-        user-id:
-          type: string
-          description: Unique user id.
-          readOnly: true
-        user-name:
-          type: string
-          description: Readable user name
-          readOnly: true
-      readOnly: true
-    BagJourney:
-      type: object
-      properties:
-        bag-initialized:
-          $ref: '#/components/schemas/BagPhase'
-        inbound:
-          $ref: '#/components/schemas/BagJourneyPhase'
-        transfer:
-          $ref: '#/components/schemas/BagJourneyPhase'
-        in-system:
-          $ref: '#/components/schemas/BagJourneyPhase'
-        outbound:
-          $ref: '#/components/schemas/BagJourneyPhase'
-    ContainerizationActivity:
-      type: object
-      description: BagActivity for Containerization.
-      properties:
-        location-type:
-          type: string
-          description: Type of location.
-          enum:
-          - SEGMENT
-          - OUTBOUND
-          - INBOUND
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp in UTC.
-        location:
-          type: string
-          description: Location.
-        container-tag:
-          type: string
-          description: Container tag.
-          example: A12345678
-        container-activity:
-          type: string
-          description: Container activity.
-          enum:
-          - LOAD
-          - OFFLOAD
-          - REMOVE
-          - MERGE
-        container-type:
-          type: string
-          description: Container type like ULD/dolly/aircraft. The activity is dependent to this type.
-          example: ULD
-    BagLoadIntoUldEvent:
+      - carrier
+      - destination-iata-code
+      - flight-number
+      - origin-date
+      - origin-iata-code
+    BagCheckInEvent:
       allOf:
       - $ref: '#/components/schemas/BagEvent'
       - type: object
@@ -1037,57 +934,33 @@ components:
             type: string
             description: Type of event for the concrete subclass.
             enum:
-            - BAG_LOAD_INTO_ULD_EVENT
-          uld-tag:
+            - BAG_CHECK_IN_EVENT
+          bag-segments:
+            type: array
+            description: 'bag segments. Additional constraints apply: Must contain between 1 and 15 segments. Difference in origin-date of first and last segment must be no more than 30 days, event-time must be no more than 30 days before first segment and no more than 3030 days after last segment.'
+            items:
+              $ref: '#/components/schemas/BagSegment'
+            maxItems: 15
+            minItems: 1
+          authorized-to-load:
+            type: boolean
+            description: Authorized to load that comes with BSM reconciliation data element.
+            example: true
+          authorized-to-transport:
+            type: boolean
+            description: Authorized to transport that comes with BSM reconciliation data element.
+            example: false
+          exception:
             type: string
-            description: ULD tag.
-            example: A12345678
-          sequence-number:
-            type: integer
-            format: int32
-            description: Loading sequence number of bag in uld. Must be 1 or greater.
-            example: 1
-            minimum: 1
-      description: Entity for bag load into uld Business Events.
+            description: 'Exceptions: RUSH, GATE, etc.'
+            example: GATE;
+      description: Entity for Bag Check-In Business Events.
       required:
+      - bag-segments
       - event-time
       - event-type
       - source
       - tag
-      - uld-tag
-    HttpStatusCode:
-      type: object
-      properties:
-        error:
-          type: boolean
-        is4xxClientError:
-          type: boolean
-        is5xxServerError:
-          type: boolean
-        is1xxInformational:
-          type: boolean
-        is2xxSuccessful:
-          type: boolean
-        is3xxRedirection:
-          type: boolean
-    SecondaryIdentifier:
-      type: object
-      description: Additional identifiers for flight legs or segments used by airport systems etc.
-      properties:
-        identifier:
-          type: string
-          description: Secondary identifier .
-        created:
-          type: string
-          format: date-time
-          description: Timestamp of creation of secondary identifier in UTC.
-        source:
-          type: string
-          description: Source creating the secondary identifier.
-      required:
-      - created
-      - identifier
-      - source
     BagScreeningEvent:
       allOf:
       - $ref: '#/components/schemas/BagEvent'
@@ -1113,6 +986,457 @@ components:
       - screening-level
       - source
       - tag
+    BagTagIdentifier:
+      type: object
+      description: Additional identifiers for bag tags used by airport systems etc.
+      properties:
+        identifier:
+          type: string
+          description: Internal identifier for the bag.
+          example: ABCD-1234
+        created:
+          type: string
+          format: date-time
+          description: Timestamp of creation of internal identifier for the bag.
+        source:
+          type: string
+          description: Source creating the internal identifier for the bag.
+      required:
+      - created
+      - identifier
+      - source
+    BagActivity:
+      type: object
+      description: Details on a specific bag activity on a bag segment.
+      properties:
+        location-type:
+          type: string
+          description: Type of location.
+          enum:
+          - SEGMENT
+          - OUTBOUND
+          - INBOUND
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp in UTC.
+        location:
+          type: string
+          description: Location.
+    BagReFlightEvent:
+      allOf:
+      - $ref: '#/components/schemas/BagEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAG_REFLIGHT_EVENT
+          bag-segments:
+            type: array
+            description: New or updated bag segments.
+            items:
+              $ref: '#/components/schemas/BagSegment'
+            maxItems: 15
+            minItems: 1
+          retired-tag:
+            type: string
+            description: Retired tag number for the bag, if tag number has been updated.
+            example: R12345678
+      description: Entity for Bag Re-Flight Business Events.
+      required:
+      - bag-segments
+      - event-time
+      - event-type
+      - source
+      - tag
+    FlightSegmentBagTag:
+      type: object
+      description: Object holding a the state of a bag represented by bag tag assigned to a flight segment.
+      properties:
+        meta:
+          $ref: '#/components/schemas/AggregatedMeta'
+          description: Metadata, generated by ADH.
+          readOnly: true
+        bag-tag-id:
+          type: string
+          description: Unique id of the bag tag in the data hub for an unlimited period of time.
+          example: ABCD-1234
+        merged-bag-tag-id:
+          type: array
+          description: Unique ids of bag tags that have ended their live cycle and are merged into this one.
+          items:
+            type: string
+          uniqueItems: true
+        tag:
+          type: string
+          description: Tag number of the bag tag. Latest tag number in case of re-tagging.
+          example: B12345678
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers for the bag tag used by BHS etc.
+          items:
+            $ref: '#/components/schemas/BagTagIdentifier'
+          uniqueItems: true
+        bag-type:
+          type: string
+          description: Bag type identifier.
+        passenger:
+          $ref: '#/components/schemas/Passenger'
+          description: Passenger information for the bag.
+        bag-segment:
+          $ref: '#/components/schemas/BagSegment'
+          description: Bag segment.
+        previous-segment:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Previous flight segment.
+        next-segment:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Next flight segment.
+    View:
+      type: object
+      properties:
+        contentType:
+          type: string
+    LoadIntoUldActivity:
+      type: object
+      description: BagActivity for ULD load/unload.
+      properties:
+        location-type:
+          type: string
+          description: Type of location.
+          enum:
+          - SEGMENT
+          - OUTBOUND
+          - INBOUND
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp in UTC.
+        location:
+          type: string
+          description: Location.
+        uld-tag:
+          type: string
+          deprecated: true
+          description: ULD tag . Deprecated - use containerTag instead.
+        container-tag:
+          type: string
+          description: Container tag.
+          example: A12345678
+        container-type:
+          type: string
+          description: Container type like ULD/dolly/aircraft. The activity is dependent to this type.
+          example: ULD
+        container-activity:
+          type: string
+          description: Container activity.
+          enum:
+          - LOAD
+          - OFFLOAD
+          - REMOVE
+          - MERGE
+    SecondaryIdentifier:
+      type: object
+      description: Additional identifiers for flight legs or segments used by airport systems etc.
+      properties:
+        identifier:
+          type: string
+          description: Secondary identifier .
+        created:
+          type: string
+          format: date-time
+          description: Timestamp of creation of secondary identifier in UTC.
+        source:
+          type: string
+          description: Source creating the secondary identifier.
+      required:
+      - created
+      - identifier
+      - source
+    BagJourneyPhase:
+      type: object
+      properties:
+        uld-driving:
+          $ref: '#/components/schemas/BagPhase'
+        uld-tralat:
+          $ref: '#/components/schemas/BagPhase'
+        bhs-ebs-in:
+          $ref: '#/components/schemas/BagPhase'
+        bhs-ebs-out:
+          $ref: '#/components/schemas/BagPhase'
+        bhs-mup:
+          $ref: '#/components/schemas/BagPhase'
+        bhs-processing:
+          $ref: '#/components/schemas/BagPhase'
+        bhs-reclaim:
+          $ref: '#/components/schemas/BagPhase'
+        aircraft-landed:
+          $ref: '#/components/schemas/BagPhase'
+        bag-clear:
+          $ref: '#/components/schemas/BagPhase'
+        bag-driving:
+          $ref: '#/components/schemas/BagPhase'
+        bag-offloaded:
+          $ref: '#/components/schemas/BagPhase'
+        bag-reclaim:
+          $ref: '#/components/schemas/BagPhase'
+        mup-bulk:
+          $ref: '#/components/schemas/BagPhase'
+        mup-uld:
+          $ref: '#/components/schemas/BagPhase'
+        aircraft-air:
+          $ref: '#/components/schemas/BagPhase'
+        bag-aircraft:
+          $ref: '#/components/schemas/BagPhase'
+        bag-bay:
+          $ref: '#/components/schemas/BagPhase'
+        passenger-bag:
+          $ref: '#/components/schemas/BagPhase'
+        uld-aircraft:
+          $ref: '#/components/schemas/BagPhase'
+        uld-bay:
+          $ref: '#/components/schemas/BagPhase'
+        uld-off-loaded:
+          $ref: '#/components/schemas/BagPhase'
+        bag-tralat:
+          $ref: '#/components/schemas/BagPhase'
+        uld-reclaim:
+          $ref: '#/components/schemas/BagPhase'
+        bhs-mes:
+          $ref: '#/components/schemas/BagPhase'
+    BagReRouteEvent:
+      allOf:
+      - $ref: '#/components/schemas/BagEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAG_ROUTE_EVENT
+          bag-segments:
+            type: array
+            description: New bag segments.
+            items:
+              $ref: '#/components/schemas/BagSegment'
+            maxItems: 15
+            minItems: 1
+          retired-tag:
+            type: string
+            description: Retired tag number for the bag, if tag number has changed.
+      description: Entity for Bag Re-Route Business Events.
+      required:
+      - bag-segments
+      - event-time
+      - event-type
+      - source
+      - tag
+    HttpStatusCode:
+      type: object
+      properties:
+        error:
+          type: boolean
+        is4xxClientError:
+          type: boolean
+        is5xxServerError:
+          type: boolean
+        is1xxInformational:
+          type: boolean
+        is2xxSuccessful:
+          type: boolean
+        is3xxRedirection:
+          type: boolean
+    Passenger:
+      type: object
+      description: Passenger attributes for bag tag.
+      properties:
+        pnr:
+          type: string
+          description: Unique passenger number.
+        name:
+          type: string
+          description: Passenger name.
+          example: Smith
+        first-name:
+          type: string
+          description: Passenger first name.
+          example: John
+        gender:
+          type: string
+          description: Passenger gender.
+          example: male
+        title:
+          type: string
+          description: Passenger title.
+          example: Mr.
+        phone:
+          type: string
+          description: Passenger contact phone number.
+          example: 001 123 456 789
+        email:
+          type: string
+          description: Passenger contact email adress.
+          example: passenger@test.com
+        id:
+          type: string
+          description: Unique id of the passenger in the data hub for an unlimited period of time.
+          example: ABCD-1234
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers for the passenger used by airports etc.
+          items:
+            $ref: '#/components/schemas/SecondaryIdentifier'
+          uniqueItems: true
+      required:
+      - name
+    BagEvent:
+      type: object
+      description: Entity for bag Business Events. Use concrete subclass.
+      discriminator:
+        propertyName: event-type
+      oneOf:
+      - $ref: '#/components/schemas/BagCheckInEvent'
+      - $ref: '#/components/schemas/BagCancelEvent'
+      - $ref: '#/components/schemas/BagChangeEvent'
+      - $ref: '#/components/schemas/BagReRouteEvent'
+      - $ref: '#/components/schemas/BagReFlightEvent'
+      - $ref: '#/components/schemas/BagTrackingEvent'
+      - $ref: '#/components/schemas/BagScreeningEvent'
+      - $ref: '#/components/schemas/BagLoadIntoUldEvent'
+      - $ref: '#/components/schemas/BagContainerizationEvent'
+      properties:
+        meta:
+          $ref: '#/components/schemas/BasicMeta'
+          description: Event metadata, generated by DataHub. May not be passed in.
+          readOnly: true
+        event-type:
+          type: string
+          description: Type of event, must match the type defined for the concrete subclass.
+        event-time:
+          type: string
+          format: date-time
+          description: Timestamp when the event occurred in UTC.
+        location:
+          type: string
+          description: Location id where the event occured.
+          example: TRA_12
+        source:
+          type: string
+          description: System generating the event.
+          example: Scanner TRA_12
+        bag-id:
+          type: string
+          description: Unique id for the bag. Can be used for an unlimited period of time.
+          example: EK0123-20250212-HKG-DXB-0123456789
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers used by BHS etc.
+          items:
+            $ref: '#/components/schemas/BagTagIdentifier'
+          uniqueItems: true
+        tag:
+          type: string
+          description: Tag number of the bag tag. Latest tag number in case of re-tagging. Must not start or end with space.
+          example: Tag1234
+        previous-segments:
+          type: array
+          description: Previous segments.
+          items:
+            $ref: '#/components/schemas/BagSegment'
+        inbound-segment:
+          $ref: '#/components/schemas/BagSegment'
+          description: Inbound segment.
+        outbound-segment:
+          $ref: '#/components/schemas/BagSegment'
+          description: Outbound segment.
+        onward-segments:
+          type: array
+          description: Onward segments.
+          items:
+            $ref: '#/components/schemas/BagSegment'
+        bag-type:
+          type: string
+          description: Bag type identifier.
+          example: Hard Shell
+        passenger:
+          $ref: '#/components/schemas/Passenger'
+          description: Passenger information for the bag.
+        sourceId:
+          type: string
+        adhId:
+          type: string
+        correlationId:
+          type: string
+        passenger-status:
+          type: string
+          description: Passenger Status
+        direction:
+          type: string
+          description: The direction of the bag.
+          enum:
+          - INBOUND
+          - OUTBOUND
+          - TRANSFER
+      required:
+      - event-time
+      - event-type
+      - source
+      - tag
+    BagJourney:
+      type: object
+      properties:
+        bag-initialized:
+          $ref: '#/components/schemas/BagPhase'
+        inbound:
+          $ref: '#/components/schemas/BagJourneyPhase'
+        transfer:
+          $ref: '#/components/schemas/BagJourneyPhase'
+        in-system:
+          $ref: '#/components/schemas/BagJourneyPhase'
+        outbound:
+          $ref: '#/components/schemas/BagJourneyPhase'
+    BagCancelEvent:
+      allOf:
+      - $ref: '#/components/schemas/BagEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAG_CANCEL_EVENT
+          bag-segments:
+            type: array
+            description: Bag segments.
+            items:
+              $ref: '#/components/schemas/BagSegment'
+            maxItems: 15
+            minItems: 1
+      description: Entity for Bag Cancel Business Events.
+      required:
+      - bag-segments
+      - event-time
+      - event-type
+      - source
+      - tag
+    BagTagRiskLevel:
+      type: object
+      properties:
+        standard-operating-procedure:
+          $ref: '#/components/schemas/BagRisk'
+          description: Standard Operating Procedure Risk Level
+        minimum-connecting-time:
+          $ref: '#/components/schemas/BagRisk'
+          description: Minimum Connecting Time Risk level.
+        quick-chute:
+          $ref: '#/components/schemas/BagRisk'
+          description: Quick Chute Risk Level.
+      required:
+      - minimum-connecting-time
+      - quick-chute
+      - standard-operating-procedure
     BagContainerizationEvent:
       allOf:
       - $ref: '#/components/schemas/BagEvent'
@@ -1167,75 +1491,71 @@ components:
       - function
       - source
       - tag
-    ScreeningActivity:
+    BagRisk:
       type: object
-      description: BagActivity for screening.
       properties:
-        location-type:
-          type: string
-          description: Type of location.
-          enum:
-          - SEGMENT
-          - OUTBOUND
-          - INBOUND
-        timestamp:
+        calculation-time:
           type: string
           format: date-time
-          description: Timestamp in UTC.
-        location:
+          description: Time of calculation of the risk level
+          example: '2024-08-20T12:26:47.565851810Z'
+        risk-level:
           type: string
-          description: Location.
-        level:
-          type: integer
-          format: int32
-          description: Screening level.
-        cleared:
-          type: boolean
-          description: Cleared.
-    FlightIdentifier:
-      type: object
-      description: Object holding identifying information for a flight.
-      properties:
-        carrier:
+          description: Risk Level Calculated
+          enum:
+          - UNKNOWN
+          - MISSED
+          - CRITICAL
+          - AT_RISK
+          - ON_TIME
+          - EARLY
+          example: ON_TIME
+        previousRiskLevel:
           type: string
-          description: 2-digit IATA code of operating carrier.
-          example: ZZ
-        flight-number:
+          description: Risk Level Calculated
+          enum:
+          - UNKNOWN
+          - MISSED
+          - CRITICAL
+          - AT_RISK
+          - ON_TIME
+          - EARLY
+          example: ON_TIME
+        validity:
           type: string
-          description: The flight number of the operating carrier. Should contain not more than 4 chars and must not include whitespaces. If less than 4 chars leading zeros will be added to normalize it to 4 chars.
-          example: 997
-        operational-suffix:
-          type: string
-          description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
-          example: B
-        origin-date:
-          type: string
-          format: date
-          description: UTC scheduled date of departure of the first leg of the flight. Must be between 2010-01-01 and 2210-01-01.
-        identifier-string:
-          type: string
-          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-DATE-ORIGIN-DESTINATION.
-        iata-message-key:
-          type: string
-          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT in the origin timezone
-        iata-message-key-utc:
-          type: string
-          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT coverted to UTC
-        origin-iata-code:
-          type: string
-          description: 3-digit IATA code of origin airport.
-          example: AAA
-        destination-iata-code:
-          type: string
-          description: 3-digit IATA code of destination airport.
-          example: ZZZ
+          format: date-time
+          description: Validity Date of the Risk Level
+          example: '2024-08-20T12:26:47.565851810Z'
+        mup:
+          $ref: '#/components/schemas/BagRiskLocation'
+          description: Assigned Mup
+        inbound-bay:
+          $ref: '#/components/schemas/BagRiskLocation'
+          description: Assigned Inbound Bay
+        outbound-bay:
+          $ref: '#/components/schemas/BagRiskLocation'
+          description: Assigned Outbound Bay
+        tl:
+          $ref: '#/components/schemas/BagRiskLocation'
+          description: Assigned Transfer Lateral
+        carousel:
+          $ref: '#/components/schemas/BagRiskLocation'
+          description: Assigned Carousel
+        check-in:
+          $ref: '#/components/schemas/BagRiskLocation'
+          description: Assigned Check In Desk
       required:
-      - carrier
-      - destination-iata-code
-      - flight-number
-      - origin-date
-      - origin-iata-code
-    BagReFlightEvent:
+      - calculation-time
+      - carousel
+      - check-in
+      - inbound-bay
+      - mup
+      - outbound-bay
+      - previousRiskLevel
+      - risk-level
+      - tl
+      - validity
+    BagTrackingEvent:
       allOf:
       - $ref: '#/components/schemas/BagEvent'
       - type: object
@@ -1244,31 +1564,55 @@ components:
             type: string
             description: Type of event for the concrete subclass.
             enum:
-            - BAG_REFLIGHT_EVENT
-          bag-segments:
-            type: array
-            description: New or updated bag segments.
-            items:
-              $ref: '#/components/schemas/BagSegment'
-            maxItems: 15
-            minItems: 1
-          retired-tag:
+            - BAG_TRACKING_EVENT
+          tracking-point-type:
             type: string
-            description: Retired tag number for the bag, if tag number has been updated.
-            example: R12345678
-      description: Entity for Bag Re-Flight Business Events.
+            description: Type of tracking point. Depending on the type use either outbound-segment(BHS_INDUCTION, ATR, MES, BVS, EBS_IN, EBS_OUT, MUP_DISCHARGE, RECONCILED, CART_LOAD, LOAD, DEPARTED_FROM_MUP, ARRIVED_AT_BAY, ULD_SECURE_STORE_IN, ULD_SECURE_STORE_OUT)or inbound-segment(ATR, DEPARTED_FROM_BAY, ARRIVED_AT_TRANSFER_LATERAL, ARRIVED_AT_RECLAIM_BELT, UNLOAD, ULD_UNLOAD, RECLAIM_BELT_INDUCTION, DELIVERED, PROBLEM_AREA_DISCHARGE, DEPARTED_FROM_PROBLEM_AREA), never fill both.
+            enum:
+            - BHS_INDUCTION
+            - ATR
+            - MES
+            - BVS
+            - EBS_IN
+            - EBS_OUT
+            - MUP_DISCHARGE
+            - RECONCILED
+            - CART_LOAD
+            - LOAD
+            - DEPARTED_FROM_MUP
+            - ARRIVED_AT_BAY
+            - ULD_SECURE_STORE_IN
+            - ULD_SECURE_STORE_OUT
+            - DEPARTED_FROM_BAY
+            - ARRIVED_AT_TRANSFER_LATERAL
+            - ARRIVED_AT_RECLAIM_BELT
+            - UNLOAD
+            - ULD_UNLOAD
+            - RECLAIM_BELT_INDUCTION
+            - DELIVERED
+            - PROBLEM_AREA_DISCHARGE
+            - DEPARTED_FROM_PROBLEM_AREA
+          tracking-state:
+            type: string
+            description: State of tracking.
+            enum:
+            - SUCCESS
+            - NO_READ
+            - TRACKING_LOST
+            - MULTIPLE_READ
+            - NO_BSM
+            - SEND_TO_PROBLEM
+          transport-state:
+            type: string
+            description: State of transport within BHS.
+      description: Entity for Bag Tracking Business Events. Be aware that either the inbound or the outbound segement needs to be set.
       required:
-      - bag-segments
       - event-time
       - event-type
       - source
       - tag
-    View:
-      type: object
-      properties:
-        contentType:
-          type: string
-    AggregatedMeta:
+      - tracking-point-type
+    BasicMeta:
       type: object
       description: Metadata of DH objects.
       properties:
@@ -1280,15 +1624,6 @@ components:
         created-by:
           $ref: '#/components/schemas/User'
           description: ID of user of event which caused the object to be created.
-          readOnly: true
-        created-event-type:
-          type: string
-          description: Event-type of event which caused the object to be created.
-          readOnly: true
-        created-event-time:
-          type: string
-          format: date-time
-          description: Event-time of event which caused the object to be created.
           readOnly: true
         modified-count:
           type: integer
@@ -1303,15 +1638,6 @@ components:
         modified-by:
           $ref: '#/components/schemas/User'
           description: ID of user of event which caused the object to be modified.
-          readOnly: true
-        modified-event-type:
-          type: string
-          description: Event-type of event which caused the object to be modified.
-          readOnly: true
-        modified-event-time:
-          type: string
-          format: date-time
-          description: Event-time of event which caused the object to be modified.
           readOnly: true
         tag-id:
           type: string
@@ -1348,155 +1674,6 @@ components:
             description: Authorized to load that comes with BSM reconciliation data element.
             example: true
       description: Entity for Bag Change Business Events.
-      required:
-      - bag-segments
-      - event-time
-      - event-type
-      - source
-      - tag
-    ModelAndView:
-      type: object
-      properties:
-        view:
-          $ref: '#/components/schemas/View'
-        model:
-          type: object
-          additionalProperties:
-            type: object
-        status:
-          $ref: '#/components/schemas/HttpStatusCode'
-        empty:
-          type: boolean
-        viewName:
-          type: string
-        reference:
-          type: boolean
-        modelMap:
-          type: object
-          additionalProperties:
-            type: object
-          properties:
-            empty:
-              type: boolean
-    BagJourneyPhase:
-      type: object
-      properties:
-        uld-driving:
-          $ref: '#/components/schemas/BagPhase'
-        uld-tralat:
-          $ref: '#/components/schemas/BagPhase'
-        bhs-ebs-in:
-          $ref: '#/components/schemas/BagPhase'
-        bhs-ebs-out:
-          $ref: '#/components/schemas/BagPhase'
-        bhs-mup:
-          $ref: '#/components/schemas/BagPhase'
-        bhs-processing:
-          $ref: '#/components/schemas/BagPhase'
-        bhs-reclaim:
-          $ref: '#/components/schemas/BagPhase'
-        aircraft-landed:
-          $ref: '#/components/schemas/BagPhase'
-        bag-clear:
-          $ref: '#/components/schemas/BagPhase'
-        bag-driving:
-          $ref: '#/components/schemas/BagPhase'
-        bag-offloaded:
-          $ref: '#/components/schemas/BagPhase'
-        bag-reclaim:
-          $ref: '#/components/schemas/BagPhase'
-        mup-bulk:
-          $ref: '#/components/schemas/BagPhase'
-        mup-uld:
-          $ref: '#/components/schemas/BagPhase'
-        aircraft-air:
-          $ref: '#/components/schemas/BagPhase'
-        bag-aircraft:
-          $ref: '#/components/schemas/BagPhase'
-        bag-bay:
-          $ref: '#/components/schemas/BagPhase'
-        passenger-bag:
-          $ref: '#/components/schemas/BagPhase'
-        uld-aircraft:
-          $ref: '#/components/schemas/BagPhase'
-        uld-bay:
-          $ref: '#/components/schemas/BagPhase'
-        uld-off-loaded:
-          $ref: '#/components/schemas/BagPhase'
-        bag-tralat:
-          $ref: '#/components/schemas/BagPhase'
-        uld-reclaim:
-          $ref: '#/components/schemas/BagPhase'
-        bhs-mes:
-          $ref: '#/components/schemas/BagPhase'
-    LoadIntoUldActivity:
-      type: object
-      description: BagActivity for ULD load/unload.
-      properties:
-        location-type:
-          type: string
-          description: Type of location.
-          enum:
-          - SEGMENT
-          - OUTBOUND
-          - INBOUND
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp in UTC.
-        location:
-          type: string
-          description: Location.
-        uld-tag:
-          type: string
-          deprecated: true
-          description: ULD tag . Deprecated - use containerTag instead.
-        container-tag:
-          type: string
-          description: Container tag.
-          example: A12345678
-        container-type:
-          type: string
-          description: Container type like ULD/dolly/aircraft. The activity is dependent to this type.
-          example: ULD
-        container-activity:
-          type: string
-          description: Container activity.
-          enum:
-          - LOAD
-          - OFFLOAD
-          - REMOVE
-          - MERGE
-    BagCheckInEvent:
-      allOf:
-      - $ref: '#/components/schemas/BagEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - BAG_CHECK_IN_EVENT
-          bag-segments:
-            type: array
-            description: 'bag segments. Additional constraints apply: Must contain between 1 and 15 segments. Difference in origin-date of first and last segment must be no more than 30 days, event-time must be no more than 30 days before first segment and no more than 3030 days after last segment.'
-            items:
-              $ref: '#/components/schemas/BagSegment'
-            maxItems: 15
-            minItems: 1
-          authorized-to-load:
-            type: boolean
-            description: Authorized to load that comes with BSM reconciliation data element.
-            example: true
-          authorized-to-transport:
-            type: boolean
-            description: Authorized to transport that comes with BSM reconciliation data element.
-            example: false
-          exception:
-            type: string
-            description: 'Exceptions: RUSH, GATE, etc.'
-            example: GATE;
-      description: Entity for Bag Check-In Business Events.
       required:
       - bag-segments
       - event-time
@@ -1591,99 +1768,194 @@ components:
         risk-level:
           $ref: '#/components/schemas/BagActivity'
           description: Bag Risk Level Calculated.
-    BagEvent:
+    BagPhase:
       type: object
-      description: Entity for bag Business Events. Use concrete subclass.
-      discriminator:
-        propertyName: event-type
-      oneOf:
-      - $ref: '#/components/schemas/BagCheckInEvent'
-      - $ref: '#/components/schemas/BagCancelEvent'
-      - $ref: '#/components/schemas/BagChangeEvent'
-      - $ref: '#/components/schemas/BagReRouteEvent'
-      - $ref: '#/components/schemas/BagReFlightEvent'
-      - $ref: '#/components/schemas/BagTrackingEvent'
-      - $ref: '#/components/schemas/BagScreeningEvent'
-      - $ref: '#/components/schemas/BagLoadIntoUldEvent'
-      - $ref: '#/components/schemas/BagContainerizationEvent'
       properties:
-        meta:
-          $ref: '#/components/schemas/BasicMeta'
-          description: Event metadata, generated by DataHub. May not be passed in.
-          readOnly: true
-        event-type:
-          type: string
-          description: Type of event, must match the type defined for the concrete subclass.
-        event-time:
+        estimated-time:
           type: string
           format: date-time
-          description: Timestamp when the event occurred in UTC.
+        actual-time:
+          type: string
+          format: date-time
+    User:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        user-id:
+          type: string
+          description: Unique user id.
+          readOnly: true
+        user-name:
+          type: string
+          description: Readable user name
+          readOnly: true
+      readOnly: true
+    ContainerizationActivity:
+      type: object
+      description: BagActivity for Containerization.
+      properties:
+        location-type:
+          type: string
+          description: Type of location.
+          enum:
+          - SEGMENT
+          - OUTBOUND
+          - INBOUND
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp in UTC.
         location:
           type: string
-          description: Location id where the event occured.
-          example: TRA_12
-        source:
+          description: Location.
+        container-tag:
           type: string
-          description: System generating the event.
-          example: Scanner TRA_12
-        bag-id:
+          description: Container tag.
+          example: A12345678
+        container-activity:
           type: string
-          description: Unique id for the bag. Can be used for an unlimited period of time.
-          example: EK0123-20250212-HKG-DXB-0123456789
-        secondary-identifiers:
-          type: array
-          description: Additionally identifiers used by BHS etc.
-          items:
-            $ref: '#/components/schemas/BagTagIdentifier'
-          uniqueItems: true
+          description: Container activity.
+          enum:
+          - LOAD
+          - OFFLOAD
+          - REMOVE
+          - MERGE
+        container-type:
+          type: string
+          description: Container type like ULD/dolly/aircraft. The activity is dependent to this type.
+          example: ULD
+    BagSegment:
+      type: object
+      description: Object holding a the state of a bag represented by bag tag for a flight segment.
+      properties:
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence number of bag segment within bag journey.
         tag:
           type: string
-          description: Tag number of the bag tag. Latest tag number in case of re-tagging. Must not start or end with space.
-          example: Tag1234
-        previous-segments:
-          type: array
-          description: Previous segments.
-          items:
-            $ref: '#/components/schemas/BagSegment'
-        inbound-segment:
-          $ref: '#/components/schemas/BagSegment'
-          description: Inbound segment.
-        outbound-segment:
-          $ref: '#/components/schemas/BagSegment'
-          description: Outbound segment.
-        onward-segments:
-          type: array
-          description: Onward segments.
-          items:
-            $ref: '#/components/schemas/BagSegment'
-        bag-type:
+          description: Tag number of the bag tag used on this segment.
+          example: B12345678
+        class-of-travel:
           type: string
-          description: Bag type identifier.
-          example: Hard Shell
-        passenger:
-          $ref: '#/components/schemas/Passenger'
-          description: Passenger information for the bag.
-        sourceId:
+          description: Class of travel.
+          example: M
+        is-rush-bag:
+          type: boolean
+          description: Flags if this is a rush bag.
+        passenger-is-crew-member:
+          type: boolean
+          description: Flags if bag belongs to a crew member. Put false or 0 to set it to non-crew member. Everything greater than 0 will be interpreted as true.
+        bag-activities:
+          $ref: '#/components/schemas/BagActivities'
+          description: Activities captured for this bag.
+        oldest-inbound-activity-type:
           type: string
-        adhId:
+          description: Type of oldest inbound activity.
+        oldest-inbound-activity:
+          $ref: '#/components/schemas/BagActivity'
+          description: Oldest inbound activity.
+        newest-inbound-activity-type:
           type: string
-        correlationId:
+          description: Type of newest inbound activity.
+        newest-inbound-activity:
+          $ref: '#/components/schemas/BagActivity'
+          description: Newest inbound activity.
+        oldest-outbound-activity-type:
           type: string
-        passenger-status:
+          description: Type of oldest outbound activity.
+        oldest-outbound-activity:
+          $ref: '#/components/schemas/BagActivity'
+          description: Oldest outbound activity.
+        newest-outbound-activity-type:
           type: string
-          description: Passenger Status
-        direction:
+          description: Type of newest outbound activity.
+        newest-outbound-activity:
+          $ref: '#/components/schemas/BagActivity'
+          description: Newest outbound activity.
+        identifier:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Bag segment identifier.
+        newest-activity-type:
           type: string
-          description: The direction of the bag.
+          description: Newest activity type either outbound, inbound or segment
+        state:
+          type: string
+          description: 'State of the bag segment. '
           enum:
-          - INBOUND
-          - OUTBOUND
-          - TRANSFER
+          - ACTIVE
+          - COMPLETED
+          - DELETED
+          example: ACTIVE, COMPLETED or DELETED
+        enriched:
+          type: boolean
+          description: Indication if this Bag Segment was Enriched.
       required:
-      - event-time
-      - event-type
-      - source
-      - tag
+      - identifier
+    ScreeningActivity:
+      type: object
+      description: BagActivity for screening.
+      properties:
+        location-type:
+          type: string
+          description: Type of location.
+          enum:
+          - SEGMENT
+          - OUTBOUND
+          - INBOUND
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp in UTC.
+        location:
+          type: string
+          description: Location.
+        level:
+          type: integer
+          format: int32
+          description: Screening level.
+        cleared:
+          type: boolean
+          description: Cleared.
+    BagRiskLocation:
+      type: object
+      properties:
+        assigned:
+          type: string
+          description: Assigned Location
+          example: CHUTE 03
+        time:
+          type: string
+          format: date-time
+          description: Assignation Timestamp
+          example: '2024-08-20T12:26:47.565851810Z'
+      required:
+      - assigned
+      - time
+    ModelAndView:
+      type: object
+      properties:
+        view:
+          $ref: '#/components/schemas/View'
+        model:
+          type: object
+          additionalProperties:
+            type: object
+        status:
+          $ref: '#/components/schemas/HttpStatusCode'
+        empty:
+          type: boolean
+        viewName:
+          type: string
+        reference:
+          type: boolean
+        modelMap:
+          type: object
+          additionalProperties:
+            type: object
+          properties:
+            empty:
+              type: boolean
     BagTag:
       type: object
       description: Object holding the state of a bag journey represented by bag tag.
@@ -1763,16 +2035,7 @@ components:
           - COMPLETED
           - DELETED
           example: ACTIVE
-    BagPhase:
-      type: object
-      properties:
-        estimated-time:
-          type: string
-          format: date-time
-        actual-time:
-          type: string
-          format: date-time
-    BasicMeta:
+    AggregatedMeta:
       type: object
       description: Metadata of DH objects.
       properties:
@@ -1784,6 +2047,15 @@ components:
         created-by:
           $ref: '#/components/schemas/User'
           description: ID of user of event which caused the object to be created.
+          readOnly: true
+        created-event-type:
+          type: string
+          description: Event-type of event which caused the object to be created.
+          readOnly: true
+        created-event-time:
+          type: string
+          format: date-time
+          description: Event-time of event which caused the object to be created.
           readOnly: true
         modified-count:
           type: integer
@@ -1799,6 +2071,15 @@ components:
           $ref: '#/components/schemas/User'
           description: ID of user of event which caused the object to be modified.
           readOnly: true
+        modified-event-type:
+          type: string
+          description: Event-type of event which caused the object to be modified.
+          readOnly: true
+        modified-event-time:
+          type: string
+          format: date-time
+          description: Event-time of event which caused the object to be modified.
+          readOnly: true
         tag-id:
           type: string
           deprecated: true
@@ -1812,23 +2093,7 @@ components:
           description: Skip Report Flight processing.
           readOnly: true
       readOnly: true
-    BagTagRiskLevel:
-      type: object
-      properties:
-        standard-operating-procedure:
-          $ref: '#/components/schemas/BagRisk'
-          description: Standard Operating Procedure Risk Level
-        minimum-connecting-time:
-          $ref: '#/components/schemas/BagRisk'
-          description: Minimum Connecting Time Risk level.
-        quick-chute:
-          $ref: '#/components/schemas/BagRisk'
-          description: Quick Chute Risk Level.
-      required:
-      - minimum-connecting-time
-      - quick-chute
-      - standard-operating-procedure
-    BagCancelEvent:
+    BagLoadIntoUldEvent:
       allOf:
       - $ref: '#/components/schemas/BagEvent'
       - type: object
@@ -1837,286 +2102,21 @@ components:
             type: string
             description: Type of event for the concrete subclass.
             enum:
-            - BAG_CANCEL_EVENT
-          bag-segments:
-            type: array
-            description: Bag segments.
-            items:
-              $ref: '#/components/schemas/BagSegment'
-            maxItems: 15
-            minItems: 1
-      description: Entity for Bag Cancel Business Events.
-      required:
-      - bag-segments
-      - event-time
-      - event-type
-      - source
-      - tag
-    BagRiskLocation:
-      type: object
-      properties:
-        assigned:
-          type: string
-          description: Assigned Location
-          example: CHUTE 03
-        time:
-          type: string
-          format: date-time
-          description: Assignation Timestamp
-          example: '2024-08-20T12:26:47.565851810Z'
-      required:
-      - assigned
-      - time
-    BagReRouteEvent:
-      allOf:
-      - $ref: '#/components/schemas/BagEvent'
-      - type: object
-        properties:
-          event-type:
+            - BAG_LOAD_INTO_ULD_EVENT
+          uld-tag:
             type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - BAG_ROUTE_EVENT
-          bag-segments:
-            type: array
-            description: New bag segments.
-            items:
-              $ref: '#/components/schemas/BagSegment'
-            maxItems: 15
-            minItems: 1
-          retired-tag:
-            type: string
-            description: Retired tag number for the bag, if tag number has changed.
-      description: Entity for Bag Re-Route Business Events.
-      required:
-      - bag-segments
-      - event-time
-      - event-type
-      - source
-      - tag
-    Passenger:
-      type: object
-      description: Passenger attributes for bag tag.
-      properties:
-        pnr:
-          type: string
-          description: Unique passenger number.
-        name:
-          type: string
-          description: Passenger name.
-          example: Smith
-        first-name:
-          type: string
-          description: Passenger first name.
-          example: John
-        gender:
-          type: string
-          description: Passenger gender.
-          example: male
-        title:
-          type: string
-          description: Passenger title.
-          example: Mr.
-        phone:
-          type: string
-          description: Passenger contact phone number.
-          example: 001 123 456 789
-        email:
-          type: string
-          description: Passenger contact email adress.
-          example: passenger@test.com
-        id:
-          type: string
-          description: Unique id of the passenger in the data hub for an unlimited period of time.
-          example: ABCD-1234
-        secondary-identifiers:
-          type: array
-          description: Additionally identifiers for the passenger used by airports etc.
-          items:
-            $ref: '#/components/schemas/SecondaryIdentifier'
-          uniqueItems: true
-      required:
-      - name
-    BagTrackingEvent:
-      allOf:
-      - $ref: '#/components/schemas/BagEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - BAG_TRACKING_EVENT
-          tracking-point-type:
-            type: string
-            description: Type of tracking point. Depending on the type use either outbound-segment(BHS_INDUCTION, ATR, MES, BVS, EBS_IN, EBS_OUT, MUP_DISCHARGE, RECONCILED, CART_LOAD, LOAD, DEPARTED_FROM_MUP, ARRIVED_AT_BAY, ULD_SECURE_STORE_IN, ULD_SECURE_STORE_OUT)or inbound-segment(ATR, DEPARTED_FROM_BAY, ARRIVED_AT_TRANSFER_LATERAL, ARRIVED_AT_RECLAIM_BELT, UNLOAD, ULD_UNLOAD, RECLAIM_BELT_INDUCTION, DELIVERED, PROBLEM_AREA_DISCHARGE, DEPARTED_FROM_PROBLEM_AREA), never fill both.
-            enum:
-            - BHS_INDUCTION
-            - ATR
-            - MES
-            - BVS
-            - EBS_IN
-            - EBS_OUT
-            - MUP_DISCHARGE
-            - RECONCILED
-            - CART_LOAD
-            - LOAD
-            - DEPARTED_FROM_MUP
-            - ARRIVED_AT_BAY
-            - ULD_SECURE_STORE_IN
-            - ULD_SECURE_STORE_OUT
-            - DEPARTED_FROM_BAY
-            - ARRIVED_AT_TRANSFER_LATERAL
-            - ARRIVED_AT_RECLAIM_BELT
-            - UNLOAD
-            - ULD_UNLOAD
-            - RECLAIM_BELT_INDUCTION
-            - DELIVERED
-            - PROBLEM_AREA_DISCHARGE
-            - DEPARTED_FROM_PROBLEM_AREA
-          tracking-state:
-            type: string
-            description: State of tracking.
-            enum:
-            - SUCCESS
-            - NO_READ
-            - TRACKING_LOST
-            - MULTIPLE_READ
-            - NO_BSM
-            - SEND_TO_PROBLEM
-          transport-state:
-            type: string
-            description: State of transport within BHS.
-      description: Entity for Bag Tracking Business Events. Be aware that either the inbound or the outbound segement needs to be set.
+            description: ULD tag.
+            example: A12345678
+          sequence-number:
+            type: integer
+            format: int32
+            description: Loading sequence number of bag in uld. Must be 1 or greater.
+            example: 1
+            minimum: 1
+      description: Entity for bag load into uld Business Events.
       required:
       - event-time
       - event-type
       - source
       - tag
-      - tracking-point-type
-    BagTagIdentifier:
-      type: object
-      description: Additional identifiers for bag tags used by airport systems etc.
-      properties:
-        identifier:
-          type: string
-          description: Internal identifier for the bag.
-          example: ABCD-1234
-        created:
-          type: string
-          format: date-time
-          description: Timestamp of creation of internal identifier for the bag.
-        source:
-          type: string
-          description: Source creating the internal identifier for the bag.
-      required:
-      - created
-      - identifier
-      - source
-    BagRisk:
-      type: object
-      properties:
-        calculation-time:
-          type: string
-          format: date-time
-          description: Time of calculation of the risk level
-          example: '2024-08-20T12:26:47.565851810Z'
-        risk-level:
-          type: string
-          description: Risk Level Calculated
-          enum:
-          - UNKNOWN
-          - MISSED
-          - CRITICAL
-          - AT_RISK
-          - ON_TIME
-          - EARLY
-          example: ON_TIME
-        previousRiskLevel:
-          type: string
-          description: Risk Level Calculated
-          enum:
-          - UNKNOWN
-          - MISSED
-          - CRITICAL
-          - AT_RISK
-          - ON_TIME
-          - EARLY
-          example: ON_TIME
-        validity:
-          type: string
-          format: date-time
-          description: Validity Date of the Risk Level
-          example: '2024-08-20T12:26:47.565851810Z'
-        mup:
-          $ref: '#/components/schemas/BagRiskLocation'
-          description: Assigned Mup
-        inbound-bay:
-          $ref: '#/components/schemas/BagRiskLocation'
-          description: Assigned Inbound Bay
-        outbound-bay:
-          $ref: '#/components/schemas/BagRiskLocation'
-          description: Assigned Outbound Bay
-        tl:
-          $ref: '#/components/schemas/BagRiskLocation'
-          description: Assigned Transfer Lateral
-        carousel:
-          $ref: '#/components/schemas/BagRiskLocation'
-          description: Assigned Carousel
-        check-in:
-          $ref: '#/components/schemas/BagRiskLocation'
-          description: Assigned Check In Desk
-      required:
-      - calculation-time
-      - carousel
-      - check-in
-      - inbound-bay
-      - mup
-      - outbound-bay
-      - previousRiskLevel
-      - risk-level
-      - tl
-      - validity
-    FlightSegmentBagTag:
-      type: object
-      description: Object holding a the state of a bag represented by bag tag assigned to a flight segment.
-      properties:
-        meta:
-          $ref: '#/components/schemas/AggregatedMeta'
-          description: Metadata, generated by ADH.
-          readOnly: true
-        bag-tag-id:
-          type: string
-          description: Unique id of the bag tag in the data hub for an unlimited period of time.
-          example: ABCD-1234
-        merged-bag-tag-id:
-          type: array
-          description: Unique ids of bag tags that have ended their live cycle and are merged into this one.
-          items:
-            type: string
-          uniqueItems: true
-        tag:
-          type: string
-          description: Tag number of the bag tag. Latest tag number in case of re-tagging.
-          example: B12345678
-        secondary-identifiers:
-          type: array
-          description: Additionally identifiers for the bag tag used by BHS etc.
-          items:
-            $ref: '#/components/schemas/BagTagIdentifier'
-          uniqueItems: true
-        bag-type:
-          type: string
-          description: Bag type identifier.
-        passenger:
-          $ref: '#/components/schemas/Passenger'
-          description: Passenger information for the bag.
-        bag-segment:
-          $ref: '#/components/schemas/BagSegment'
-          description: Bag segment.
-        previous-segment:
-          $ref: '#/components/schemas/FlightIdentifier'
-          description: Previous flight segment.
-        next-segment:
-          $ref: '#/components/schemas/FlightIdentifier'
-          description: Next flight segment.
+      - uld-tag

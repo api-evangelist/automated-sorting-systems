@@ -175,6 +175,300 @@ paths:
         - ADH.FL.R
 components:
   schemas:
+    ProcessingInfo:
+      type: object
+      properties:
+        secondary-code:
+          type: string
+          description: Secondary Code
+          enum:
+          - G
+          - R
+          - S
+          - H
+          example: R
+        agent-identification:
+          type: string
+          description: Agent Identification
+          example: 43S
+        scanner-identification:
+          type: string
+          description: Scanner Identification
+          example: 120D32
+        date-time:
+          type: string
+          format: date-time
+          description: Date (DDMMM) combined with Time (HHMMSS; L=local; Z=UTC)
+          example: 09MAR 154512L
+        time-zone-indicator:
+          type: string
+          description: Time zone indicator retrieved from time field in .J element
+          enum:
+          - L
+          - Z
+        reading-location:
+          type: string
+          description: Reading Location
+          example: B2
+        sent-to-location:
+          type: string
+          description: Sent to Location
+          example: RI
+      required:
+      - secondary-code
+    SecurityScreening:
+      type: object
+      properties:
+        screen-instructor:
+          type: string
+          enum:
+          - DEF
+          - SEL
+          - NON
+        screen-result:
+          type: string
+          enum:
+          - CLR
+          - REJ
+          - UCL
+        screen-result-reason:
+          type: string
+          enum:
+          - D
+          - E
+          - C
+          - N
+          - T
+        screen-method:
+          type: string
+        screen-autograph:
+          type: string
+        screen-comment:
+          type: string
+    FlightDataBpm:
+      type: object
+      properties:
+        flight-designator:
+          type: string
+          description: Airline and Flight Number
+          example: UA423
+        origin-date:
+          type: string
+          description: Scheduled date for departure date. Format is YYYY-MM-DD.
+          example: '2023-03-30'
+        carrier:
+          type: string
+          description: The flight carrier
+          example: UA
+        flight-number:
+          type: string
+          description: The flight number
+          example: 423
+        operational-suffix:
+          type: string
+          example: A
+        origin-iata-code:
+          type: string
+          description: Origin Airport IATA code
+          example: SIN
+        destination-iata-code:
+          type: string
+          description: Destination Airport IATA code
+          example: DXB
+        class-of-travel:
+          type: string
+          description: Y, F, etc.
+          example: F
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence Flight Number
+          example: 1
+    ReconciliationData:
+      type: object
+      properties:
+        authority-to-load:
+          type: boolean
+          description: Authority To Load
+          example: Y
+        seat-number:
+          type: string
+          description: Seat Number
+          example: 10A
+        passenger-status:
+          type: string
+          description: Passenger Status
+          enum:
+          - B
+          - C
+          - N
+          - S
+          example: C
+        sequence-number:
+          type: string
+          description: Sequence Number
+          example: 98
+        security-number:
+          type: string
+          description: Security Number
+          example: 88
+        passenger-profile-status:
+          type: string
+          description: Passenger Profile Status
+          example: Y
+        authority-to-transport:
+          type: boolean
+          description: Authority To Transport
+          example: Y
+        bagtag-status:
+          type: string
+          description: Baggage Tag Status
+          enum:
+          - I
+          - A
+          - V
+          example: A
+      required:
+      - authority-to-load
+    LoadingData:
+      type: object
+      properties:
+        container-tag:
+          type: string
+          description: Stowage Device ID
+          example: AKE123456
+        loading-location:
+          type: string
+          description: Aircraft Compartment or Loading Location
+          example: 11L
+        type-of-baggage:
+          type: string
+          description: Type of Baggage in Container/Location.
+          enum:
+          - M
+          - T
+          - S
+          - X
+          example: T
+        class-of-travel:
+          type: string
+          description: Class(es) of Travel
+          example: Y
+        destination-airport-code:
+          type: string
+          description: Destination or Transfer Airport Code of the Container
+          example: NRT
+        sealed-container-indicator:
+          type: string
+          description: Sealed Container Indicator
+          example: Y
+        connection-flight:
+          $ref: '#/components/schemas/ConnectionFlightDataBpm'
+        container-handling-type:
+          type: string
+          description: Container Handling Type up to 8 characters
+          example: PRIO
+      required:
+      - container-tag
+    ConnectionFlightDataBpm:
+      type: object
+      properties:
+        flight-designator:
+          type: string
+          description: Airline and Flight Number
+          example: UA423
+        origin-date:
+          type: string
+          description: Scheduled date for departure date. Format is YYYY-MM-DD.
+          example: '2023-03-30'
+        carrier:
+          type: string
+          description: The flight carrier
+          example: UA
+        flight-number:
+          type: string
+          description: The flight number
+          example: 423
+        operational-suffix:
+          type: string
+          example: A
+        origin-iata-code:
+          type: string
+          description: Origin Airport IATA code
+          example: SIN
+        destination-iata-code:
+          type: string
+          description: Destination Airport IATA code
+          example: DXB
+        class-of-travel:
+          type: string
+          description: Y, F, etc.
+          example: F
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence Flight Number
+          example: 1
+    Dimension:
+      type: object
+      properties:
+        weight-indicator:
+          type: string
+          enum:
+          - K
+          - L
+          example: K
+        check-bag-count:
+          type: integer
+          format: int32
+          description: Number of check Bags
+          example: 2
+        checked-bag-weight:
+          type: integer
+          format: int32
+          example: 33
+        unchecked-bag-weight:
+          type: integer
+          format: int32
+          example: 5
+        dimension-indicator:
+          type: string
+          enum:
+          - CM
+          - IN
+          example: CM
+        bag-length:
+          type: integer
+          format: int32
+          example: 123
+        bag-width:
+          type: integer
+          format: int32
+          example: 63
+        bag-height:
+          type: integer
+          format: int32
+          example: 23
+        bag-type-code:
+          type: string
+          example: 02HWX
+      required:
+      - weight-indicator
+    HandlingLocation:
+      type: object
+      properties:
+        handling-terminal:
+          type: string
+          description: Handling Terminal
+          example: T1
+        handling-bay:
+          type: string
+          description: Handling Bay/Pier, m[1-6]
+          example: NORTH
+        handling-gate-stand-claim:
+          type: string
+          description: Handling Gate/Stand/Claim Area, m[1-8]
+          example: 16
     Bpm:
       type: object
       properties:
@@ -273,89 +567,6 @@ components:
           example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
       required:
       - message
-    HandlingLocation:
-      type: object
-      properties:
-        handling-terminal:
-          type: string
-          description: Handling Terminal
-          example: T1
-        handling-bay:
-          type: string
-          description: Handling Bay/Pier, m[1-6]
-          example: NORTH
-        handling-gate-stand-claim:
-          type: string
-          description: Handling Gate/Stand/Claim Area, m[1-8]
-          example: 16
-    SecurityScreening:
-      type: object
-      properties:
-        screen-instructor:
-          type: string
-          enum:
-          - DEF
-          - SEL
-          - NON
-        screen-result:
-          type: string
-          enum:
-          - CLR
-          - REJ
-          - UCL
-        screen-result-reason:
-          type: string
-          enum:
-          - D
-          - E
-          - C
-          - N
-          - T
-        screen-method:
-          type: string
-        screen-autograph:
-          type: string
-        screen-comment:
-          type: string
-    ConnectionFlightDataBpm:
-      type: object
-      properties:
-        flight-designator:
-          type: string
-          description: Airline and Flight Number
-          example: UA423
-        origin-date:
-          type: string
-          description: Scheduled date for departure date. Format is YYYY-MM-DD.
-          example: '2023-03-30'
-        carrier:
-          type: string
-          description: The flight carrier
-          example: UA
-        flight-number:
-          type: string
-          description: The flight number
-          example: 423
-        operational-suffix:
-          type: string
-          example: A
-        origin-iata-code:
-          type: string
-          description: Origin Airport IATA code
-          example: SIN
-        destination-iata-code:
-          type: string
-          description: Destination Airport IATA code
-          example: DXB
-        class-of-travel:
-          type: string
-          description: Y, F, etc.
-          example: F
-        sequence-number:
-          type: integer
-          format: int32
-          description: Sequence Flight Number
-          example: 1
     VersionData:
       type: object
       properties:
@@ -386,133 +597,6 @@ components:
       - baggage-source-indicator
       - origin-iata-code
       - part-number
-    ProcessingInfo:
-      type: object
-      properties:
-        secondary-code:
-          type: string
-          description: Secondary Code
-          enum:
-          - G
-          - R
-          - S
-          - H
-          example: R
-        agent-identification:
-          type: string
-          description: Agent Identification
-          example: 43S
-        scanner-identification:
-          type: string
-          description: Scanner Identification
-          example: 120D32
-        date-time:
-          type: string
-          format: date-time
-          description: Date (DDMMM) combined with Time (HHMMSS; L=local; Z=UTC)
-          example: 09MAR 154512L
-        time-zone-indicator:
-          type: string
-          description: Time zone indicator retrieved from time field in .J element
-          enum:
-          - L
-          - Z
-        reading-location:
-          type: string
-          description: Reading Location
-          example: B2
-        sent-to-location:
-          type: string
-          description: Sent to Location
-          example: RI
-      required:
-      - secondary-code
-    LoadingData:
-      type: object
-      properties:
-        container-tag:
-          type: string
-          description: Stowage Device ID
-          example: AKE123456
-        loading-location:
-          type: string
-          description: Aircraft Compartment or Loading Location
-          example: 11L
-        type-of-baggage:
-          type: string
-          description: Type of Baggage in Container/Location.
-          enum:
-          - M
-          - T
-          - S
-          - X
-          example: T
-        class-of-travel:
-          type: string
-          description: Class(es) of Travel
-          example: Y
-        destination-airport-code:
-          type: string
-          description: Destination or Transfer Airport Code of the Container
-          example: NRT
-        sealed-container-indicator:
-          type: string
-          description: Sealed Container Indicator
-          example: Y
-        connection-flight:
-          $ref: '#/components/schemas/ConnectionFlightDataBpm'
-        container-handling-type:
-          type: string
-          description: Container Handling Type up to 8 characters
-          example: PRIO
-      required:
-      - container-tag
-    ReconciliationData:
-      type: object
-      properties:
-        authority-to-load:
-          type: boolean
-          description: Authority To Load
-          example: Y
-        seat-number:
-          type: string
-          description: Seat Number
-          example: 10A
-        passenger-status:
-          type: string
-          description: Passenger Status
-          enum:
-          - B
-          - C
-          - N
-          - S
-          example: C
-        sequence-number:
-          type: string
-          description: Sequence Number
-          example: 98
-        security-number:
-          type: string
-          description: Security Number
-          example: 88
-        passenger-profile-status:
-          type: string
-          description: Passenger Profile Status
-          example: Y
-        authority-to-transport:
-          type: boolean
-          description: Authority To Transport
-          example: Y
-        bagtag-status:
-          type: string
-          description: Baggage Tag Status
-          enum:
-          - I
-          - A
-          - V
-          example: A
-      required:
-      - authority-to-load
     BaggageIdentification:
       type: object
       properties:
@@ -528,87 +612,3 @@ components:
           example: '002'
       required:
       - bag-tag
-    FlightDataBpm:
-      type: object
-      properties:
-        flight-designator:
-          type: string
-          description: Airline and Flight Number
-          example: UA423
-        origin-date:
-          type: string
-          description: Scheduled date for departure date. Format is YYYY-MM-DD.
-          example: '2023-03-30'
-        carrier:
-          type: string
-          description: The flight carrier
-          example: UA
-        flight-number:
-          type: string
-          description: The flight number
-          example: 423
-        operational-suffix:
-          type: string
-          example: A
-        origin-iata-code:
-          type: string
-          description: Origin Airport IATA code
-          example: SIN
-        destination-iata-code:
-          type: string
-          description: Destination Airport IATA code
-          example: DXB
-        class-of-travel:
-          type: string
-          description: Y, F, etc.
-          example: F
-        sequence-number:
-          type: integer
-          format: int32
-          description: Sequence Flight Number
-          example: 1
-    Dimension:
-      type: object
-      properties:
-        weight-indicator:
-          type: string
-          enum:
-          - K
-          - L
-          example: K
-        check-bag-count:
-          type: integer
-          format: int32
-          description: Number of check Bags
-          example: 2
-        checked-bag-weight:
-          type: integer
-          format: int32
-          example: 33
-        unchecked-bag-weight:
-          type: integer
-          format: int32
-          example: 5
-        dimension-indicator:
-          type: string
-          enum:
-          - CM
-          - IN
-          example: CM
-        bag-length:
-          type: integer
-          format: int32
-          example: 123
-        bag-width:
-          type: integer
-          format: int32
-          example: 63
-        bag-height:
-          type: integer
-          format: int32
-          example: 23
-        bag-type-code:
-          type: string
-          example: 02HWX
-      required:
-      - weight-indicator

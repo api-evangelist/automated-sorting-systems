@@ -157,49 +157,6 @@ paths:
         - ADH.FL.R
 components:
   schemas:
-    FlightDataCpm:
-      type: object
-      properties:
-        flight-designator:
-          type: string
-          description: Airline and Flight Number
-          example: UA423
-        origin-date:
-          type: string
-          description: Scheduled date for departure date. Format is YYYY-MM-DD.
-          example: '2023-03-30'
-        carrier:
-          type: string
-          description: The flight carrier
-          example: UA
-        flight-number:
-          type: string
-          description: The flight number
-          example: 423
-        operational-suffix:
-          type: string
-          example: A
-        origin-iata-code:
-          type: string
-          description: Origin Airport IATA code
-          example: SIN
-        destination-iata-code:
-          type: string
-          description: Destination Airport IATA code
-          example: DXB
-        class-of-travel:
-          type: string
-          description: Y, F, etc.
-          example: F
-        sequence-number:
-          type: integer
-          format: int32
-          description: Sequence Flight Number
-          example: 1
-        aircraft-registration:
-          type: string
-          description: Registration of aircraft composed of 2-10 printable characters
-          example: A7BBG
     Cpm:
       type: object
       properties:
@@ -290,3 +247,46 @@ components:
           example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
       required:
       - message
+    FlightDataCpm:
+      type: object
+      properties:
+        flight-designator:
+          type: string
+          description: Airline and Flight Number
+          example: UA423
+        origin-date:
+          type: string
+          description: Scheduled date for departure date. Format is YYYY-MM-DD.
+          example: '2023-03-30'
+        carrier:
+          type: string
+          description: The flight carrier
+          example: UA
+        flight-number:
+          type: string
+          description: The flight number
+          example: 423
+        operational-suffix:
+          type: string
+          example: A
+        origin-iata-code:
+          type: string
+          description: Origin Airport IATA code
+          example: SIN
+        destination-iata-code:
+          type: string
+          description: Destination Airport IATA code
+          example: DXB
+        class-of-travel:
+          type: string
+          description: Y, F, etc.
+          example: F
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence Flight Number
+          example: 1
+        aircraft-registration:
+          type: string
+          description: Registration of aircraft composed of 2-10 printable characters
+          example: A7BBG

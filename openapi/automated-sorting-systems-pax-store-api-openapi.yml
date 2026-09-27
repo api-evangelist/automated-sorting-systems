@@ -154,46 +154,109 @@ paths:
         - ADH.FL.R
 components:
   schemas:
-    BasicMeta:
+    FlightIdentifier:
       type: object
-      description: Metadata of DH objects.
+      description: Object holding identifying information for a flight.
       properties:
-        created-at:
+        carrier:
+          type: string
+          description: 2-digit IATA code of operating carrier.
+          example: ZZ
+        flight-number:
+          type: string
+          description: The flight number of the operating carrier. Should contain not more than 4 chars and must not include whitespaces. If less than 4 chars leading zeros will be added to normalize it to 4 chars.
+          example: 997
+        operational-suffix:
+          type: string
+          description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+          example: B
+        origin-date:
+          type: string
+          format: date
+          description: UTC scheduled date of departure of the first leg of the flight. Must be between 2010-01-01 and 2210-01-01.
+        identifier-string:
+          type: string
+          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-DATE-ORIGIN-DESTINATION.
+        iata-message-key:
+          type: string
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT in the origin timezone
+        iata-message-key-utc:
+          type: string
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT coverted to UTC
+        origin-iata-code:
+          type: string
+          description: 3-digit IATA code of origin airport.
+          example: AAA
+        destination-iata-code:
+          type: string
+          description: 3-digit IATA code of destination airport.
+          example: ZZZ
+      required:
+      - carrier
+      - destination-iata-code
+      - flight-number
+      - origin-date
+      - origin-iata-code
+    SecondaryIdentifier:
+      type: object
+      description: Additional identifiers for flight legs or segments used by airport systems etc.
+      properties:
+        identifier:
+          type: string
+          description: Secondary identifier .
+        created:
           type: string
           format: date-time
-          description: Timestamp when object was first created in DH.
-          readOnly: true
-        created-by:
-          $ref: '#/components/schemas/User'
-          description: ID of user of event which caused the object to be created.
-          readOnly: true
-        modified-count:
+          description: Timestamp of creation of secondary identifier in UTC.
+        source:
+          type: string
+          description: Source creating the secondary identifier.
+      required:
+      - created
+      - identifier
+      - source
+    FlightPax:
+      type: object
+      description: Model for passenger count information.
+      properties:
+        pax-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
+        transfer-pax-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Transfer pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
+        bag-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
+        transfer-bag-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Transfer bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
+    ClassCount:
+      type: object
+      properties:
+        planned:
           type: integer
-          format: int64
-          description: Number of modifications in DH.
-          readOnly: true
-        modified-at:
-          type: string
-          format: date-time
-          description: Timestamp of last modification in DH.
-          readOnly: true
-        modified-by:
-          $ref: '#/components/schemas/User'
-          description: ID of user of event which caused the object to be modified.
-          readOnly: true
-        tag-id:
-          type: string
-          deprecated: true
-          description: Unique id of the bag tag in the data hub for an unlimited period of time.
-        skip-datawarehouse:
-          type: boolean
-          description: Skip Datawarehouse processing.
-          readOnly: true
-        skip-report-flight:
-          type: boolean
-          description: Skip Report Flight processing.
-          readOnly: true
-      readOnly: true
+          format: int32
+          description: Planned/booked count.
+          example: 100
+        estimated:
+          type: integer
+          format: int32
+          description: Estimated count.
+          example: 99
+        actual:
+          type: integer
+          format: int32
+          description: Actual count.
+          example: 102
     PaxEvent:
       type: object
       description: Entity for Business Events for pax. Always use one of the subtypes.
@@ -241,24 +304,6 @@ components:
       - event-type
       - identifier
       - source
-    SecondaryIdentifier:
-      type: object
-      description: Additional identifiers for flight legs or segments used by airport systems etc.
-      properties:
-        identifier:
-          type: string
-          description: Secondary identifier .
-        created:
-          type: string
-          format: date-time
-          description: Timestamp of creation of secondary identifier in UTC.
-        source:
-          type: string
-          description: Source creating the secondary identifier.
-      required:
-      - created
-      - identifier
-      - source
     PaxCountEvent:
       allOf:
       - $ref: '#/components/schemas/PaxEvent'
@@ -279,6 +324,46 @@ components:
       - flight-pax
       - identifier
       - source
+    BasicMeta:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        created-at:
+          type: string
+          format: date-time
+          description: Timestamp when object was first created in DH.
+          readOnly: true
+        created-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be created.
+          readOnly: true
+        modified-count:
+          type: integer
+          format: int64
+          description: Number of modifications in DH.
+          readOnly: true
+        modified-at:
+          type: string
+          format: date-time
+          description: Timestamp of last modification in DH.
+          readOnly: true
+        modified-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be modified.
+          readOnly: true
+        tag-id:
+          type: string
+          deprecated: true
+          description: Unique id of the bag tag in the data hub for an unlimited period of time.
+        skip-datawarehouse:
+          type: boolean
+          description: Skip Datawarehouse processing.
+          readOnly: true
+        skip-report-flight:
+          type: boolean
+          description: Skip Report Flight processing.
+          readOnly: true
+      readOnly: true
     User:
       type: object
       description: Metadata of DH objects.
@@ -292,88 +377,3 @@ components:
           description: Readable user name
           readOnly: true
       readOnly: true
-    FlightIdentifier:
-      type: object
-      description: Object holding identifying information for a flight.
-      properties:
-        carrier:
-          type: string
-          description: 2-digit IATA code of operating carrier.
-          example: ZZ
-        flight-number:
-          type: string
-          description: The flight number of the operating carrier. Should contain not more than 4 chars and must not include whitespaces. If less than 4 chars leading zeros will be added to normalize it to 4 chars.
-          example: 997
-        operational-suffix:
-          type: string
-          description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
-          example: B
-        origin-date:
-          type: string
-          format: date
-          description: UTC scheduled date of departure of the first leg of the flight. Must be between 2010-01-01 and 2210-01-01.
-        identifier-string:
-          type: string
-          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-DATE-ORIGIN-DESTINATION.
-        iata-message-key:
-          type: string
-          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT in the origin timezone
-        iata-message-key-utc:
-          type: string
-          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT coverted to UTC
-        origin-iata-code:
-          type: string
-          description: 3-digit IATA code of origin airport.
-          example: AAA
-        destination-iata-code:
-          type: string
-          description: 3-digit IATA code of destination airport.
-          example: ZZZ
-      required:
-      - carrier
-      - destination-iata-code
-      - flight-number
-      - origin-date
-      - origin-iata-code
-    ClassCount:
-      type: object
-      properties:
-        planned:
-          type: integer
-          format: int32
-          description: Planned/booked count.
-          example: 100
-        estimated:
-          type: integer
-          format: int32
-          description: Estimated count.
-          example: 99
-        actual:
-          type: integer
-          format: int32
-          description: Actual count.
-          example: 102
-    FlightPax:
-      type: object
-      description: Model for passenger count information.
-      properties:
-        pax-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
-        transfer-pax-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Transfer pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
-        bag-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
-        transfer-bag-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Transfer bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.

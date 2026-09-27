@@ -116,6 +116,294 @@ paths:
         - ADH.FL.R
 components:
   schemas:
+    FlightIdentifier:
+      type: object
+      description: Object holding identifying information for a flight.
+      properties:
+        carrier:
+          type: string
+          description: 2-digit IATA code of operating carrier.
+          example: ZZ
+        flight-number:
+          type: string
+          description: The flight number of the operating carrier. Should contain not more than 4 chars and must not include whitespaces. If less than 4 chars leading zeros will be added to normalize it to 4 chars.
+          example: 997
+        operational-suffix:
+          type: string
+          description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+          example: B
+        origin-date:
+          type: string
+          format: date
+          description: UTC scheduled date of departure of the first leg of the flight. Must be between 2010-01-01 and 2210-01-01.
+        identifier-string:
+          type: string
+          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-DATE-ORIGIN-DESTINATION.
+        iata-message-key:
+          type: string
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT in the origin timezone
+        iata-message-key-utc:
+          type: string
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT coverted to UTC
+        origin-iata-code:
+          type: string
+          description: 3-digit IATA code of origin airport.
+          example: AAA
+        destination-iata-code:
+          type: string
+          description: 3-digit IATA code of destination airport.
+          example: ZZZ
+      required:
+      - carrier
+      - destination-iata-code
+      - flight-number
+      - origin-date
+      - origin-iata-code
+    MilestoneTimes:
+      type: object
+      properties:
+        scheduled:
+          type: string
+          format: date-time
+          description: Scheduled time for milestone.
+        estimated:
+          type: string
+          format: date-time
+          description: Estimated time for milestone.
+        actual:
+          type: string
+          format: date-time
+          description: Actual time for milestone.
+        relevant:
+          type: string
+          format: date-time
+          description: Relevant time for milestone, returns actual if set, else estimated if set, else scheduled.
+    AirportResources:
+      type: object
+      properties:
+        aircraft-parking-position:
+          $ref: '#/components/schemas/AirportResource'
+          description: Gate or hard stand where the aircraft is located.
+        passenger-gates:
+          type: array
+          description: The public gates which the passengers will use to board or disembark.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        remote-operational-gates:
+          type: array
+          description: Additional location used to transfer passengers to or from a remote parking position.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        runway:
+          $ref: '#/components/schemas/AirportResource'
+          description: The runway used for landing or take-off.
+        aircraft-terminal:
+          $ref: '#/components/schemas/AirportResource'
+          description: Terminal where the aircraft is located.
+        public-terminals:
+          type: array
+          description: Terminals where the passengers will be processed.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        baggage-claim-units:
+          type: array
+          description: The number(s) or name(s) of the assigned baggage claim units.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        baggage-make-up-belts:
+          type: array
+          description: The baggage makeup belts assigned for outgoing bags.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        baggage-transfer-laterals:
+          type: array
+          description: The baggage transfer laterals assigned for incoming bags.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        check-in-desks:
+          $ref: '#/components/schemas/AirportResource'
+          description: Check-in / baggage drop desks.
+        baggage-make-up-belts-open-time:
+          $ref: '#/components/schemas/AirportResource'
+          description: The Opening Time of the baggage makeup belts assigned.
+        baggage-make-up-belts-close-time:
+          $ref: '#/components/schemas/AirportResource'
+          description: The Closing Time of baggage makeup belts assigned.
+    Fblb:
+      type: object
+      properties:
+        fb-dt:
+          type: string
+          format: date-time
+          description: Timestamp when the first bag was processed
+        lb-dt:
+          type: string
+          format: date-time
+          description: Timestamp when the last bag was processed
+        fb-aibt:
+          type: integer
+          format: int32
+          description: Duration in seconds between first bag date time and actual in block time.
+        lb-aibt:
+          type: integer
+          format: int32
+          description: Duration in seconds between last bag date time and actual in block time.
+        read-rate:
+          type: number
+          format: float
+          description: Percentage of bags that arrived at reclaim belt from the all virtual bags
+        tags-checked-in:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        total-bags-check-in:
+          type: integer
+          format: int32
+          description: Number of bags that were checked in
+        tags-at-reclaim-belt:
+          type: array
+          description: A list of all the bags tags that were processed for that flight
+          items:
+            type: string
+          uniqueItems: true
+        total-bags-reclaim-belt:
+          type: integer
+          format: int32
+          description: Number of bags that arrived at reclaim belt for that flight
+        tags-missing:
+          type: array
+          description: A list of all the bags tags that were checked in but did not arrived at reclaim belt
+          items:
+            type: string
+          uniqueItems: true
+        total-bags-missing:
+          type: integer
+          format: int32
+          description: Number of bags that arrived at reclaim belt for that flight
+        tags-unexpected:
+          type: array
+          description: A list of all the bags tags that arrived at reclaim belt but were not checked in
+          items:
+            type: string
+          uniqueItems: true
+        total-bags-unexpected:
+          type: integer
+          format: int32
+          description: Number of bags that were checked in
+        fb-tag:
+          type: string
+        lb-tag:
+          type: string
+        tags-details:
+          type: array
+          items:
+            $ref: '#/components/schemas/FblbBag'
+        read-rate-expected:
+          type: number
+          format: float
+          description: Percentage of bags that arrived at reclaim belt from the checked-in bags
+    FlightSegment:
+      type: object
+      description: Model for flight segments.
+      properties:
+        identifier:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Identifying properties of flight segment.
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers for the flight segment used by airport systems etc.
+          items:
+            $ref: '#/components/schemas/SecondaryIdentifier'
+          uniqueItems: true
+        is-international:
+          type: boolean
+          description: Indicates whether is is a domestic or an international flight segment.
+        milestones:
+          $ref: '#/components/schemas/Milestones'
+          description: Milestone times at departure and arrival, i.e. off-block, take-off, landing, in-block.
+      required:
+      - identifier
+      - is-international
+    SecondaryIdentifier:
+      type: object
+      description: Additional identifiers for flight legs or segments used by airport systems etc.
+      properties:
+        identifier:
+          type: string
+          description: Secondary identifier .
+        created:
+          type: string
+          format: date-time
+          description: Timestamp of creation of secondary identifier in UTC.
+        source:
+          type: string
+          description: Source creating the secondary identifier.
+      required:
+      - created
+      - identifier
+      - source
+    AirportResource:
+      type: object
+      description: Description of an airport resource, allocated to a flight leg.
+      example: AirportResource Description
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event setting this resource in UTC.
+        location:
+          type: string
+          description: Resource location or name.
+          example: Apron
+      required:
+      - location
+      - timestamp
+    Milestones:
+      type: object
+      properties:
+        gto:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Gate open time at origin airport of flight leg.
+        gtc:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Gate closed time at origin airport of flight leg.
+        obt:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Off-block time at origin airport of flight leg.
+        tot:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Take-off time at origin airport of flight leg.
+        ldt:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Landing time at destination airport of flight leg.
+        ibt:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: In-block time at destination airport of flight leg.
+    FlightPax:
+      type: object
+      description: Model for passenger count information.
+      properties:
+        pax-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
+        transfer-pax-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Transfer pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
+        bag-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
+        transfer-bag-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Transfer bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
     FlightLeg:
       type: object
       description: Object holding the state of a flight leg.
@@ -193,6 +481,24 @@ components:
       - identifier
       - is-international
       - state
+    ClassCount:
+      type: object
+      properties:
+        planned:
+          type: integer
+          format: int32
+          description: Planned/booked count.
+          example: 100
+        estimated:
+          type: integer
+          format: int32
+          description: Estimated count.
+          example: 99
+        actual:
+          type: integer
+          format: int32
+          description: Actual count.
+          example: 102
     FblbBag:
       type: object
       properties:
@@ -211,6 +517,33 @@ components:
         reclaim-belt-time:
           type: string
           format: date-time
+    ReportFlight:
+      type: object
+      description: Object holding the state of a report flight.
+      properties:
+        identifier-string:
+          type: string
+          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-OPERATIONALSUFFIX-DATE-ORIGIN-DESTINATION.
+        fblb:
+          $ref: '#/components/schemas/Fblb'
+          description: 'First-bag last-bag report. '
+        flight-leg:
+          $ref: '#/components/schemas/FlightLeg'
+          description: The flight leg business object.
+        originDate:
+          type: string
+          format: date
+          writeOnly: true
+        aibt:
+          type: string
+          format: date-time
+        meta:
+          $ref: '#/components/schemas/AggregatedMeta'
+          description: Metadata, generated by ADH.
+          readOnly: true
+      required:
+      - flight-leg
+      - identifier-string
     AggregatedMeta:
       type: object
       description: Metadata of DH objects.
@@ -269,65 +602,19 @@ components:
           description: Skip Report Flight processing.
           readOnly: true
       readOnly: true
-    MilestoneTimes:
+    User:
       type: object
+      description: Metadata of DH objects.
       properties:
-        scheduled:
+        user-id:
           type: string
-          format: date-time
-          description: Scheduled time for milestone.
-        estimated:
+          description: Unique user id.
+          readOnly: true
+        user-name:
           type: string
-          format: date-time
-          description: Estimated time for milestone.
-        actual:
-          type: string
-          format: date-time
-          description: Actual time for milestone.
-        relevant:
-          type: string
-          format: date-time
-          description: Relevant time for milestone, returns actual if set, else estimated if set, else scheduled.
-    SecondaryIdentifier:
-      type: object
-      description: Additional identifiers for flight legs or segments used by airport systems etc.
-      properties:
-        identifier:
-          type: string
-          description: Secondary identifier .
-        created:
-          type: string
-          format: date-time
-          description: Timestamp of creation of secondary identifier in UTC.
-        source:
-          type: string
-          description: Source creating the secondary identifier.
-      required:
-      - created
-      - identifier
-      - source
-    FlightSegment:
-      type: object
-      description: Model for flight segments.
-      properties:
-        identifier:
-          $ref: '#/components/schemas/FlightIdentifier'
-          description: Identifying properties of flight segment.
-        secondary-identifiers:
-          type: array
-          description: Additionally identifiers for the flight segment used by airport systems etc.
-          items:
-            $ref: '#/components/schemas/SecondaryIdentifier'
-          uniqueItems: true
-        is-international:
-          type: boolean
-          description: Indicates whether is is a domestic or an international flight segment.
-        milestones:
-          $ref: '#/components/schemas/Milestones'
-          description: Milestone times at departure and arrival, i.e. off-block, take-off, landing, in-block.
-      required:
-      - identifier
-      - is-international
+          description: Readable user name
+          readOnly: true
+      readOnly: true
     Aircraft:
       type: object
       properties:
@@ -342,290 +629,3 @@ components:
         registration-number:
           type: string
           description: Registration number.
-    User:
-      type: object
-      description: Metadata of DH objects.
-      properties:
-        user-id:
-          type: string
-          description: Unique user id.
-          readOnly: true
-        user-name:
-          type: string
-          description: Readable user name
-          readOnly: true
-      readOnly: true
-    AirportResource:
-      type: object
-      description: Description of an airport resource, allocated to a flight leg.
-      example: AirportResource Description
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp of event setting this resource in UTC.
-        location:
-          type: string
-          description: Resource location or name.
-          example: Apron
-      required:
-      - location
-      - timestamp
-    FlightPax:
-      type: object
-      description: Model for passenger count information.
-      properties:
-        pax-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
-        transfer-pax-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Transfer pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
-        bag-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
-        transfer-bag-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Transfer bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
-    AirportResources:
-      type: object
-      properties:
-        aircraft-parking-position:
-          $ref: '#/components/schemas/AirportResource'
-          description: Gate or hard stand where the aircraft is located.
-        passenger-gates:
-          type: array
-          description: The public gates which the passengers will use to board or disembark.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        remote-operational-gates:
-          type: array
-          description: Additional location used to transfer passengers to or from a remote parking position.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        runway:
-          $ref: '#/components/schemas/AirportResource'
-          description: The runway used for landing or take-off.
-        aircraft-terminal:
-          $ref: '#/components/schemas/AirportResource'
-          description: Terminal where the aircraft is located.
-        public-terminals:
-          type: array
-          description: Terminals where the passengers will be processed.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        baggage-claim-units:
-          type: array
-          description: The number(s) or name(s) of the assigned baggage claim units.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        baggage-make-up-belts:
-          type: array
-          description: The baggage makeup belts assigned for outgoing bags.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        baggage-transfer-laterals:
-          type: array
-          description: The baggage transfer laterals assigned for incoming bags.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        check-in-desks:
-          $ref: '#/components/schemas/AirportResource'
-          description: Check-in / baggage drop desks.
-        baggage-make-up-belts-open-time:
-          $ref: '#/components/schemas/AirportResource'
-          description: The Opening Time of the baggage makeup belts assigned.
-        baggage-make-up-belts-close-time:
-          $ref: '#/components/schemas/AirportResource'
-          description: The Closing Time of baggage makeup belts assigned.
-    ReportFlight:
-      type: object
-      description: Object holding the state of a report flight.
-      properties:
-        identifier-string:
-          type: string
-          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-OPERATIONALSUFFIX-DATE-ORIGIN-DESTINATION.
-        fblb:
-          $ref: '#/components/schemas/Fblb'
-          description: 'First-bag last-bag report. '
-        flight-leg:
-          $ref: '#/components/schemas/FlightLeg'
-          description: The flight leg business object.
-        originDate:
-          type: string
-          format: date
-          writeOnly: true
-        aibt:
-          type: string
-          format: date-time
-        meta:
-          $ref: '#/components/schemas/AggregatedMeta'
-          description: Metadata, generated by ADH.
-          readOnly: true
-      required:
-      - flight-leg
-      - identifier-string
-    Milestones:
-      type: object
-      properties:
-        gto:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Gate open time at origin airport of flight leg.
-        gtc:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Gate closed time at origin airport of flight leg.
-        obt:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Off-block time at origin airport of flight leg.
-        tot:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Take-off time at origin airport of flight leg.
-        ldt:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Landing time at destination airport of flight leg.
-        ibt:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: In-block time at destination airport of flight leg.
-    FlightIdentifier:
-      type: object
-      description: Object holding identifying information for a flight.
-      properties:
-        carrier:
-          type: string
-          description: 2-digit IATA code of operating carrier.
-          example: ZZ
-        flight-number:
-          type: string
-          description: The flight number of the operating carrier. Should contain not more than 4 chars and must not include whitespaces. If less than 4 chars leading zeros will be added to normalize it to 4 chars.
-          example: 997
-        operational-suffix:
-          type: string
-          description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
-          example: B
-        origin-date:
-          type: string
-          format: date
-          description: UTC scheduled date of departure of the first leg of the flight. Must be between 2010-01-01 and 2210-01-01.
-        identifier-string:
-          type: string
-          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-DATE-ORIGIN-DESTINATION.
-        iata-message-key:
-          type: string
-          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT in the origin timezone
-        iata-message-key-utc:
-          type: string
-          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT coverted to UTC
-        origin-iata-code:
-          type: string
-          description: 3-digit IATA code of origin airport.
-          example: AAA
-        destination-iata-code:
-          type: string
-          description: 3-digit IATA code of destination airport.
-          example: ZZZ
-      required:
-      - carrier
-      - destination-iata-code
-      - flight-number
-      - origin-date
-      - origin-iata-code
-    ClassCount:
-      type: object
-      properties:
-        planned:
-          type: integer
-          format: int32
-          description: Planned/booked count.
-          example: 100
-        estimated:
-          type: integer
-          format: int32
-          description: Estimated count.
-          example: 99
-        actual:
-          type: integer
-          format: int32
-          description: Actual count.
-          example: 102
-    Fblb:
-      type: object
-      properties:
-        fb-dt:
-          type: string
-          format: date-time
-          description: Timestamp when the first bag was processed
-        lb-dt:
-          type: string
-          format: date-time
-          description: Timestamp when the last bag was processed
-        fb-aibt:
-          type: integer
-          format: int32
-          description: Duration in seconds between first bag date time and actual in block time.
-        lb-aibt:
-          type: integer
-          format: int32
-          description: Duration in seconds between last bag date time and actual in block time.
-        read-rate:
-          type: number
-          format: float
-          description: Percentage of bags that arrived at reclaim belt from the all virtual bags
-        tags-checked-in:
-          type: array
-          items:
-            type: string
-          uniqueItems: true
-        total-bags-check-in:
-          type: integer
-          format: int32
-          description: Number of bags that were checked in
-        tags-at-reclaim-belt:
-          type: array
-          description: A list of all the bags tags that were processed for that flight
-          items:
-            type: string
-          uniqueItems: true
-        total-bags-reclaim-belt:
-          type: integer
-          format: int32
-          description: Number of bags that arrived at reclaim belt for that flight
-        tags-missing:
-          type: array
-          description: A list of all the bags tags that were checked in but did not arrived at reclaim belt
-          items:
-            type: string
-          uniqueItems: true
-        total-bags-missing:
-          type: integer
-          format: int32
-          description: Number of bags that arrived at reclaim belt for that flight
-        tags-unexpected:
-          type: array
-          description: A list of all the bags tags that arrived at reclaim belt but were not checked in
-          items:
-            type: string
-          uniqueItems: true
-        total-bags-unexpected:
-          type: integer
-          format: int32
-          description: Number of bags that were checked in
-        fb-tag:
-          type: string
-        lb-tag:
-          type: string
-        tags-details:
-          type: array
-          items:
-            $ref: '#/components/schemas/FblbBag'
-        read-rate-expected:
-          type: number
-          format: float
-          description: Percentage of bags that arrived at reclaim belt from the checked-in bags
