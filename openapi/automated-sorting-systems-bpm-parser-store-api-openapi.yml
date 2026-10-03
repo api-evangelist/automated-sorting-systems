@@ -175,6 +175,32 @@ paths:
         - ADH.FL.R
 components:
   schemas:
+    BpmRawMessage:
+      type: object
+      description: A BPM encapsulated in a JSON structure.
+      properties:
+        message:
+          type: string
+          description: Content of a BPM
+          example: 'BPM
+
+            .V/1LSYD
+
+            .J/R/TOSYD//09MAR/195959L/DNATABS//MU
+
+            .U/AKE12345AB//M//DXB
+
+            .N/0123398891001
+
+            ENDBPM'
+        pipeline:
+          type: string
+        correlation-id:
+          type: string
+          description: The global id which identifies this object across multiple applications. If no correlation id is provided, ADH will generate one.
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+      required:
+      - message
     ProcessingInfo:
       type: object
       properties:
@@ -216,120 +242,6 @@ components:
           example: RI
       required:
       - secondary-code
-    SecurityScreening:
-      type: object
-      properties:
-        screen-instructor:
-          type: string
-          enum:
-          - DEF
-          - SEL
-          - NON
-        screen-result:
-          type: string
-          enum:
-          - CLR
-          - REJ
-          - UCL
-        screen-result-reason:
-          type: string
-          enum:
-          - D
-          - E
-          - C
-          - N
-          - T
-        screen-method:
-          type: string
-        screen-autograph:
-          type: string
-        screen-comment:
-          type: string
-    FlightDataBpm:
-      type: object
-      properties:
-        flight-designator:
-          type: string
-          description: Airline and Flight Number
-          example: UA423
-        origin-date:
-          type: string
-          description: Scheduled date for departure date. Format is YYYY-MM-DD.
-          example: '2023-03-30'
-        carrier:
-          type: string
-          description: The flight carrier
-          example: UA
-        flight-number:
-          type: string
-          description: The flight number
-          example: 423
-        operational-suffix:
-          type: string
-          example: A
-        origin-iata-code:
-          type: string
-          description: Origin Airport IATA code
-          example: SIN
-        destination-iata-code:
-          type: string
-          description: Destination Airport IATA code
-          example: DXB
-        class-of-travel:
-          type: string
-          description: Y, F, etc.
-          example: F
-        sequence-number:
-          type: integer
-          format: int32
-          description: Sequence Flight Number
-          example: 1
-    ReconciliationData:
-      type: object
-      properties:
-        authority-to-load:
-          type: boolean
-          description: Authority To Load
-          example: Y
-        seat-number:
-          type: string
-          description: Seat Number
-          example: 10A
-        passenger-status:
-          type: string
-          description: Passenger Status
-          enum:
-          - B
-          - C
-          - N
-          - S
-          example: C
-        sequence-number:
-          type: string
-          description: Sequence Number
-          example: 98
-        security-number:
-          type: string
-          description: Security Number
-          example: 88
-        passenger-profile-status:
-          type: string
-          description: Passenger Profile Status
-          example: Y
-        authority-to-transport:
-          type: boolean
-          description: Authority To Transport
-          example: Y
-        bagtag-status:
-          type: string
-          description: Baggage Tag Status
-          enum:
-          - I
-          - A
-          - V
-          example: A
-      required:
-      - authority-to-load
     LoadingData:
       type: object
       properties:
@@ -370,6 +282,21 @@ components:
           example: PRIO
       required:
       - container-tag
+    BaggageIdentification:
+      type: object
+      properties:
+        is-regular:
+          type: boolean
+        bag-tag:
+          type: string
+          description: Baggage Tag Number
+          example: '0120123456'
+        consecutive-tags:
+          type: string
+          description: Number of Consecutive Tags
+          example: '002'
+      required:
+      - bag-tag
     ConnectionFlightDataBpm:
       type: object
       properties:
@@ -454,6 +381,65 @@ components:
           example: 02HWX
       required:
       - weight-indicator
+    VersionData:
+      type: object
+      properties:
+        version:
+          type: string
+        encryption:
+          type: string
+          example: 123ABC456Z
+        baggage-source-indicator:
+          type: string
+          description: L = Local; T = Transfer; X = Terminating; R = Remote
+          example: L
+        origin-iata-code:
+          type: string
+          description: Origin airport IATA code
+          example: DXB
+        part-number:
+          type: string
+          description: Origin airport IATA code
+          example: PART1
+        message-reference-number:
+          type: string
+          example: BA21900123
+        acknowledgement-request:
+          type: boolean
+          example: A
+      required:
+      - baggage-source-indicator
+      - origin-iata-code
+      - part-number
+    SecurityScreening:
+      type: object
+      properties:
+        screen-instructor:
+          type: string
+          enum:
+          - DEF
+          - SEL
+          - NON
+        screen-result:
+          type: string
+          enum:
+          - CLR
+          - REJ
+          - UCL
+        screen-result-reason:
+          type: string
+          enum:
+          - D
+          - E
+          - C
+          - N
+          - T
+        screen-method:
+          type: string
+        screen-autograph:
+          type: string
+        screen-comment:
+          type: string
     HandlingLocation:
       type: object
       properties:
@@ -541,74 +527,88 @@ components:
       required:
       - bag-ids
       - version-data
-    BpmRawMessage:
-      type: object
-      description: A BPM encapsulated in a JSON structure.
-      properties:
-        message:
-          type: string
-          description: Content of a BPM
-          example: 'BPM
-
-            .V/1LSYD
-
-            .J/R/TOSYD//09MAR/195959L/DNATABS//MU
-
-            .U/AKE12345AB//M//DXB
-
-            .N/0123398891001
-
-            ENDBPM'
-        pipeline:
-          type: string
-        correlation-id:
-          type: string
-          description: The global id which identifies this object across multiple applications. If no correlation id is provided, ADH will generate one.
-          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-      required:
-      - message
-    VersionData:
+    ReconciliationData:
       type: object
       properties:
-        version:
-          type: string
-        encryption:
-          type: string
-          example: 123ABC456Z
-        baggage-source-indicator:
-          type: string
-          description: L = Local; T = Transfer; X = Terminating; R = Remote
-          example: L
-        origin-iata-code:
-          type: string
-          description: Origin airport IATA code
-          example: DXB
-        part-number:
-          type: string
-          description: Origin airport IATA code
-          example: PART1
-        message-reference-number:
-          type: string
-          example: BA21900123
-        acknowledgement-request:
+        authority-to-load:
           type: boolean
+          description: Authority To Load
+          example: Y
+        seat-number:
+          type: string
+          description: Seat Number
+          example: 10A
+        passenger-status:
+          type: string
+          description: Passenger Status
+          enum:
+          - B
+          - C
+          - N
+          - S
+          example: C
+        sequence-number:
+          type: string
+          description: Sequence Number
+          example: 98
+        security-number:
+          type: string
+          description: Security Number
+          example: 88
+        passenger-profile-status:
+          type: string
+          description: Passenger Profile Status
+          example: Y
+        authority-to-transport:
+          type: boolean
+          description: Authority To Transport
+          example: Y
+        bagtag-status:
+          type: string
+          description: Baggage Tag Status
+          enum:
+          - I
+          - A
+          - V
           example: A
       required:
-      - baggage-source-indicator
-      - origin-iata-code
-      - part-number
-    BaggageIdentification:
+      - authority-to-load
+    FlightDataBpm:
       type: object
       properties:
-        is-regular:
-          type: boolean
-        bag-tag:
+        flight-designator:
           type: string
-          description: Baggage Tag Number
-          example: '0120123456'
-        consecutive-tags:
+          description: Airline and Flight Number
+          example: UA423
+        origin-date:
           type: string
-          description: Number of Consecutive Tags
-          example: '002'
-      required:
-      - bag-tag
+          description: Scheduled date for departure date. Format is YYYY-MM-DD.
+          example: '2023-03-30'
+        carrier:
+          type: string
+          description: The flight carrier
+          example: UA
+        flight-number:
+          type: string
+          description: The flight number
+          example: 423
+        operational-suffix:
+          type: string
+          example: A
+        origin-iata-code:
+          type: string
+          description: Origin Airport IATA code
+          example: SIN
+        destination-iata-code:
+          type: string
+          description: Destination Airport IATA code
+          example: DXB
+        class-of-travel:
+          type: string
+          description: Y, F, etc.
+          example: F
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence Flight Number
+          example: 1

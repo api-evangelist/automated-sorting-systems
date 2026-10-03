@@ -613,6 +613,183 @@ paths:
         - ADH.FL.R
 components:
   schemas:
+    BasicMeta:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        created-at:
+          type: string
+          format: date-time
+          description: Timestamp when object was first created in DH.
+          readOnly: true
+        created-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be created.
+          readOnly: true
+        modified-count:
+          type: integer
+          format: int64
+          description: Number of modifications in DH.
+          readOnly: true
+        modified-at:
+          type: string
+          format: date-time
+          description: Timestamp of last modification in DH.
+          readOnly: true
+        modified-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be modified.
+          readOnly: true
+        tag-id:
+          type: string
+          deprecated: true
+          description: Unique id of the bag tag in the data hub for an unlimited period of time.
+        skip-datawarehouse:
+          type: boolean
+          description: Skip Datawarehouse processing.
+          readOnly: true
+        skip-report-flight:
+          type: boolean
+          description: Skip Report Flight processing.
+          readOnly: true
+      readOnly: true
+    GateResourceEvent:
+      allOf:
+      - $ref: '#/components/schemas/FlightEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - GATE_RESOURCE_EVENT
+          departure-or-arrival:
+            type: string
+            description: Indicator for departure or arrival related information.
+            enum:
+            - DEPARTURE
+            - ARRIVAL
+          gates:
+            type: array
+            description: Passenger gates.
+            items:
+              type: string
+            uniqueItems: true
+      description: Entity for Business Events for passenger gate assignment to flight.
+      required:
+      - departure-or-arrival
+      - event-time
+      - event-type
+      - gates
+      - identifier
+      - source
+    FlightPax:
+      type: object
+      description: Model for passenger count information.
+      properties:
+        pax-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
+        transfer-pax-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Transfer pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
+        bag-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
+        transfer-bag-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Transfer bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
+    FlightCancelledEvent:
+      allOf:
+      - $ref: '#/components/schemas/FlightEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - FLIGHT_CANCELLED_EVENT
+      description: Entity for Business Events for cancellation of flight.
+      required:
+      - event-time
+      - event-type
+      - identifier
+      - source
+    FlightTimeEvent:
+      allOf:
+      - $ref: '#/components/schemas/FlightEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - FLIGHT_TIME_EVENT
+          flight-times:
+            type: array
+            description: List of flight times to set or update.
+            items:
+              $ref: '#/components/schemas/FlightTime'
+          departure-or-arrival:
+            type: string
+            description: Indicator for departure or arrival related information.
+            enum:
+            - DEPARTURE
+            - ARRIVAL
+      description: Entity for Business Events for flight times setting and update.
+      required:
+      - departure-or-arrival
+      - event-time
+      - event-type
+      - flight-times
+      - identifier
+      - source
+    BaggageMakeUpBeltResourceEvent:
+      allOf:
+      - $ref: '#/components/schemas/FlightEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAGGAGE_MAKE_UP_BELT_RESOURCE_EVENT
+          departure-or-arrival:
+            type: string
+            description: Indicator for departure or arrival related information.
+            enum:
+            - DEPARTURE
+            - ARRIVAL
+          baggage-make-up-belts:
+            type: array
+            description: Baggage make-up belts.
+            items:
+              type: string
+            uniqueItems: true
+          closetime:
+            type: string
+            format: date-time
+            description: Baggage make-up belts Close Time.
+          opentime:
+            type: string
+            format: date-time
+            description: Baggage make-up belts Open Time.
+      description: Entity for Business Events for baggage make-up belt assignments to flight.
+      required:
+      - baggage-make-up-belts
+      - departure-or-arrival
+      - event-time
+      - event-type
+      - identifier
+      - source
     FlightIdentifier:
       type: object
       description: Object holding identifying information for a flight.
@@ -656,89 +833,6 @@ components:
       - flight-number
       - origin-date
       - origin-iata-code
-    FlightCancelledEvent:
-      allOf:
-      - $ref: '#/components/schemas/FlightEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - FLIGHT_CANCELLED_EVENT
-      description: Entity for Business Events for cancellation of flight.
-      required:
-      - event-time
-      - event-type
-      - identifier
-      - source
-    FlightSegment:
-      type: object
-      description: Model for flight segments.
-      properties:
-        identifier:
-          $ref: '#/components/schemas/FlightIdentifier'
-          description: Identifying properties of flight segment.
-        secondary-identifiers:
-          type: array
-          description: Additionally identifiers for the flight segment used by airport systems etc.
-          items:
-            $ref: '#/components/schemas/SecondaryIdentifier'
-          uniqueItems: true
-        is-international:
-          type: boolean
-          description: Indicates whether is is a domestic or an international flight segment.
-        milestones:
-          $ref: '#/components/schemas/Milestones'
-          description: Milestone times at departure and arrival, i.e. off-block, take-off, landing, in-block.
-      required:
-      - identifier
-      - is-international
-    Milestones:
-      type: object
-      properties:
-        gto:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Gate open time at origin airport of flight leg.
-        gtc:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Gate closed time at origin airport of flight leg.
-        obt:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Off-block time at origin airport of flight leg.
-        tot:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Take-off time at origin airport of flight leg.
-        ldt:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Landing time at destination airport of flight leg.
-        ibt:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: In-block time at destination airport of flight leg.
-    CheckInDesksResourceEvent:
-      allOf:
-      - $ref: '#/components/schemas/FlightEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - CHECK_IN_DESKS_RESOURCE_EVENT
-          check-in-desks:
-            type: array
-            description: Check-in desks.
-            example: Check-in desk 11, Check-in desk 12
-            items:
-              type: string
-            uniqueItems: true
-      description: Entity for Business Events for aircraft check-in desks assignment to flight.
-      required:
-      - check-in-desks
-      - event-time
-      - event-type
-      - identifier
-      - source
     FlightEvent:
       type: object
       description: Entity for Business Events for flights. Always use one of the subtypes.
@@ -815,68 +909,6 @@ components:
       - event-type
       - identifier
       - source
-    Aircraft:
-      type: object
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp of event.
-        aircraft-type:
-          type: string
-          description: Aircraft type.
-          example: A320
-        registration-number:
-          type: string
-          description: Registration number.
-    SecondaryIdentifier:
-      type: object
-      description: Additional identifiers for flight legs or segments used by airport systems etc.
-      properties:
-        identifier:
-          type: string
-          description: Secondary identifier .
-        created:
-          type: string
-          format: date-time
-          description: Timestamp of creation of secondary identifier in UTC.
-        source:
-          type: string
-          description: Source creating the secondary identifier.
-      required:
-      - created
-      - identifier
-      - source
-    BaggageClaimUnitResourceEvent:
-      allOf:
-      - $ref: '#/components/schemas/FlightEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - BAGGAGE_CLAIM_UNIT_RESOURCE_EVENT
-          departure-or-arrival:
-            type: string
-            description: Indicator for departure or arrival related information.
-            enum:
-            - DEPARTURE
-            - ARRIVAL
-          baggage-claim-units:
-            type: array
-            description: Baggage claim units.
-            items:
-              type: string
-            uniqueItems: true
-      description: Entity for Business Events for baggage claim unit assignments to flight.
-      required:
-      - baggage-claim-units
-      - departure-or-arrival
-      - event-time
-      - event-type
-      - identifier
-      - source
     AggregatedMeta:
       type: object
       description: Metadata of DH objects.
@@ -935,7 +967,7 @@ components:
           description: Skip Report Flight processing.
           readOnly: true
       readOnly: true
-    GateResourceEvent:
+    BaggageClaimUnitResourceEvent:
       allOf:
       - $ref: '#/components/schemas/FlightEvent'
       - type: object
@@ -944,110 +976,7 @@ components:
             type: string
             description: Type of event for the concrete subclass.
             enum:
-            - GATE_RESOURCE_EVENT
-          departure-or-arrival:
-            type: string
-            description: Indicator for departure or arrival related information.
-            enum:
-            - DEPARTURE
-            - ARRIVAL
-          gates:
-            type: array
-            description: Passenger gates.
-            items:
-              type: string
-            uniqueItems: true
-      description: Entity for Business Events for passenger gate assignment to flight.
-      required:
-      - departure-or-arrival
-      - event-time
-      - event-type
-      - gates
-      - identifier
-      - source
-    FlightPaxCountEvent:
-      allOf:
-      - $ref: '#/components/schemas/FlightEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - FLIGHT_PAX_COUNT_EVENT
-          flight-pax:
-            $ref: '#/components/schemas/FlightPax'
-            description: Set of passenger count information.
-      description: Entity for Business Events for pax count assignment to flight.
-      required:
-      - event-time
-      - event-type
-      - flight-pax
-      - identifier
-      - source
-    FlightScheduledEvent:
-      allOf:
-      - $ref: '#/components/schemas/FlightEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - FLIGHT_SCHEDULED_EVENT
-          sobt:
-            type: string
-            format: date-time
-            description: Scheduled Off-Block time. Must be in range of origin-date minus 1 day and plus 1 day.
-          sibt:
-            type: string
-            format: date-time
-            description: Scheduled In-Block time. Must be in range of origin-date  minus 1 day and plus 3 days.
-          aircraft-type:
-            type: string
-            description: Aircraft type.
-            example: A320
-          aircraft-registration:
-            type: string
-            description: Registration number of aircraft.
-          is-international:
-            type: boolean
-            description: Indicates whether is is an domestic or international flight leg
-          codeshare-strings:
-            type: array
-            description: List of codeshare identifiers as list of string.
-            items:
-              type: string
-          codeshares:
-            type: array
-            description: Codeshare flight numbers.
-            items:
-              $ref: '#/components/schemas/FlightIdentifier'
-          flight-segments:
-            type: array
-            description: Flight segments.
-            items:
-              $ref: '#/components/schemas/FlightSegment'
-          via-segments:
-            type: array
-            description: Via Flight segments.
-            items:
-              $ref: '#/components/schemas/FlightSegment'
-          check-in-desks:
-            type: array
-            description: Check-in desks.
-            example: Check-in desk 11, Check-in desk 12
-            items:
-              type: string
-            uniqueItems: true
-          aircraft-parking-position:
-            type: string
-            description: Aircraft parking position.
-            example: Bay 15
-          terminal:
-            type: string
-            description: Aircraft terminal.
-            example: Terminal A
+            - BAGGAGE_CLAIM_UNIT_RESOURCE_EVENT
           departure-or-arrival:
             type: string
             description: Indicator for departure or arrival related information.
@@ -1060,146 +989,14 @@ components:
             items:
               type: string
             uniqueItems: true
-      description: Entity for Business Events for flight scheduling.
+      description: Entity for Business Events for baggage claim unit assignments to flight.
       required:
-      - aircraft-parking-position
       - baggage-claim-units
-      - check-in-desks
-      - departure-or-arrival
-      - event-time
-      - event-type
-      - identifier
-      - is-international
-      - sibt
-      - sobt
-      - source
-      - terminal
-    AircraftParkingPositionResourceEvent:
-      allOf:
-      - $ref: '#/components/schemas/FlightEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - AIRCRAFT_PARKING_POSITION_RESOURCE_EVENT
-          departure-or-arrival:
-            type: string
-            description: Indicator for departure or arrival related information.
-            enum:
-            - DEPARTURE
-            - ARRIVAL
-          aircraft-parking-position:
-            type: string
-            description: Aircraft parking position.
-            example: Bay 15
-      description: Entity for Business Events for aircraft parking position assignment to a flight.
-      required:
-      - aircraft-parking-position
       - departure-or-arrival
       - event-time
       - event-type
       - identifier
       - source
-    AirportResources:
-      type: object
-      properties:
-        aircraft-parking-position:
-          $ref: '#/components/schemas/AirportResource'
-          description: Gate or hard stand where the aircraft is located.
-        passenger-gates:
-          type: array
-          description: The public gates which the passengers will use to board or disembark.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        remote-operational-gates:
-          type: array
-          description: Additional location used to transfer passengers to or from a remote parking position.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        runway:
-          $ref: '#/components/schemas/AirportResource'
-          description: The runway used for landing or take-off.
-        aircraft-terminal:
-          $ref: '#/components/schemas/AirportResource'
-          description: Terminal where the aircraft is located.
-        public-terminals:
-          type: array
-          description: Terminals where the passengers will be processed.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        baggage-claim-units:
-          type: array
-          description: The number(s) or name(s) of the assigned baggage claim units.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        baggage-make-up-belts:
-          type: array
-          description: The baggage makeup belts assigned for outgoing bags.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        baggage-transfer-laterals:
-          type: array
-          description: The baggage transfer laterals assigned for incoming bags.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        check-in-desks:
-          $ref: '#/components/schemas/AirportResource'
-          description: Check-in / baggage drop desks.
-        baggage-make-up-belts-open-time:
-          $ref: '#/components/schemas/AirportResource'
-          description: The Opening Time of the baggage makeup belts assigned.
-        baggage-make-up-belts-close-time:
-          $ref: '#/components/schemas/AirportResource'
-          description: The Closing Time of baggage makeup belts assigned.
-    MilestoneTimes:
-      type: object
-      properties:
-        scheduled:
-          type: string
-          format: date-time
-          description: Scheduled time for milestone.
-        estimated:
-          type: string
-          format: date-time
-          description: Estimated time for milestone.
-        actual:
-          type: string
-          format: date-time
-          description: Actual time for milestone.
-        relevant:
-          type: string
-          format: date-time
-          description: Relevant time for milestone, returns actual if set, else estimated if set, else scheduled.
-    AircraftTerminalResourceEvent:
-      allOf:
-      - $ref: '#/components/schemas/FlightEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - AIRCRAFT_TERMINAL_RESOURCE_EVENT
-          departure-or-arrival:
-            type: string
-            description: Indicator for departure or arrival related information.
-            enum:
-            - DEPARTURE
-            - ARRIVAL
-          terminal:
-            type: string
-            description: Aircraft terminal.
-            example: Terminal A
-      description: Entity for Business Events for aircraft terminal assignment to flight.
-      required:
-      - departure-or-arrival
-      - event-time
-      - event-type
-      - identifier
-      - source
-      - terminal
     FlightAssembledEvent:
       allOf:
       - $ref: '#/components/schemas/FlightEvent'
@@ -1311,113 +1108,24 @@ components:
       - sobt
       - source
       - terminal
-    FlightAircraftAllocationEvent:
-      allOf:
-      - $ref: '#/components/schemas/FlightEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - AIRCRAFT_ALLOCATION_EVENT
-          aircraft-type:
-            type: string
-            description: Aircraft type.
-            example: A320
-          aircraft-registration:
-            type: string
-            description: Registration number of aircraft.
-      description: Entity for Business Events for aircraft assignment to flight.
-      required:
-      - aircraft-registration
-      - aircraft-type
-      - event-time
-      - event-type
-      - identifier
-      - source
-    BasicMeta:
+    ClassCount:
       type: object
-      description: Metadata of DH objects.
       properties:
-        created-at:
-          type: string
-          format: date-time
-          description: Timestamp when object was first created in DH.
-          readOnly: true
-        created-by:
-          $ref: '#/components/schemas/User'
-          description: ID of user of event which caused the object to be created.
-          readOnly: true
-        modified-count:
+        planned:
           type: integer
-          format: int64
-          description: Number of modifications in DH.
-          readOnly: true
-        modified-at:
-          type: string
-          format: date-time
-          description: Timestamp of last modification in DH.
-          readOnly: true
-        modified-by:
-          $ref: '#/components/schemas/User'
-          description: ID of user of event which caused the object to be modified.
-          readOnly: true
-        tag-id:
-          type: string
-          deprecated: true
-          description: Unique id of the bag tag in the data hub for an unlimited period of time.
-        skip-datawarehouse:
-          type: boolean
-          description: Skip Datawarehouse processing.
-          readOnly: true
-        skip-report-flight:
-          type: boolean
-          description: Skip Report Flight processing.
-          readOnly: true
-      readOnly: true
-    User:
-      type: object
-      description: Metadata of DH objects.
-      properties:
-        user-id:
-          type: string
-          description: Unique user id.
-          readOnly: true
-        user-name:
-          type: string
-          description: Readable user name
-          readOnly: true
-      readOnly: true
-    FlightTimeEvent:
-      allOf:
-      - $ref: '#/components/schemas/FlightEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - FLIGHT_TIME_EVENT
-          flight-times:
-            type: array
-            description: List of flight times to set or update.
-            items:
-              $ref: '#/components/schemas/FlightTime'
-          departure-or-arrival:
-            type: string
-            description: Indicator for departure or arrival related information.
-            enum:
-            - DEPARTURE
-            - ARRIVAL
-      description: Entity for Business Events for flight times setting and update.
-      required:
-      - departure-or-arrival
-      - event-time
-      - event-type
-      - flight-times
-      - identifier
-      - source
+          format: int32
+          description: Planned/booked count.
+          example: 100
+        estimated:
+          type: integer
+          format: int32
+          description: Estimated count.
+          example: 99
+        actual:
+          type: integer
+          format: int32
+          description: Actual count.
+          example: 102
     AirportResource:
       type: object
       description: Description of an airport resource, allocated to a flight leg.
@@ -1434,6 +1142,24 @@ components:
       required:
       - location
       - timestamp
+    SecondaryIdentifier:
+      type: object
+      description: Additional identifiers for flight legs or segments used by airport systems etc.
+      properties:
+        identifier:
+          type: string
+          description: Secondary identifier .
+        created:
+          type: string
+          format: date-time
+          description: Timestamp of creation of secondary identifier in UTC.
+        source:
+          type: string
+          description: Source creating the secondary identifier.
+      required:
+      - created
+      - identifier
+      - source
     FlightTime:
       type: object
       description: Defines the flight time for a milestone and type.
@@ -1463,30 +1189,369 @@ components:
       - milestone
       - time-kind
       - timestamp
-    FlightPax:
+    AircraftParkingPositionResourceEvent:
+      allOf:
+      - $ref: '#/components/schemas/FlightEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - AIRCRAFT_PARKING_POSITION_RESOURCE_EVENT
+          departure-or-arrival:
+            type: string
+            description: Indicator for departure or arrival related information.
+            enum:
+            - DEPARTURE
+            - ARRIVAL
+          aircraft-parking-position:
+            type: string
+            description: Aircraft parking position.
+            example: Bay 15
+      description: Entity for Business Events for aircraft parking position assignment to a flight.
+      required:
+      - aircraft-parking-position
+      - departure-or-arrival
+      - event-time
+      - event-type
+      - identifier
+      - source
+    MilestoneTimes:
       type: object
-      description: Model for passenger count information.
       properties:
-        pax-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
-        transfer-pax-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Transfer pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
-        bag-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
-        transfer-bag-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Transfer bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
+        scheduled:
+          type: string
+          format: date-time
+          description: Scheduled time for milestone.
+        estimated:
+          type: string
+          format: date-time
+          description: Estimated time for milestone.
+        actual:
+          type: string
+          format: date-time
+          description: Actual time for milestone.
+        relevant:
+          type: string
+          format: date-time
+          description: Relevant time for milestone, returns actual if set, else estimated if set, else scheduled.
+    FlightSegment:
+      type: object
+      description: Model for flight segments.
+      properties:
+        identifier:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Identifying properties of flight segment.
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers for the flight segment used by airport systems etc.
+          items:
+            $ref: '#/components/schemas/SecondaryIdentifier'
+          uniqueItems: true
+        is-international:
+          type: boolean
+          description: Indicates whether is is a domestic or an international flight segment.
+        milestones:
+          $ref: '#/components/schemas/Milestones'
+          description: Milestone times at departure and arrival, i.e. off-block, take-off, landing, in-block.
+      required:
+      - identifier
+      - is-international
+    CheckInDesksResourceEvent:
+      allOf:
+      - $ref: '#/components/schemas/FlightEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - CHECK_IN_DESKS_RESOURCE_EVENT
+          check-in-desks:
+            type: array
+            description: Check-in desks.
+            example: Check-in desk 11, Check-in desk 12
+            items:
+              type: string
+            uniqueItems: true
+      description: Entity for Business Events for aircraft check-in desks assignment to flight.
+      required:
+      - check-in-desks
+      - event-time
+      - event-type
+      - identifier
+      - source
+    Aircraft:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event.
+        aircraft-type:
+          type: string
+          description: Aircraft type.
+          example: A320
+        registration-number:
+          type: string
+          description: Registration number.
+    BaggageTransferLateralResourceEvent:
+      allOf:
+      - $ref: '#/components/schemas/FlightEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - BAGGAGE_TRANSFER_LATERAL_RESOURCE_EVENT
+          departure-or-arrival:
+            type: string
+            description: Indicator for departure or arrival related information.
+            enum:
+            - DEPARTURE
+            - ARRIVAL
+          baggage-transfer-laterals:
+            type: array
+            description: Baggage transfer laterals.
+            items:
+              type: string
+            uniqueItems: true
+      description: Entity for Business Events for baggage transfer lateral assignments to flight.
+      required:
+      - baggage-transfer-laterals
+      - departure-or-arrival
+      - event-time
+      - event-type
+      - identifier
+      - source
+    AircraftTerminalResourceEvent:
+      allOf:
+      - $ref: '#/components/schemas/FlightEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - AIRCRAFT_TERMINAL_RESOURCE_EVENT
+          departure-or-arrival:
+            type: string
+            description: Indicator for departure or arrival related information.
+            enum:
+            - DEPARTURE
+            - ARRIVAL
+          terminal:
+            type: string
+            description: Aircraft terminal.
+            example: Terminal A
+      description: Entity for Business Events for aircraft terminal assignment to flight.
+      required:
+      - departure-or-arrival
+      - event-time
+      - event-type
+      - identifier
+      - source
+      - terminal
+    AirportResources:
+      type: object
+      properties:
+        aircraft-parking-position:
+          $ref: '#/components/schemas/AirportResource'
+          description: Gate or hard stand where the aircraft is located.
+        passenger-gates:
+          type: array
+          description: The public gates which the passengers will use to board or disembark.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        remote-operational-gates:
+          type: array
+          description: Additional location used to transfer passengers to or from a remote parking position.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        runway:
+          $ref: '#/components/schemas/AirportResource'
+          description: The runway used for landing or take-off.
+        aircraft-terminal:
+          $ref: '#/components/schemas/AirportResource'
+          description: Terminal where the aircraft is located.
+        public-terminals:
+          type: array
+          description: Terminals where the passengers will be processed.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        baggage-claim-units:
+          type: array
+          description: The number(s) or name(s) of the assigned baggage claim units.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        baggage-make-up-belts:
+          type: array
+          description: The baggage makeup belts assigned for outgoing bags.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        baggage-transfer-laterals:
+          type: array
+          description: The baggage transfer laterals assigned for incoming bags.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        check-in-desks:
+          $ref: '#/components/schemas/AirportResource'
+          description: Check-in / baggage drop desks.
+        baggage-make-up-belts-open-time:
+          $ref: '#/components/schemas/AirportResource'
+          description: The Opening Time of the baggage makeup belts assigned.
+        baggage-make-up-belts-close-time:
+          $ref: '#/components/schemas/AirportResource'
+          description: The Closing Time of baggage makeup belts assigned.
+    FlightScheduledEvent:
+      allOf:
+      - $ref: '#/components/schemas/FlightEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - FLIGHT_SCHEDULED_EVENT
+          sobt:
+            type: string
+            format: date-time
+            description: Scheduled Off-Block time. Must be in range of origin-date minus 1 day and plus 1 day.
+          sibt:
+            type: string
+            format: date-time
+            description: Scheduled In-Block time. Must be in range of origin-date  minus 1 day and plus 3 days.
+          aircraft-type:
+            type: string
+            description: Aircraft type.
+            example: A320
+          aircraft-registration:
+            type: string
+            description: Registration number of aircraft.
+          is-international:
+            type: boolean
+            description: Indicates whether is is an domestic or international flight leg
+          codeshare-strings:
+            type: array
+            description: List of codeshare identifiers as list of string.
+            items:
+              type: string
+          codeshares:
+            type: array
+            description: Codeshare flight numbers.
+            items:
+              $ref: '#/components/schemas/FlightIdentifier'
+          flight-segments:
+            type: array
+            description: Flight segments.
+            items:
+              $ref: '#/components/schemas/FlightSegment'
+          via-segments:
+            type: array
+            description: Via Flight segments.
+            items:
+              $ref: '#/components/schemas/FlightSegment'
+          check-in-desks:
+            type: array
+            description: Check-in desks.
+            example: Check-in desk 11, Check-in desk 12
+            items:
+              type: string
+            uniqueItems: true
+          aircraft-parking-position:
+            type: string
+            description: Aircraft parking position.
+            example: Bay 15
+          terminal:
+            type: string
+            description: Aircraft terminal.
+            example: Terminal A
+          departure-or-arrival:
+            type: string
+            description: Indicator for departure or arrival related information.
+            enum:
+            - DEPARTURE
+            - ARRIVAL
+          baggage-claim-units:
+            type: array
+            description: Baggage claim units.
+            items:
+              type: string
+            uniqueItems: true
+      description: Entity for Business Events for flight scheduling.
+      required:
+      - aircraft-parking-position
+      - baggage-claim-units
+      - check-in-desks
+      - departure-or-arrival
+      - event-time
+      - event-type
+      - identifier
+      - is-international
+      - sibt
+      - sobt
+      - source
+      - terminal
+    FlightPaxCountEvent:
+      allOf:
+      - $ref: '#/components/schemas/FlightEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - FLIGHT_PAX_COUNT_EVENT
+          flight-pax:
+            $ref: '#/components/schemas/FlightPax'
+            description: Set of passenger count information.
+      description: Entity for Business Events for pax count assignment to flight.
+      required:
+      - event-time
+      - event-type
+      - flight-pax
+      - identifier
+      - source
+    User:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        user-id:
+          type: string
+          description: Unique user id.
+          readOnly: true
+        user-name:
+          type: string
+          description: Readable user name
+          readOnly: true
+      readOnly: true
+    FlightAircraftAllocationEvent:
+      allOf:
+      - $ref: '#/components/schemas/FlightEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - AIRCRAFT_ALLOCATION_EVENT
+          aircraft-type:
+            type: string
+            description: Aircraft type.
+            example: A320
+          aircraft-registration:
+            type: string
+            description: Registration number of aircraft.
+      description: Entity for Business Events for aircraft assignment to flight.
+      required:
+      - aircraft-registration
+      - aircraft-type
+      - event-time
+      - event-type
+      - identifier
+      - source
     FlightLeg:
       type: object
       description: Object holding the state of a flight leg.
@@ -1564,89 +1629,24 @@ components:
       - identifier
       - is-international
       - state
-    ClassCount:
+    Milestones:
       type: object
       properties:
-        planned:
-          type: integer
-          format: int32
-          description: Planned/booked count.
-          example: 100
-        estimated:
-          type: integer
-          format: int32
-          description: Estimated count.
-          example: 99
-        actual:
-          type: integer
-          format: int32
-          description: Actual count.
-          example: 102
-    BaggageTransferLateralResourceEvent:
-      allOf:
-      - $ref: '#/components/schemas/FlightEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - BAGGAGE_TRANSFER_LATERAL_RESOURCE_EVENT
-          departure-or-arrival:
-            type: string
-            description: Indicator for departure or arrival related information.
-            enum:
-            - DEPARTURE
-            - ARRIVAL
-          baggage-transfer-laterals:
-            type: array
-            description: Baggage transfer laterals.
-            items:
-              type: string
-            uniqueItems: true
-      description: Entity for Business Events for baggage transfer lateral assignments to flight.
-      required:
-      - baggage-transfer-laterals
-      - departure-or-arrival
-      - event-time
-      - event-type
-      - identifier
-      - source
-    BaggageMakeUpBeltResourceEvent:
-      allOf:
-      - $ref: '#/components/schemas/FlightEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - BAGGAGE_MAKE_UP_BELT_RESOURCE_EVENT
-          departure-or-arrival:
-            type: string
-            description: Indicator for departure or arrival related information.
-            enum:
-            - DEPARTURE
-            - ARRIVAL
-          baggage-make-up-belts:
-            type: array
-            description: Baggage make-up belts.
-            items:
-              type: string
-            uniqueItems: true
-          closetime:
-            type: string
-            format: date-time
-            description: Baggage make-up belts Close Time.
-          opentime:
-            type: string
-            format: date-time
-            description: Baggage make-up belts Open Time.
-      description: Entity for Business Events for baggage make-up belt assignments to flight.
-      required:
-      - baggage-make-up-belts
-      - departure-or-arrival
-      - event-time
-      - event-type
-      - identifier
-      - source
+        gto:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Gate open time at origin airport of flight leg.
+        gtc:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Gate closed time at origin airport of flight leg.
+        obt:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Off-block time at origin airport of flight leg.
+        tot:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Take-off time at origin airport of flight leg.
+        ldt:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Landing time at destination airport of flight leg.
+        ibt:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: In-block time at destination airport of flight leg.

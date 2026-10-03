@@ -213,8 +213,151 @@ components:
           format: int32
           description: Sequence Flight Number
           example: 1
-    State:
+    Bsm:
       type: object
+      properties:
+        dimension:
+          $ref: '#/components/schemas/Dimension'
+        state:
+          $ref: '#/components/schemas/State'
+          writeOnly: true
+        status-indicator:
+          type: string
+          description: 'NEW new entry <br> CHG changed <br> DEL deleted '
+          example: CHG
+        version-data:
+          $ref: '#/components/schemas/VersionData'
+          description: .V element
+        outbound-flight:
+          $ref: '#/components/schemas/FlightDataBsm'
+          description: .F element
+        inbound-flight:
+          $ref: '#/components/schemas/FlightDataBsm'
+          description: .I element
+        onward-flights:
+          type: array
+          description: .O element
+          items:
+            $ref: '#/components/schemas/FlightDataBsm'
+        bag-exception-data:
+          type: string
+          description: .E element
+          example: RUSH
+        internal-airline-data:
+          type: string
+          description: .R element
+          example: FREE TEXT
+        bag-tag:
+          type: string
+        reconciliation-data:
+          $ref: '#/components/schemas/ReconciliationData'
+        security-screening:
+          $ref: '#/components/schemas/SecurityScreening'
+      required:
+      - status-indicator
+      - version-data
+    Dimension:
+      type: object
+      properties:
+        weight-indicator:
+          type: string
+          enum:
+          - K
+          - L
+          example: K
+        check-bag-count:
+          type: integer
+          format: int32
+          description: Number of check Bags
+          example: 2
+        checked-bag-weight:
+          type: integer
+          format: int32
+          example: 33
+        unchecked-bag-weight:
+          type: integer
+          format: int32
+          example: 5
+        dimension-indicator:
+          type: string
+          enum:
+          - CM
+          - IN
+          example: CM
+        bag-length:
+          type: integer
+          format: int32
+          example: 123
+        bag-width:
+          type: integer
+          format: int32
+          example: 63
+        bag-height:
+          type: integer
+          format: int32
+          example: 23
+        bag-type-code:
+          type: string
+          example: 02HWX
+      required:
+      - weight-indicator
+    BsmRawMessage:
+      type: object
+      description: A BSM encapsulated in a JSON structure.
+      properties:
+        message:
+          type: string
+        pipeline:
+          type: string
+        payload:
+          type: string
+          description: Content of a BSM
+          example: 'BSM
+
+            .V/1XSIN
+
+            .I/AI0101/19MAY/BOM/Y
+
+            .N/0097883333001
+
+            ENDBSM'
+        correlation-id:
+          type: string
+          description: The global id which identifies this object across multiple applications. If no correlation id is provided, ADH will generate one.
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+      required:
+      - message
+      - payload
+    VersionData:
+      type: object
+      properties:
+        version:
+          type: string
+        encryption:
+          type: string
+          example: 123ABC456Z
+        baggage-source-indicator:
+          type: string
+          description: L = Local; T = Transfer; X = Terminating; R = Remote
+          example: L
+        origin-iata-code:
+          type: string
+          description: Origin airport IATA code
+          example: DXB
+        part-number:
+          type: string
+          description: Origin airport IATA code
+          example: PART1
+        message-reference-number:
+          type: string
+          example: BA21900123
+        acknowledgement-request:
+          type: boolean
+          example: A
+      required:
+      - baggage-source-indicator
+      - origin-iata-code
+      - part-number
     SecurityScreening:
       type: object
       properties:
@@ -244,6 +387,8 @@ components:
           type: string
         screen-comment:
           type: string
+    State:
+      type: object
     ReconciliationData:
       type: object
       properties:
@@ -290,148 +435,3 @@ components:
           example: A
       required:
       - authority-to-load
-    Bsm:
-      type: object
-      properties:
-        dimension:
-          $ref: '#/components/schemas/Dimension'
-        state:
-          $ref: '#/components/schemas/State'
-          writeOnly: true
-        status-indicator:
-          type: string
-          description: 'NEW new entry <br> CHG changed <br> DEL deleted '
-          example: CHG
-        version-data:
-          $ref: '#/components/schemas/VersionData'
-          description: .V element
-        outbound-flight:
-          $ref: '#/components/schemas/FlightDataBsm'
-          description: .F element
-        inbound-flight:
-          $ref: '#/components/schemas/FlightDataBsm'
-          description: .I element
-        onward-flights:
-          type: array
-          description: .O element
-          items:
-            $ref: '#/components/schemas/FlightDataBsm'
-        bag-exception-data:
-          type: string
-          description: .E element
-          example: RUSH
-        internal-airline-data:
-          type: string
-          description: .R element
-          example: FREE TEXT
-        bag-tag:
-          type: string
-        reconciliation-data:
-          $ref: '#/components/schemas/ReconciliationData'
-        security-screening:
-          $ref: '#/components/schemas/SecurityScreening'
-      required:
-      - status-indicator
-      - version-data
-    BsmRawMessage:
-      type: object
-      description: A BSM encapsulated in a JSON structure.
-      properties:
-        message:
-          type: string
-        pipeline:
-          type: string
-        payload:
-          type: string
-          description: Content of a BSM
-          example: 'BSM
-
-            .V/1XSIN
-
-            .I/AI0101/19MAY/BOM/Y
-
-            .N/0097883333001
-
-            ENDBSM'
-        correlation-id:
-          type: string
-          description: The global id which identifies this object across multiple applications. If no correlation id is provided, ADH will generate one.
-          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-      required:
-      - message
-      - payload
-    Dimension:
-      type: object
-      properties:
-        weight-indicator:
-          type: string
-          enum:
-          - K
-          - L
-          example: K
-        check-bag-count:
-          type: integer
-          format: int32
-          description: Number of check Bags
-          example: 2
-        checked-bag-weight:
-          type: integer
-          format: int32
-          example: 33
-        unchecked-bag-weight:
-          type: integer
-          format: int32
-          example: 5
-        dimension-indicator:
-          type: string
-          enum:
-          - CM
-          - IN
-          example: CM
-        bag-length:
-          type: integer
-          format: int32
-          example: 123
-        bag-width:
-          type: integer
-          format: int32
-          example: 63
-        bag-height:
-          type: integer
-          format: int32
-          example: 23
-        bag-type-code:
-          type: string
-          example: 02HWX
-      required:
-      - weight-indicator
-    VersionData:
-      type: object
-      properties:
-        version:
-          type: string
-        encryption:
-          type: string
-          example: 123ABC456Z
-        baggage-source-indicator:
-          type: string
-          description: L = Local; T = Transfer; X = Terminating; R = Remote
-          example: L
-        origin-iata-code:
-          type: string
-          description: Origin airport IATA code
-          example: DXB
-        part-number:
-          type: string
-          description: Origin airport IATA code
-          example: PART1
-        message-reference-number:
-          type: string
-          example: BA21900123
-        acknowledgement-request:
-          type: boolean
-          example: A
-      required:
-      - baggage-source-indicator
-      - origin-iata-code
-      - part-number

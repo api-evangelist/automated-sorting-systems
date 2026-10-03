@@ -154,6 +154,121 @@ paths:
         - ADH.FL.R
 components:
   schemas:
+    BasicMeta:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        created-at:
+          type: string
+          format: date-time
+          description: Timestamp when object was first created in DH.
+          readOnly: true
+        created-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be created.
+          readOnly: true
+        modified-count:
+          type: integer
+          format: int64
+          description: Number of modifications in DH.
+          readOnly: true
+        modified-at:
+          type: string
+          format: date-time
+          description: Timestamp of last modification in DH.
+          readOnly: true
+        modified-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be modified.
+          readOnly: true
+        tag-id:
+          type: string
+          deprecated: true
+          description: Unique id of the bag tag in the data hub for an unlimited period of time.
+        skip-datawarehouse:
+          type: boolean
+          description: Skip Datawarehouse processing.
+          readOnly: true
+        skip-report-flight:
+          type: boolean
+          description: Skip Report Flight processing.
+          readOnly: true
+      readOnly: true
+    PaxCountEvent:
+      allOf:
+      - $ref: '#/components/schemas/PaxEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - PAX_COUNT_EVENT
+          flight-pax:
+            $ref: '#/components/schemas/FlightPax'
+            description: Set of passengers and bags count.
+      description: Entity for Business Events for pax count assignment to flight leg.
+      required:
+      - event-time
+      - event-type
+      - flight-pax
+      - identifier
+      - source
+    FlightPax:
+      type: object
+      description: Model for passenger count information.
+      properties:
+        pax-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
+        transfer-pax-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Transfer pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
+        bag-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
+        transfer-bag-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Transfer bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
+    User:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        user-id:
+          type: string
+          description: Unique user id.
+          readOnly: true
+        user-name:
+          type: string
+          description: Readable user name
+          readOnly: true
+      readOnly: true
+    ClassCount:
+      type: object
+      properties:
+        planned:
+          type: integer
+          format: int32
+          description: Planned/booked count.
+          example: 100
+        estimated:
+          type: integer
+          format: int32
+          description: Estimated count.
+          example: 99
+        actual:
+          type: integer
+          format: int32
+          description: Actual count.
+          example: 102
     FlightIdentifier:
       type: object
       description: Object holding identifying information for a flight.
@@ -197,66 +312,6 @@ components:
       - flight-number
       - origin-date
       - origin-iata-code
-    SecondaryIdentifier:
-      type: object
-      description: Additional identifiers for flight legs or segments used by airport systems etc.
-      properties:
-        identifier:
-          type: string
-          description: Secondary identifier .
-        created:
-          type: string
-          format: date-time
-          description: Timestamp of creation of secondary identifier in UTC.
-        source:
-          type: string
-          description: Source creating the secondary identifier.
-      required:
-      - created
-      - identifier
-      - source
-    FlightPax:
-      type: object
-      description: Model for passenger count information.
-      properties:
-        pax-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
-        transfer-pax-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Transfer pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
-        bag-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
-        transfer-bag-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Transfer bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
-    ClassCount:
-      type: object
-      properties:
-        planned:
-          type: integer
-          format: int32
-          description: Planned/booked count.
-          example: 100
-        estimated:
-          type: integer
-          format: int32
-          description: Estimated count.
-          example: 99
-        actual:
-          type: integer
-          format: int32
-          description: Actual count.
-          example: 102
     PaxEvent:
       type: object
       description: Entity for Business Events for pax. Always use one of the subtypes.
@@ -304,76 +359,21 @@ components:
       - event-type
       - identifier
       - source
-    PaxCountEvent:
-      allOf:
-      - $ref: '#/components/schemas/PaxEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - PAX_COUNT_EVENT
-          flight-pax:
-            $ref: '#/components/schemas/FlightPax'
-            description: Set of passengers and bags count.
-      description: Entity for Business Events for pax count assignment to flight leg.
+    SecondaryIdentifier:
+      type: object
+      description: Additional identifiers for flight legs or segments used by airport systems etc.
+      properties:
+        identifier:
+          type: string
+          description: Secondary identifier .
+        created:
+          type: string
+          format: date-time
+          description: Timestamp of creation of secondary identifier in UTC.
+        source:
+          type: string
+          description: Source creating the secondary identifier.
       required:
-      - event-time
-      - event-type
-      - flight-pax
+      - created
       - identifier
       - source
-    BasicMeta:
-      type: object
-      description: Metadata of DH objects.
-      properties:
-        created-at:
-          type: string
-          format: date-time
-          description: Timestamp when object was first created in DH.
-          readOnly: true
-        created-by:
-          $ref: '#/components/schemas/User'
-          description: ID of user of event which caused the object to be created.
-          readOnly: true
-        modified-count:
-          type: integer
-          format: int64
-          description: Number of modifications in DH.
-          readOnly: true
-        modified-at:
-          type: string
-          format: date-time
-          description: Timestamp of last modification in DH.
-          readOnly: true
-        modified-by:
-          $ref: '#/components/schemas/User'
-          description: ID of user of event which caused the object to be modified.
-          readOnly: true
-        tag-id:
-          type: string
-          deprecated: true
-          description: Unique id of the bag tag in the data hub for an unlimited period of time.
-        skip-datawarehouse:
-          type: boolean
-          description: Skip Datawarehouse processing.
-          readOnly: true
-        skip-report-flight:
-          type: boolean
-          description: Skip Report Flight processing.
-          readOnly: true
-      readOnly: true
-    User:
-      type: object
-      description: Metadata of DH objects.
-      properties:
-        user-id:
-          type: string
-          description: Unique user id.
-          readOnly: true
-        user-name:
-          type: string
-          description: Readable user name
-          readOnly: true
-      readOnly: true

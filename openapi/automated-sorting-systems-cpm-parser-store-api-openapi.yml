@@ -178,55 +178,6 @@ components:
           type: array
           items:
             type: string
-    Uld:
-      type: object
-      properties:
-        unknownFields:
-          type: array
-          items:
-            type: string
-        load-position:
-          type: string
-          description: ULD bay designation consisting of 1-3 alpha-numeric characters
-          example: 11L
-        tag:
-          type: string
-          description: ULD type code, serial number and airline designator
-          example: AKE06476AF
-        container-subtype:
-          type: string
-          description: Type of container
-          example: AKE
-        destination-iata-code:
-          type: string
-          description: Destination airport IATA code
-          example: SIN
-        weight:
-          type: string
-          description: Weight of ULD
-          example: 290
-        load-category-code:
-          type: string
-          description: C = cargo, B = baggage, D = crew baggage, E = equipment, F = first class/priority, H = onward ULD, M = mail, N = no ULD at position
-          example: C
-        all-load-category-codes:
-          type: array
-          description: All load category codes used (together with additional information, if existent)
-          example: CA
-          items:
-            type: string
-        volume-code:
-          type: string
-          description: Additional category codes used together with the load category
-          example: CA
-        load-remarks:
-          type: array
-          description: Special load remarks
-          example: '[CRT/0, AVI]'
-          items:
-            type: string
-      required:
-      - load-position
     CpmRawMessage:
       type: object
       description: A CPM encapsulated in a JSON structure.
@@ -290,3 +241,52 @@ components:
           type: string
           description: Registration of aircraft composed of 2-10 printable characters
           example: A7BBG
+    Uld:
+      type: object
+      properties:
+        unknownFields:
+          type: array
+          items:
+            type: string
+        load-position:
+          type: string
+          description: ULD bay designation consisting of 1-3 alpha-numeric characters
+          example: 11L
+        tag:
+          type: string
+          description: ULD type code, serial number and airline designator
+          example: AKE06476AF
+        container-subtype:
+          type: string
+          description: Type of container
+          example: AKE
+        destination-iata-code:
+          type: string
+          description: Destination airport IATA code
+          example: SIN
+        weight:
+          type: string
+          description: Weight of ULD
+          example: 290
+        load-category-code:
+          type: string
+          description: C = cargo, B = baggage, D = crew baggage, E = equipment, F = first class/priority, H = onward ULD, M = mail, N = no ULD at position
+          example: C
+        all-load-category-codes:
+          type: array
+          description: All load category codes used (together with additional information, if existent)
+          example: CA
+          items:
+            type: string
+        volume-code:
+          type: string
+          description: Additional category codes used together with the load category
+          example: CA
+        load-remarks:
+          type: array
+          description: Special load remarks
+          example: '[CRT/0, AVI]'
+          items:
+            type: string
+      required:
+      - load-position
