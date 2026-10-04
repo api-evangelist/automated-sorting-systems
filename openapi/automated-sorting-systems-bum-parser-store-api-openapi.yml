@@ -201,6 +201,114 @@ components:
           example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
       required:
       - message
+    FlightDataBum:
+      type: object
+      properties:
+        flight-designator:
+          type: string
+          description: Airline and Flight Number
+          example: UA423
+        origin-date:
+          type: string
+          description: Scheduled date for departure date. Format is YYYY-MM-DD.
+          example: '2023-03-30'
+        carrier:
+          type: string
+          description: The flight carrier
+          example: UA
+        flight-number:
+          type: string
+          description: The flight number
+          example: 423
+        operational-suffix:
+          type: string
+          example: A
+        origin-iata-code:
+          type: string
+          description: Origin Airport IATA code
+          example: SIN
+        destination-iata-code:
+          type: string
+          description: Destination Airport IATA code
+          example: DXB
+        class-of-travel:
+          type: string
+          description: Y, F, etc.
+          example: F
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence Flight Number
+          example: 1
+    ConnectionFlightDataBpm:
+      type: object
+      properties:
+        flight-designator:
+          type: string
+          description: Airline and Flight Number
+          example: UA423
+        origin-date:
+          type: string
+          description: Scheduled date for departure date. Format is YYYY-MM-DD.
+          example: '2023-03-30'
+        carrier:
+          type: string
+          description: The flight carrier
+          example: UA
+        flight-number:
+          type: string
+          description: The flight number
+          example: 423
+        operational-suffix:
+          type: string
+          example: A
+        origin-iata-code:
+          type: string
+          description: Origin Airport IATA code
+          example: SIN
+        destination-iata-code:
+          type: string
+          description: Destination Airport IATA code
+          example: DXB
+        class-of-travel:
+          type: string
+          description: Y, F, etc.
+          example: F
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence Flight Number
+          example: 1
+    VersionData:
+      type: object
+      properties:
+        version:
+          type: string
+        encryption:
+          type: string
+          example: 123ABC456Z
+        baggage-source-indicator:
+          type: string
+          description: L = Local; T = Transfer; X = Terminating; R = Remote
+          example: L
+        origin-iata-code:
+          type: string
+          description: Origin airport IATA code
+          example: DXB
+        part-number:
+          type: string
+          description: Origin airport IATA code
+          example: PART1
+        message-reference-number:
+          type: string
+          example: BA21900123
+        acknowledgement-request:
+          type: boolean
+          example: A
+      required:
+      - baggage-source-indicator
+      - origin-iata-code
+      - part-number
     LoadingData:
       type: object
       properties:
@@ -241,45 +349,6 @@ components:
           example: PRIO
       required:
       - container-tag
-    ConnectionFlightDataBpm:
-      type: object
-      properties:
-        flight-designator:
-          type: string
-          description: Airline and Flight Number
-          example: UA423
-        origin-date:
-          type: string
-          description: Scheduled date for departure date. Format is YYYY-MM-DD.
-          example: '2023-03-30'
-        carrier:
-          type: string
-          description: The flight carrier
-          example: UA
-        flight-number:
-          type: string
-          description: The flight number
-          example: 423
-        operational-suffix:
-          type: string
-          example: A
-        origin-iata-code:
-          type: string
-          description: Origin Airport IATA code
-          example: SIN
-        destination-iata-code:
-          type: string
-          description: Destination Airport IATA code
-          example: DXB
-        class-of-travel:
-          type: string
-          description: Y, F, etc.
-          example: F
-        sequence-number:
-          type: integer
-          format: int32
-          description: Sequence Flight Number
-          example: 1
     Bum:
       type: object
       properties:
@@ -335,104 +404,6 @@ components:
       required:
       - outbound-flight
       - version-data
-    SecurityScreening:
-      type: object
-      properties:
-        screen-instructor:
-          type: string
-          enum:
-          - DEF
-          - SEL
-          - NON
-        screen-result:
-          type: string
-          enum:
-          - CLR
-          - REJ
-          - UCL
-        screen-result-reason:
-          type: string
-          enum:
-          - D
-          - E
-          - C
-          - N
-          - T
-        screen-method:
-          type: string
-        screen-autograph:
-          type: string
-        screen-comment:
-          type: string
-    VersionData:
-      type: object
-      properties:
-        version:
-          type: string
-        encryption:
-          type: string
-          example: 123ABC456Z
-        baggage-source-indicator:
-          type: string
-          description: L = Local; T = Transfer; X = Terminating; R = Remote
-          example: L
-        origin-iata-code:
-          type: string
-          description: Origin airport IATA code
-          example: DXB
-        part-number:
-          type: string
-          description: Origin airport IATA code
-          example: PART1
-        message-reference-number:
-          type: string
-          example: BA21900123
-        acknowledgement-request:
-          type: boolean
-          example: A
-      required:
-      - baggage-source-indicator
-      - origin-iata-code
-      - part-number
-    FlightDataBum:
-      type: object
-      properties:
-        flight-designator:
-          type: string
-          description: Airline and Flight Number
-          example: UA423
-        origin-date:
-          type: string
-          description: Scheduled date for departure date. Format is YYYY-MM-DD.
-          example: '2023-03-30'
-        carrier:
-          type: string
-          description: The flight carrier
-          example: UA
-        flight-number:
-          type: string
-          description: The flight number
-          example: 423
-        operational-suffix:
-          type: string
-          example: A
-        origin-iata-code:
-          type: string
-          description: Origin Airport IATA code
-          example: SIN
-        destination-iata-code:
-          type: string
-          description: Destination Airport IATA code
-          example: DXB
-        class-of-travel:
-          type: string
-          description: Y, F, etc.
-          example: F
-        sequence-number:
-          type: integer
-          format: int32
-          description: Sequence Flight Number
-          example: 1
     HandlingLocation:
       type: object
       properties:
@@ -494,3 +465,32 @@ components:
           example: A
       required:
       - authority-to-load
+    SecurityScreening:
+      type: object
+      properties:
+        screen-instructor:
+          type: string
+          enum:
+          - DEF
+          - SEL
+          - NON
+        screen-result:
+          type: string
+          enum:
+          - CLR
+          - REJ
+          - UCL
+        screen-result-reason:
+          type: string
+          enum:
+          - D
+          - E
+          - C
+          - N
+          - T
+        screen-method:
+          type: string
+        screen-autograph:
+          type: string
+        screen-comment:
+          type: string

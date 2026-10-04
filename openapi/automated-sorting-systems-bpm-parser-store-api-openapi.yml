@@ -175,73 +175,147 @@ paths:
         - ADH.FL.R
 components:
   schemas:
-    BpmRawMessage:
-      type: object
-      description: A BPM encapsulated in a JSON structure.
-      properties:
-        message:
-          type: string
-          description: Content of a BPM
-          example: 'BPM
-
-            .V/1LSYD
-
-            .J/R/TOSYD//09MAR/195959L/DNATABS//MU
-
-            .U/AKE12345AB//M//DXB
-
-            .N/0123398891001
-
-            ENDBPM'
-        pipeline:
-          type: string
-        correlation-id:
-          type: string
-          description: The global id which identifies this object across multiple applications. If no correlation id is provided, ADH will generate one.
-          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-      required:
-      - message
-    ProcessingInfo:
+    ConnectionFlightDataBpm:
       type: object
       properties:
-        secondary-code:
+        flight-designator:
           type: string
-          description: Secondary Code
-          enum:
-          - G
-          - R
-          - S
-          - H
-          example: R
-        agent-identification:
+          description: Airline and Flight Number
+          example: UA423
+        origin-date:
           type: string
-          description: Agent Identification
-          example: 43S
-        scanner-identification:
+          description: Scheduled date for departure date. Format is YYYY-MM-DD.
+          example: '2023-03-30'
+        carrier:
           type: string
-          description: Scanner Identification
-          example: 120D32
-        date-time:
+          description: The flight carrier
+          example: UA
+        flight-number:
           type: string
-          format: date-time
-          description: Date (DDMMM) combined with Time (HHMMSS; L=local; Z=UTC)
-          example: 09MAR 154512L
-        time-zone-indicator:
+          description: The flight number
+          example: 423
+        operational-suffix:
           type: string
-          description: Time zone indicator retrieved from time field in .J element
-          enum:
-          - L
-          - Z
-        reading-location:
+          example: A
+        origin-iata-code:
           type: string
-          description: Reading Location
-          example: B2
-        sent-to-location:
+          description: Origin Airport IATA code
+          example: SIN
+        destination-iata-code:
           type: string
-          description: Sent to Location
-          example: RI
+          description: Destination Airport IATA code
+          example: DXB
+        class-of-travel:
+          type: string
+          description: Y, F, etc.
+          example: F
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence Flight Number
+          example: 1
+    Bpm:
+      type: object
+      properties:
+        bag-tag:
+          type: string
+        bag-ids:
+          type: array
+          description: 'Baggage Identification: .N or .B element'
+          items:
+            $ref: '#/components/schemas/BaggageIdentification'
+        version-data:
+          $ref: '#/components/schemas/VersionData'
+          description: .V element
+          example: .V/1TDFW/PART1
+        processing-info:
+          $ref: '#/components/schemas/ProcessingInfo'
+          description: .J element
+          example: .J/S///15JAN/1042L/T3773710/T3
+        outbound-flight:
+          $ref: '#/components/schemas/FlightDataBpm'
+          description: .F element
+        loading-data:
+          $ref: '#/components/schemas/LoadingData'
+          description: .U element
+          example: .U/AKE123456//M//SYD
+        load-sequence-number:
+          type: string
+          description: .Q element
+          example: 9
+        inbound-flight:
+          $ref: '#/components/schemas/FlightDataBpm'
+          description: .I element
+        onward-flights:
+          type: array
+          description: .O element
+          items:
+            $ref: '#/components/schemas/FlightDataBpm'
+        reconciliation-data:
+          $ref: '#/components/schemas/ReconciliationData'
+          description: .S element
+          example: /Y//C/003/003
+        handling-location:
+          $ref: '#/components/schemas/HandlingLocation'
+          description: .H element
+          example: /T1/CENTAL/E20
+        bag-dimension-data:
+          $ref: '#/components/schemas/Dimension'
+          description: .W element
+          example: /K/2/47
+        bag-tag-printer-id:
+          type: string
+          description: .T element
+          example: BACA99
+        bag-exception:
+          type: array
+          description: .E element
+          example: RUSH
+          items:
+            type: string
+        internal-airline-data:
+          type: array
+          description: .R element
+          example: SCANNED
+          items:
+            type: string
+        security-screening:
+          $ref: '#/components/schemas/SecurityScreening'
+          description: .X element
+          example: .X/SEL
       required:
-      - secondary-code
+      - bag-ids
+      - version-data
+    VersionData:
+      type: object
+      properties:
+        version:
+          type: string
+        encryption:
+          type: string
+          example: 123ABC456Z
+        baggage-source-indicator:
+          type: string
+          description: L = Local; T = Transfer; X = Terminating; R = Remote
+          example: L
+        origin-iata-code:
+          type: string
+          description: Origin airport IATA code
+          example: DXB
+        part-number:
+          type: string
+          description: Origin airport IATA code
+          example: PART1
+        message-reference-number:
+          type: string
+          example: BA21900123
+        acknowledgement-request:
+          type: boolean
+          example: A
+      required:
+      - baggage-source-indicator
+      - origin-iata-code
+      - part-number
     LoadingData:
       type: object
       properties:
@@ -282,6 +356,21 @@ components:
           example: PRIO
       required:
       - container-tag
+    HandlingLocation:
+      type: object
+      properties:
+        handling-terminal:
+          type: string
+          description: Handling Terminal
+          example: T1
+        handling-bay:
+          type: string
+          description: Handling Bay/Pier, m[1-6]
+          example: NORTH
+        handling-gate-stand-claim:
+          type: string
+          description: Handling Gate/Stand/Claim Area, m[1-8]
+          example: 16
     BaggageIdentification:
       type: object
       properties:
@@ -297,7 +386,7 @@ components:
           example: '002'
       required:
       - bag-tag
-    ConnectionFlightDataBpm:
+    FlightDataBpm:
       type: object
       properties:
         flight-designator:
@@ -381,152 +470,6 @@ components:
           example: 02HWX
       required:
       - weight-indicator
-    VersionData:
-      type: object
-      properties:
-        version:
-          type: string
-        encryption:
-          type: string
-          example: 123ABC456Z
-        baggage-source-indicator:
-          type: string
-          description: L = Local; T = Transfer; X = Terminating; R = Remote
-          example: L
-        origin-iata-code:
-          type: string
-          description: Origin airport IATA code
-          example: DXB
-        part-number:
-          type: string
-          description: Origin airport IATA code
-          example: PART1
-        message-reference-number:
-          type: string
-          example: BA21900123
-        acknowledgement-request:
-          type: boolean
-          example: A
-      required:
-      - baggage-source-indicator
-      - origin-iata-code
-      - part-number
-    SecurityScreening:
-      type: object
-      properties:
-        screen-instructor:
-          type: string
-          enum:
-          - DEF
-          - SEL
-          - NON
-        screen-result:
-          type: string
-          enum:
-          - CLR
-          - REJ
-          - UCL
-        screen-result-reason:
-          type: string
-          enum:
-          - D
-          - E
-          - C
-          - N
-          - T
-        screen-method:
-          type: string
-        screen-autograph:
-          type: string
-        screen-comment:
-          type: string
-    HandlingLocation:
-      type: object
-      properties:
-        handling-terminal:
-          type: string
-          description: Handling Terminal
-          example: T1
-        handling-bay:
-          type: string
-          description: Handling Bay/Pier, m[1-6]
-          example: NORTH
-        handling-gate-stand-claim:
-          type: string
-          description: Handling Gate/Stand/Claim Area, m[1-8]
-          example: 16
-    Bpm:
-      type: object
-      properties:
-        bag-tag:
-          type: string
-        bag-ids:
-          type: array
-          description: 'Baggage Identification: .N or .B element'
-          items:
-            $ref: '#/components/schemas/BaggageIdentification'
-        version-data:
-          $ref: '#/components/schemas/VersionData'
-          description: .V element
-          example: .V/1TDFW/PART1
-        processing-info:
-          $ref: '#/components/schemas/ProcessingInfo'
-          description: .J element
-          example: .J/S///15JAN/1042L/T3773710/T3
-        outbound-flight:
-          $ref: '#/components/schemas/FlightDataBpm'
-          description: .F element
-        loading-data:
-          $ref: '#/components/schemas/LoadingData'
-          description: .U element
-          example: .U/AKE123456//M//SYD
-        load-sequence-number:
-          type: string
-          description: .Q element
-          example: 9
-        inbound-flight:
-          $ref: '#/components/schemas/FlightDataBpm'
-          description: .I element
-        onward-flights:
-          type: array
-          description: .O element
-          items:
-            $ref: '#/components/schemas/FlightDataBpm'
-        reconciliation-data:
-          $ref: '#/components/schemas/ReconciliationData'
-          description: .S element
-          example: /Y//C/003/003
-        handling-location:
-          $ref: '#/components/schemas/HandlingLocation'
-          description: .H element
-          example: /T1/CENTAL/E20
-        bag-dimension-data:
-          $ref: '#/components/schemas/Dimension'
-          description: .W element
-          example: /K/2/47
-        bag-tag-printer-id:
-          type: string
-          description: .T element
-          example: BACA99
-        bag-exception:
-          type: array
-          description: .E element
-          example: RUSH
-          items:
-            type: string
-        internal-airline-data:
-          type: array
-          description: .R element
-          example: SCANNED
-          items:
-            type: string
-        security-screening:
-          $ref: '#/components/schemas/SecurityScreening'
-          description: .X element
-          example: .X/SEL
-      required:
-      - bag-ids
-      - version-data
     ReconciliationData:
       type: object
       properties:
@@ -573,42 +516,99 @@ components:
           example: A
       required:
       - authority-to-load
-    FlightDataBpm:
+    ProcessingInfo:
       type: object
       properties:
-        flight-designator:
+        secondary-code:
           type: string
-          description: Airline and Flight Number
-          example: UA423
-        origin-date:
+          description: Secondary Code
+          enum:
+          - G
+          - R
+          - S
+          - H
+          example: R
+        agent-identification:
           type: string
-          description: Scheduled date for departure date. Format is YYYY-MM-DD.
-          example: '2023-03-30'
-        carrier:
+          description: Agent Identification
+          example: 43S
+        scanner-identification:
           type: string
-          description: The flight carrier
-          example: UA
-        flight-number:
+          description: Scanner Identification
+          example: 120D32
+        date-time:
           type: string
-          description: The flight number
-          example: 423
-        operational-suffix:
+          format: date-time
+          description: Date (DDMMM) combined with Time (HHMMSS; L=local; Z=UTC)
+          example: 09MAR 154512L
+        time-zone-indicator:
           type: string
-          example: A
-        origin-iata-code:
+          description: Time zone indicator retrieved from time field in .J element
+          enum:
+          - L
+          - Z
+        reading-location:
           type: string
-          description: Origin Airport IATA code
-          example: SIN
-        destination-iata-code:
+          description: Reading Location
+          example: B2
+        sent-to-location:
           type: string
-          description: Destination Airport IATA code
-          example: DXB
-        class-of-travel:
+          description: Sent to Location
+          example: RI
+      required:
+      - secondary-code
+    SecurityScreening:
+      type: object
+      properties:
+        screen-instructor:
           type: string
-          description: Y, F, etc.
-          example: F
-        sequence-number:
-          type: integer
-          format: int32
-          description: Sequence Flight Number
-          example: 1
+          enum:
+          - DEF
+          - SEL
+          - NON
+        screen-result:
+          type: string
+          enum:
+          - CLR
+          - REJ
+          - UCL
+        screen-result-reason:
+          type: string
+          enum:
+          - D
+          - E
+          - C
+          - N
+          - T
+        screen-method:
+          type: string
+        screen-autograph:
+          type: string
+        screen-comment:
+          type: string
+    BpmRawMessage:
+      type: object
+      description: A BPM encapsulated in a JSON structure.
+      properties:
+        message:
+          type: string
+          description: Content of a BPM
+          example: 'BPM
+
+            .V/1LSYD
+
+            .J/R/TOSYD//09MAR/195959L/DNATABS//MU
+
+            .U/AKE12345AB//M//DXB
+
+            .N/0123398891001
+
+            ENDBPM'
+        pipeline:
+          type: string
+        correlation-id:
+          type: string
+          description: The global id which identifies this object across multiple applications. If no correlation id is provided, ADH will generate one.
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+      required:
+      - message

@@ -157,27 +157,6 @@ paths:
         - ADH.FL.R
 components:
   schemas:
-    Cpm:
-      type: object
-      properties:
-        ulds:
-          type: array
-          items:
-            $ref: '#/components/schemas/Uld'
-        bulk:
-          type: array
-          items:
-            type: string
-        inbound-flight:
-          $ref: '#/components/schemas/FlightDataCpm'
-        supplementary-info:
-          type: array
-          items:
-            type: string
-        additional-text:
-          type: array
-          items:
-            type: string
     CpmRawMessage:
       type: object
       description: A CPM encapsulated in a JSON structure.
@@ -241,6 +220,27 @@ components:
           type: string
           description: Registration of aircraft composed of 2-10 printable characters
           example: A7BBG
+    Cpm:
+      type: object
+      properties:
+        ulds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Uld'
+        bulk:
+          type: array
+          items:
+            type: string
+        inbound-flight:
+          $ref: '#/components/schemas/FlightDataCpm'
+        supplementary-info:
+          type: array
+          items:
+            type: string
+        additional-text:
+          type: array
+          items:
+            type: string
     Uld:
       type: object
       properties:
