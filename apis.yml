@@ -400,6 +400,12 @@ apis:
   - type: PrivacyPolicy
     url: https://www.vanderlande.com/privacy-statement/
 common:
+  - type: Plans
+    url: plans/automated-sorting-systems-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/automated-sorting-systems-rate-limits.yml
+  - type: FinOps
+    url: finops/automated-sorting-systems-finops.yml
   - type: Website
     name: Vanderlande
     url: https://www.vanderlande.com/software-and-services/fleet/
