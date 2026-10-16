@@ -2,22 +2,29 @@
   "repo": "automated-sorting-systems",
   "feeds": [
     {
-      "source": "https://www.dematic.com/en-us/lifecycle-solutions-services/maintenance-and-support/",
-      "feed_url": "https://www.dematic.com/en-us/lifecycle-solutions-services/maintenance-and-support/",
-      "title": "",
-      "saved": 0,
-      "method": "none"
-    },
-    {
-      "source": "https://www.beumergroup.com/about-us/contact/",
-      "feed_url": "https://www.beumergroup.com/feed/",
+      "source": "https://www.beumergroup.com/press",
+      "feed_url": "https://www.beumergroup.com/press/feed/",
       "title": "",
       "saved": 0,
       "method": "discovered"
     },
     {
-      "source": "https://www.vanderlande.com/airport-logistics/developerportal-contact/",
-      "feed_url": "https://www.vanderlande.com/airport-logistics/developerportal-contact/",
+      "source": "https://www.dematic.com/en-us/insights/",
+      "feed_url": "https://www.dematic.com/en-us/insights/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    },
+    {
+      "source": "https://www.vanderlande.com/news-insights/",
+      "feed_url": "https://www.vanderlande.com/news-insights/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    },
+    {
+      "source": "https://www.dematic.com/en-us/lifecycle-solutions-services/maintenance-and-support/",
+      "feed_url": "https://www.dematic.com/en-us/lifecycle-solutions-services/maintenance-and-support/",
       "title": "",
       "saved": 0,
       "method": "none"
@@ -28,6 +35,13 @@
       "title": "",
       "saved": 0,
       "method": "feed"
+    },
+    {
+      "source": "https://www.vanderlande.com/airport-logistics/developerportal-contact/",
+      "feed_url": "https://www.vanderlande.com/airport-logistics/developerportal-contact/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
     },
     {
       "source": "https://www.vanderlande.com/software-and-services/fleet/",
@@ -45,5 +59,5 @@
     }
   ],
   "post_count": 0,
-  "fetched": "2026-10-03T12:30:02Z"
+  "fetched": "2026-10-10T13:15:00Z"
 }
