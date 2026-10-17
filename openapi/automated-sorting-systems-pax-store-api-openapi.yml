@@ -154,24 +154,6 @@ paths:
         - ADH.FL.R
 components:
   schemas:
-    ClassCount:
-      type: object
-      properties:
-        planned:
-          type: integer
-          format: int32
-          description: Planned/booked count.
-          example: 100
-        estimated:
-          type: integer
-          format: int32
-          description: Estimated count.
-          example: 99
-        actual:
-          type: integer
-          format: int32
-          description: Actual count.
-          example: 102
     FlightPax:
       type: object
       description: Model for passenger count information.
@@ -196,24 +178,6 @@ components:
           additionalProperties:
             $ref: '#/components/schemas/ClassCount'
           description: Transfer bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
-    SecondaryIdentifier:
-      type: object
-      description: Additional identifiers for flight legs or segments used by airport systems etc.
-      properties:
-        identifier:
-          type: string
-          description: Secondary identifier .
-        created:
-          type: string
-          format: date-time
-          description: Timestamp of creation of secondary identifier in UTC.
-        source:
-          type: string
-          description: Source creating the secondary identifier.
-      required:
-      - created
-      - identifier
-      - source
     FlightIdentifier:
       type: object
       description: Object holding identifying information for a flight.
@@ -257,39 +221,6 @@ components:
       - flight-number
       - origin-date
       - origin-iata-code
-    PaxCountEvent:
-      allOf:
-      - $ref: '#/components/schemas/PaxEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - PAX_COUNT_EVENT
-          flight-pax:
-            $ref: '#/components/schemas/FlightPax'
-            description: Set of passengers and bags count.
-      description: Entity for Business Events for pax count assignment to flight leg.
-      required:
-      - event-time
-      - event-type
-      - flight-pax
-      - identifier
-      - source
-    User:
-      type: object
-      description: Metadata of DH objects.
-      properties:
-        user-id:
-          type: string
-          description: Unique user id.
-          readOnly: true
-        user-name:
-          type: string
-          description: Readable user name
-          readOnly: true
-      readOnly: true
     PaxEvent:
       type: object
       description: Entity for Business Events for pax. Always use one of the subtypes.
@@ -337,6 +268,55 @@ components:
       - event-type
       - identifier
       - source
+    User:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        user-id:
+          type: string
+          description: Unique user id.
+          readOnly: true
+        user-name:
+          type: string
+          description: Readable user name
+          readOnly: true
+      readOnly: true
+    SecondaryIdentifier:
+      type: object
+      description: Additional identifiers for flight legs or segments used by airport systems etc.
+      properties:
+        identifier:
+          type: string
+          description: Secondary identifier .
+        created:
+          type: string
+          format: date-time
+          description: Timestamp of creation of secondary identifier in UTC.
+        source:
+          type: string
+          description: Source creating the secondary identifier.
+      required:
+      - created
+      - identifier
+      - source
+    ClassCount:
+      type: object
+      properties:
+        planned:
+          type: integer
+          format: int32
+          description: Planned/booked count.
+          example: 100
+        estimated:
+          type: integer
+          format: int32
+          description: Estimated count.
+          example: 99
+        actual:
+          type: integer
+          format: int32
+          description: Actual count.
+          example: 102
     BasicMeta:
       type: object
       description: Metadata of DH objects.
@@ -377,3 +357,23 @@ components:
           description: Skip Report Flight processing.
           readOnly: true
       readOnly: true
+    PaxCountEvent:
+      allOf:
+      - $ref: '#/components/schemas/PaxEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - PAX_COUNT_EVENT
+          flight-pax:
+            $ref: '#/components/schemas/FlightPax'
+            description: Set of passengers and bags count.
+      description: Entity for Business Events for pax count assignment to flight leg.
+      required:
+      - event-time
+      - event-type
+      - flight-pax
+      - identifier
+      - source

@@ -116,24 +116,6 @@ paths:
         - ADH.FL.R
 components:
   schemas:
-    ClassCount:
-      type: object
-      properties:
-        planned:
-          type: integer
-          format: int32
-          description: Planned/booked count.
-          example: 100
-        estimated:
-          type: integer
-          format: int32
-          description: Estimated count.
-          example: 99
-        actual:
-          type: integer
-          format: int32
-          description: Actual count.
-          example: 102
     AggregatedMeta:
       type: object
       description: Metadata of DH objects.
@@ -192,153 +174,6 @@ components:
           description: Skip Report Flight processing.
           readOnly: true
       readOnly: true
-    AirportResources:
-      type: object
-      properties:
-        aircraft-parking-position:
-          $ref: '#/components/schemas/AirportResource'
-          description: Gate or hard stand where the aircraft is located.
-        passenger-gates:
-          type: array
-          description: The public gates which the passengers will use to board or disembark.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        remote-operational-gates:
-          type: array
-          description: Additional location used to transfer passengers to or from a remote parking position.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        runway:
-          $ref: '#/components/schemas/AirportResource'
-          description: The runway used for landing or take-off.
-        aircraft-terminal:
-          $ref: '#/components/schemas/AirportResource'
-          description: Terminal where the aircraft is located.
-        public-terminals:
-          type: array
-          description: Terminals where the passengers will be processed.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        baggage-claim-units:
-          type: array
-          description: The number(s) or name(s) of the assigned baggage claim units.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        baggage-make-up-belts:
-          type: array
-          description: The baggage makeup belts assigned for outgoing bags.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        baggage-transfer-laterals:
-          type: array
-          description: The baggage transfer laterals assigned for incoming bags.
-          items:
-            $ref: '#/components/schemas/AirportResource'
-        check-in-desks:
-          $ref: '#/components/schemas/AirportResource'
-          description: Check-in / baggage drop desks.
-        baggage-make-up-belts-open-time:
-          $ref: '#/components/schemas/AirportResource'
-          description: The Opening Time of the baggage makeup belts assigned.
-        baggage-make-up-belts-close-time:
-          $ref: '#/components/schemas/AirportResource'
-          description: The Closing Time of baggage makeup belts assigned.
-    Aircraft:
-      type: object
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp of event.
-        aircraft-type:
-          type: string
-          description: Aircraft type.
-          example: A320
-        registration-number:
-          type: string
-          description: Registration number.
-    Milestones:
-      type: object
-      properties:
-        gto:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Gate open time at origin airport of flight leg.
-        gtc:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Gate closed time at origin airport of flight leg.
-        obt:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Off-block time at origin airport of flight leg.
-        tot:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Take-off time at origin airport of flight leg.
-        ldt:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: Landing time at destination airport of flight leg.
-        ibt:
-          $ref: '#/components/schemas/MilestoneTimes'
-          description: In-block time at destination airport of flight leg.
-    MilestoneTimes:
-      type: object
-      properties:
-        scheduled:
-          type: string
-          format: date-time
-          description: Scheduled time for milestone.
-        estimated:
-          type: string
-          format: date-time
-          description: Estimated time for milestone.
-        actual:
-          type: string
-          format: date-time
-          description: Actual time for milestone.
-        relevant:
-          type: string
-          format: date-time
-          description: Relevant time for milestone, returns actual if set, else estimated if set, else scheduled.
-    FlightPax:
-      type: object
-      description: Model for passenger count information.
-      properties:
-        pax-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
-        transfer-pax-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Transfer pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
-        bag-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
-        transfer-bag-count:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ClassCount'
-          description: Transfer bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
-    SecondaryIdentifier:
-      type: object
-      description: Additional identifiers for flight legs or segments used by airport systems etc.
-      properties:
-        identifier:
-          type: string
-          description: Secondary identifier .
-        created:
-          type: string
-          format: date-time
-          description: Timestamp of creation of secondary identifier in UTC.
-        source:
-          type: string
-          description: Source creating the secondary identifier.
-      required:
-      - created
-      - identifier
-      - source
     FlightIdentifier:
       type: object
       description: Object holding identifying information for a flight.
@@ -382,33 +217,30 @@ components:
       - flight-number
       - origin-date
       - origin-iata-code
-    ReportFlight:
+    FlightPax:
       type: object
-      description: Object holding the state of a report flight.
+      description: Model for passenger count information.
       properties:
-        identifier-string:
-          type: string
-          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-OPERATIONALSUFFIX-DATE-ORIGIN-DESTINATION.
-        fblb:
-          $ref: '#/components/schemas/Fblb'
-          description: 'First-bag last-bag report. '
-        flight-leg:
-          $ref: '#/components/schemas/FlightLeg'
-          description: The flight leg business object.
-        originDate:
-          type: string
-          format: date
-          writeOnly: true
-        aibt:
-          type: string
-          format: date-time
-        meta:
-          $ref: '#/components/schemas/AggregatedMeta'
-          description: Metadata, generated by ADH.
-          readOnly: true
-      required:
-      - flight-leg
-      - identifier-string
+        pax-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
+        transfer-pax-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Transfer pax count of different classes, e.g., total, first class, second class, third class. The key for each class is dynamic and any key is supported.
+        bag-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
+        transfer-bag-count:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClassCount'
+          description: Transfer bag count of different classes, e.g., total. The key for each class is dynamic and any key is supported.
     FlightLeg:
       type: object
       description: Object holding the state of a flight leg.
@@ -499,28 +331,67 @@ components:
           description: Readable user name
           readOnly: true
       readOnly: true
-    FlightSegment:
+    ReportFlight:
       type: object
-      description: Model for flight segments.
+      description: Object holding the state of a report flight.
+      properties:
+        identifier-string:
+          type: string
+          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-OPERATIONALSUFFIX-DATE-ORIGIN-DESTINATION.
+        fblb:
+          $ref: '#/components/schemas/Fblb'
+          description: 'First-bag last-bag report. '
+        flight-leg:
+          $ref: '#/components/schemas/FlightLeg'
+          description: The flight leg business object.
+        originDate:
+          type: string
+          format: date
+          writeOnly: true
+        aibt:
+          type: string
+          format: date-time
+        meta:
+          $ref: '#/components/schemas/AggregatedMeta'
+          description: Metadata, generated by ADH.
+          readOnly: true
+      required:
+      - flight-leg
+      - identifier-string
+    AirportResource:
+      type: object
+      description: Description of an airport resource, allocated to a flight leg.
+      example: AirportResource Description
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event setting this resource in UTC.
+        location:
+          type: string
+          description: Resource location or name.
+          example: Apron
+      required:
+      - location
+      - timestamp
+    SecondaryIdentifier:
+      type: object
+      description: Additional identifiers for flight legs or segments used by airport systems etc.
       properties:
         identifier:
-          $ref: '#/components/schemas/FlightIdentifier'
-          description: Identifying properties of flight segment.
-        secondary-identifiers:
-          type: array
-          description: Additionally identifiers for the flight segment used by airport systems etc.
-          items:
-            $ref: '#/components/schemas/SecondaryIdentifier'
-          uniqueItems: true
-        is-international:
-          type: boolean
-          description: Indicates whether is is a domestic or an international flight segment.
-        milestones:
-          $ref: '#/components/schemas/Milestones'
-          description: Milestone times at departure and arrival, i.e. off-block, take-off, landing, in-block.
+          type: string
+          description: Secondary identifier .
+        created:
+          type: string
+          format: date-time
+          description: Timestamp of creation of secondary identifier in UTC.
+        source:
+          type: string
+          description: Source creating the secondary identifier.
       required:
+      - created
       - identifier
-      - is-international
+      - source
     Fblb:
       type: object
       properties:
@@ -595,22 +466,129 @@ components:
           type: number
           format: float
           description: Percentage of bags that arrived at reclaim belt from the checked-in bags
-    AirportResource:
+    MilestoneTimes:
       type: object
-      description: Description of an airport resource, allocated to a flight leg.
-      example: AirportResource Description
+      properties:
+        scheduled:
+          type: string
+          format: date-time
+          description: Scheduled time for milestone.
+        estimated:
+          type: string
+          format: date-time
+          description: Estimated time for milestone.
+        actual:
+          type: string
+          format: date-time
+          description: Actual time for milestone.
+        relevant:
+          type: string
+          format: date-time
+          description: Relevant time for milestone, returns actual if set, else estimated if set, else scheduled.
+    Aircraft:
+      type: object
       properties:
         timestamp:
           type: string
           format: date-time
-          description: Timestamp of event setting this resource in UTC.
-        location:
+          description: Timestamp of event.
+        aircraft-type:
           type: string
-          description: Resource location or name.
-          example: Apron
-      required:
-      - location
-      - timestamp
+          description: Aircraft type.
+          example: A320
+        registration-number:
+          type: string
+          description: Registration number.
+    AirportResources:
+      type: object
+      properties:
+        aircraft-parking-position:
+          $ref: '#/components/schemas/AirportResource'
+          description: Gate or hard stand where the aircraft is located.
+        passenger-gates:
+          type: array
+          description: The public gates which the passengers will use to board or disembark.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        remote-operational-gates:
+          type: array
+          description: Additional location used to transfer passengers to or from a remote parking position.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        runway:
+          $ref: '#/components/schemas/AirportResource'
+          description: The runway used for landing or take-off.
+        aircraft-terminal:
+          $ref: '#/components/schemas/AirportResource'
+          description: Terminal where the aircraft is located.
+        public-terminals:
+          type: array
+          description: Terminals where the passengers will be processed.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        baggage-claim-units:
+          type: array
+          description: The number(s) or name(s) of the assigned baggage claim units.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        baggage-make-up-belts:
+          type: array
+          description: The baggage makeup belts assigned for outgoing bags.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        baggage-transfer-laterals:
+          type: array
+          description: The baggage transfer laterals assigned for incoming bags.
+          items:
+            $ref: '#/components/schemas/AirportResource'
+        check-in-desks:
+          $ref: '#/components/schemas/AirportResource'
+          description: Check-in / baggage drop desks.
+        baggage-make-up-belts-open-time:
+          $ref: '#/components/schemas/AirportResource'
+          description: The Opening Time of the baggage makeup belts assigned.
+        baggage-make-up-belts-close-time:
+          $ref: '#/components/schemas/AirportResource'
+          description: The Closing Time of baggage makeup belts assigned.
+    ClassCount:
+      type: object
+      properties:
+        planned:
+          type: integer
+          format: int32
+          description: Planned/booked count.
+          example: 100
+        estimated:
+          type: integer
+          format: int32
+          description: Estimated count.
+          example: 99
+        actual:
+          type: integer
+          format: int32
+          description: Actual count.
+          example: 102
+    Milestones:
+      type: object
+      properties:
+        gto:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Gate open time at origin airport of flight leg.
+        gtc:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Gate closed time at origin airport of flight leg.
+        obt:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Off-block time at origin airport of flight leg.
+        tot:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Take-off time at origin airport of flight leg.
+        ldt:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: Landing time at destination airport of flight leg.
+        ibt:
+          $ref: '#/components/schemas/MilestoneTimes'
+          description: In-block time at destination airport of flight leg.
     FblbBag:
       type: object
       properties:
@@ -629,3 +607,25 @@ components:
         reclaim-belt-time:
           type: string
           format: date-time
+    FlightSegment:
+      type: object
+      description: Model for flight segments.
+      properties:
+        identifier:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Identifying properties of flight segment.
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers for the flight segment used by airport systems etc.
+          items:
+            $ref: '#/components/schemas/SecondaryIdentifier'
+          uniqueItems: true
+        is-international:
+          type: boolean
+          description: Indicates whether is is a domestic or an international flight segment.
+        milestones:
+          $ref: '#/components/schemas/Milestones'
+          description: Milestone times at departure and arrival, i.e. off-block, take-off, landing, in-block.
+      required:
+      - identifier
+      - is-international

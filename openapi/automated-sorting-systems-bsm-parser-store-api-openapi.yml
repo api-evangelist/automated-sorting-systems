@@ -175,108 +175,6 @@ paths:
         - ADH.FL.R
 components:
   schemas:
-    BsmRawMessage:
-      type: object
-      description: A BSM encapsulated in a JSON structure.
-      properties:
-        message:
-          type: string
-        pipeline:
-          type: string
-        payload:
-          type: string
-          description: Content of a BSM
-          example: 'BSM
-
-            .V/1XSIN
-
-            .I/AI0101/19MAY/BOM/Y
-
-            .N/0097883333001
-
-            ENDBSM'
-        correlation-id:
-          type: string
-          description: The global id which identifies this object across multiple applications. If no correlation id is provided, ADH will generate one.
-          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-      required:
-      - message
-      - payload
-    VersionData:
-      type: object
-      properties:
-        version:
-          type: string
-        encryption:
-          type: string
-          example: 123ABC456Z
-        baggage-source-indicator:
-          type: string
-          description: L = Local; T = Transfer; X = Terminating; R = Remote
-          example: L
-        origin-iata-code:
-          type: string
-          description: Origin airport IATA code
-          example: DXB
-        part-number:
-          type: string
-          description: Origin airport IATA code
-          example: PART1
-        message-reference-number:
-          type: string
-          example: BA21900123
-        acknowledgement-request:
-          type: boolean
-          example: A
-      required:
-      - baggage-source-indicator
-      - origin-iata-code
-      - part-number
-    State:
-      type: object
-    Bsm:
-      type: object
-      properties:
-        dimension:
-          $ref: '#/components/schemas/Dimension'
-        state:
-          $ref: '#/components/schemas/State'
-          writeOnly: true
-        status-indicator:
-          type: string
-          description: 'NEW new entry <br> CHG changed <br> DEL deleted '
-          example: CHG
-        version-data:
-          $ref: '#/components/schemas/VersionData'
-          description: .V element
-        outbound-flight:
-          $ref: '#/components/schemas/FlightDataBsm'
-          description: .F element
-        inbound-flight:
-          $ref: '#/components/schemas/FlightDataBsm'
-          description: .I element
-        onward-flights:
-          type: array
-          description: .O element
-          items:
-            $ref: '#/components/schemas/FlightDataBsm'
-        bag-exception-data:
-          type: string
-          description: .E element
-          example: RUSH
-        internal-airline-data:
-          type: string
-          description: .R element
-          example: FREE TEXT
-        bag-tag:
-          type: string
-        reconciliation-data:
-          $ref: '#/components/schemas/ReconciliationData'
-        security-screening:
-          $ref: '#/components/schemas/SecurityScreening'
-      required:
-      - status-indicator
-      - version-data
     Dimension:
       type: object
       properties:
@@ -322,6 +220,132 @@ components:
           example: 02HWX
       required:
       - weight-indicator
+    State:
+      type: object
+    VersionData:
+      type: object
+      properties:
+        version:
+          type: string
+        encryption:
+          type: string
+          example: 123ABC456Z
+        baggage-source-indicator:
+          type: string
+          description: L = Local; T = Transfer; X = Terminating; R = Remote
+          example: L
+        origin-iata-code:
+          type: string
+          description: Origin airport IATA code
+          example: DXB
+        part-number:
+          type: string
+          description: Origin airport IATA code
+          example: PART1
+        message-reference-number:
+          type: string
+          example: BA21900123
+        acknowledgement-request:
+          type: boolean
+          example: A
+      required:
+      - baggage-source-indicator
+      - origin-iata-code
+      - part-number
+    SecurityScreening:
+      type: object
+      properties:
+        screen-instructor:
+          type: string
+          enum:
+          - DEF
+          - SEL
+          - NON
+        screen-result:
+          type: string
+          enum:
+          - CLR
+          - REJ
+          - UCL
+        screen-result-reason:
+          type: string
+          enum:
+          - D
+          - E
+          - C
+          - N
+          - T
+        screen-method:
+          type: string
+        screen-autograph:
+          type: string
+        screen-comment:
+          type: string
+    BsmRawMessage:
+      type: object
+      description: A BSM encapsulated in a JSON structure.
+      properties:
+        message:
+          type: string
+        pipeline:
+          type: string
+        payload:
+          type: string
+          description: Content of a BSM
+          example: 'BSM
+
+            .V/1XSIN
+
+            .I/AI0101/19MAY/BOM/Y
+
+            .N/0097883333001
+
+            ENDBSM'
+        correlation-id:
+          type: string
+          description: The global id which identifies this object across multiple applications. If no correlation id is provided, ADH will generate one.
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+      required:
+      - message
+      - payload
+    FlightDataBsm:
+      type: object
+      properties:
+        flight-designator:
+          type: string
+          description: Airline and Flight Number
+          example: UA423
+        origin-date:
+          type: string
+          description: Scheduled date for departure date. Format is YYYY-MM-DD.
+          example: '2023-03-30'
+        carrier:
+          type: string
+          description: The flight carrier
+          example: UA
+        flight-number:
+          type: string
+          description: The flight number
+          example: 423
+        operational-suffix:
+          type: string
+          example: A
+        origin-iata-code:
+          type: string
+          description: Origin Airport IATA code
+          example: SIN
+        destination-iata-code:
+          type: string
+          description: Destination Airport IATA code
+          example: DXB
+        class-of-travel:
+          type: string
+          example: F
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence Flight Number
+          example: 1
     ReconciliationData:
       type: object
       properties:
@@ -368,70 +392,46 @@ components:
           example: A
       required:
       - authority-to-load
-    FlightDataBsm:
+    Bsm:
       type: object
       properties:
-        flight-designator:
+        dimension:
+          $ref: '#/components/schemas/Dimension'
+        state:
+          $ref: '#/components/schemas/State'
+          writeOnly: true
+        status-indicator:
           type: string
-          description: Airline and Flight Number
-          example: UA423
-        origin-date:
+          description: 'NEW new entry <br> CHG changed <br> DEL deleted '
+          example: CHG
+        version-data:
+          $ref: '#/components/schemas/VersionData'
+          description: .V element
+        outbound-flight:
+          $ref: '#/components/schemas/FlightDataBsm'
+          description: .F element
+        inbound-flight:
+          $ref: '#/components/schemas/FlightDataBsm'
+          description: .I element
+        onward-flights:
+          type: array
+          description: .O element
+          items:
+            $ref: '#/components/schemas/FlightDataBsm'
+        bag-exception-data:
           type: string
-          description: Scheduled date for departure date. Format is YYYY-MM-DD.
-          example: '2023-03-30'
-        carrier:
+          description: .E element
+          example: RUSH
+        internal-airline-data:
           type: string
-          description: The flight carrier
-          example: UA
-        flight-number:
+          description: .R element
+          example: FREE TEXT
+        bag-tag:
           type: string
-          description: The flight number
-          example: 423
-        operational-suffix:
-          type: string
-          example: A
-        origin-iata-code:
-          type: string
-          description: Origin Airport IATA code
-          example: SIN
-        destination-iata-code:
-          type: string
-          description: Destination Airport IATA code
-          example: DXB
-        class-of-travel:
-          type: string
-          example: F
-        sequence-number:
-          type: integer
-          format: int32
-          description: Sequence Flight Number
-          example: 1
-    SecurityScreening:
-      type: object
-      properties:
-        screen-instructor:
-          type: string
-          enum:
-          - DEF
-          - SEL
-          - NON
-        screen-result:
-          type: string
-          enum:
-          - CLR
-          - REJ
-          - UCL
-        screen-result-reason:
-          type: string
-          enum:
-          - D
-          - E
-          - C
-          - N
-          - T
-        screen-method:
-          type: string
-        screen-autograph:
-          type: string
-        screen-comment:
-          type: string
+        reconciliation-data:
+          $ref: '#/components/schemas/ReconciliationData'
+        security-screening:
+          $ref: '#/components/schemas/SecurityScreening'
+      required:
+      - status-indicator
+      - version-data

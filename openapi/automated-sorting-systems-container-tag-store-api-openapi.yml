@@ -640,6 +640,347 @@ paths:
         - ADH.CT.R
 components:
   schemas:
+    ContainerContainerizationEvent:
+      allOf:
+      - $ref: '#/components/schemas/ContainerEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - CONTAINERIZATION
+          activity:
+            $ref: '#/components/schemas/ContainerContainerizationActivity'
+            description: Containerization activity for which the event occurred.
+      description: Entity for Container Containerization Business Events.
+      required:
+      - activity
+      - event-type
+      - segments
+      - tag
+    FlightIdentifier:
+      type: object
+      description: Object holding identifying information for a flight.
+      properties:
+        carrier:
+          type: string
+          description: 2-digit IATA code of operating carrier.
+          example: ZZ
+        flight-number:
+          type: string
+          description: The flight number of the operating carrier. Should contain not more than 4 chars and must not include whitespaces. If less than 4 chars leading zeros will be added to normalize it to 4 chars.
+          example: 997
+        operational-suffix:
+          type: string
+          description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
+          example: B
+        origin-date:
+          type: string
+          format: date
+          description: UTC scheduled date of departure of the first leg of the flight. Must be between 2010-01-01 and 2210-01-01.
+        identifier-string:
+          type: string
+          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-DATE-ORIGIN-DESTINATION.
+        iata-message-key:
+          type: string
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT in the origin timezone
+        iata-message-key-utc:
+          type: string
+          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT coverted to UTC
+        origin-iata-code:
+          type: string
+          description: 3-digit IATA code of origin airport.
+          example: AAA
+        destination-iata-code:
+          type: string
+          description: 3-digit IATA code of destination airport.
+          example: ZZZ
+      required:
+      - carrier
+      - destination-iata-code
+      - flight-number
+      - origin-date
+      - origin-iata-code
+    ContainerActivity:
+      type: object
+      description: Details on a specific container activity on a container segment.
+      discriminator:
+        propertyName: type
+        mapping:
+          REGISTRATION: '#/components/schemas/ContainerRegistrationActivity'
+          SECURITY: '#/components/schemas/ContainerSecurityActivity'
+          MOVEMENT: '#/components/schemas/ContainerMovementActivity'
+          STORAGE: '#/components/schemas/ContainerStorageActivity'
+          CONTAINERIZATION: '#/components/schemas/ContainerContainerizationActivity'
+      oneOf:
+      - $ref: '#/components/schemas/ContainerRegistrationActivity'
+      - $ref: '#/components/schemas/ContainerSecurityActivity'
+      - $ref: '#/components/schemas/ContainerMovementActivity'
+      - $ref: '#/components/schemas/ContainerStorageActivity'
+      - $ref: '#/components/schemas/ContainerContainerizationActivity'
+      properties:
+        type:
+          type: string
+          description: Type of activity, must match the type defined for the concrete subclass.
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event in UTC.
+        location:
+          type: string
+          description: Location id of event.
+          example: TRA_14
+        source:
+          type: string
+          description: System generating the event.
+          example: TRA Scanner 12
+      required:
+      - source
+      - timestamp
+      - type
+    ContainerSegment:
+      type: object
+      description: Object holding a the state of a uld journey represented by container tag for a flight segment.
+      properties:
+        sequence-number:
+          type: integer
+          format: int32
+          description: Sequence number of flight segment within container journey.
+        identifier:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Flight segment identifier.
+        tag:
+          type: string
+          description: Tag number of the uld tag used on this segment.
+          example: A12345678
+        activities:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ContainerActivity'
+          description: Activities of the conatiner on this segment.
+          properties:
+            register:
+              $ref: '#/components/schemas/ContainerRegistrationActivity'
+              description: Register.
+            close:
+              $ref: '#/components/schemas/ContainerSecurityActivity'
+              description: Close.
+            deliver-at-mup:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Deliver at handover place at MUP for transport to aircraft / store.
+            acquire-at-mup:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Acquire at MUP.
+            deliver-at-store:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Deliver at store.
+            receipt:
+              $ref: '#/components/schemas/ContainerStorageActivity'
+              description: Receipt at store.
+            put-away:
+              $ref: '#/components/schemas/ContainerStorageActivity'
+              description: Put away at store.
+            withdraw:
+              $ref: '#/components/schemas/ContainerStorageActivity'
+              description: Withdraw from store.
+            acquire-at-store:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Acquire at store.
+            deliver-at-bay:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Deliver at bay.
+            load:
+              $ref: '#/components/schemas/ContainerContainerizationActivity'
+              description: Load into aircraft.
+            offload:
+              $ref: '#/components/schemas/ContainerContainerizationActivity'
+              description: Offload from aircraft.
+            acquire-at-bay:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Acquire at bay.
+            deliver-at-transfer-lateral:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Deliver at transfer lateral.
+            deliver-at-reclaim-belt:
+              $ref: '#/components/schemas/ContainerMovementActivity'
+              description: Deliver at reclaim belt.
+            open:
+              $ref: '#/components/schemas/ContainerSecurityActivity'
+              description: Open.
+            empty:
+              type: boolean
+            remove:
+              $ref: '#/components/schemas/ContainerContainerizationActivity'
+              description: Remove from aircraft.
+    ContainerStorageActivity:
+      type: object
+      description: Entity for Container Storage Business Events.
+      properties:
+        type:
+          type: string
+          description: Type of activity, must match the type defined for the concrete subclass.
+          enum:
+          - STORAGE
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event in UTC.
+        location:
+          type: string
+          description: Location id of event.
+          example: TRA_14
+        source:
+          type: string
+          description: System generating the event.
+          example: TRA Scanner 12
+        function:
+          type: string
+          description: Storage function.
+          enum:
+          - RECEIPT
+          - PUT_AWAY
+          - WITHDRAW
+        storage-position:
+          type: string
+          description: Position in storage.
+          example: UL3
+      required:
+      - function
+      - source
+      - timestamp
+      - type
+    BasicMeta:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        created-at:
+          type: string
+          format: date-time
+          description: Timestamp when object was first created in DH.
+          readOnly: true
+        created-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be created.
+          readOnly: true
+        modified-count:
+          type: integer
+          format: int64
+          description: Number of modifications in DH.
+          readOnly: true
+        modified-at:
+          type: string
+          format: date-time
+          description: Timestamp of last modification in DH.
+          readOnly: true
+        modified-by:
+          $ref: '#/components/schemas/User'
+          description: ID of user of event which caused the object to be modified.
+          readOnly: true
+        tag-id:
+          type: string
+          deprecated: true
+          description: Unique id of the bag tag in the data hub for an unlimited period of time.
+        skip-datawarehouse:
+          type: boolean
+          description: Skip Datawarehouse processing.
+          readOnly: true
+        skip-report-flight:
+          type: boolean
+          description: Skip Report Flight processing.
+          readOnly: true
+      readOnly: true
+    ContainerSecurityActivity:
+      type: object
+      description: Entity for Container Security Business Activities.
+      properties:
+        type:
+          type: string
+          description: Type of activity, must match the type defined for the concrete subclass.
+          enum:
+          - SECURITY
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event in UTC.
+        location:
+          type: string
+          description: Location id of event.
+          example: TRA_14
+        source:
+          type: string
+          description: System generating the event.
+          example: TRA Scanner 12
+        function:
+          type: string
+          description: Security function.
+          enum:
+          - SCREEN
+          - CLOSE
+          - OPEN
+          - SEAL
+          - UNSEAL
+      required:
+      - function
+      - source
+      - timestamp
+      - type
+    ContainerMovementActivity:
+      type: object
+      description: Entity for CONTAINER Movement Business Activities.
+      properties:
+        type:
+          type: string
+          description: Type of activity, must match the type defined for the concrete subclass.
+          enum:
+          - MOVEMENT
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of event in UTC.
+        location:
+          type: string
+          description: Location id of event.
+          example: TRA_14
+        source:
+          type: string
+          description: System generating the event.
+          example: TRA Scanner 12
+        function:
+          type: string
+          description: Movement function.
+          enum:
+          - ACQUIRE
+          - TRACK
+          - DELIVER
+        location-type:
+          type: string
+          description: Location type.
+          enum:
+          - MUP
+          - BAY
+          - STORE
+          - TRANSFER_LATERAL
+          - RECLAIM_BELT
+      required:
+      - function
+      - location-type
+      - source
+      - timestamp
+      - type
+    User:
+      type: object
+      description: Metadata of DH objects.
+      properties:
+        user-id:
+          type: string
+          description: Unique user id.
+          readOnly: true
+        user-name:
+          type: string
+          description: Readable user name
+          readOnly: true
+      readOnly: true
     ContainerRegistrationActivity:
       type: object
       description: Entity for Container Registration Business Activities.
@@ -744,6 +1085,78 @@ components:
           description: Skip Report Flight processing.
           readOnly: true
       readOnly: true
+    ContainerTag:
+      type: object
+      description: Object holding a the state of an container journey represented by ContainerTag.
+      properties:
+        meta:
+          $ref: '#/components/schemas/AggregatedMeta'
+          description: Metadata, generated by ADH.
+          readOnly: true
+        tag-id:
+          type: string
+          description: Unique id of the container tag in the data hub for an unlimited period of time.
+        tag:
+          type: string
+          description: Tag number of the container tag. Latest tag number in case of re-tagging.
+        secondary-identifiers:
+          type: array
+          description: Additionally identifiers for the container tag, i.e. container journey, used by airports etc.
+          items:
+            $ref: '#/components/schemas/SecondaryIdentifier'
+          uniqueItems: true
+        container-type:
+          type: string
+          description: Container type identifier.
+          example: ULD
+        container-subtype:
+          type: string
+          description: Container subtype identifier
+          example: AKE
+        segments:
+          type: array
+          description: Container segments.
+          items:
+            $ref: '#/components/schemas/ContainerSegment'
+          uniqueItems: true
+    ContainerSecurityEvent:
+      allOf:
+      - $ref: '#/components/schemas/ContainerEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - SECURITY
+          activity:
+            $ref: '#/components/schemas/ContainerSecurityActivity'
+            description: Container security activity for which the event occurred.
+      description: Entity for Container Security Business Events.
+      required:
+      - activity
+      - event-type
+      - segments
+      - tag
+    ContainerMovementEvent:
+      allOf:
+      - $ref: '#/components/schemas/ContainerEvent'
+      - type: object
+        properties:
+          event-type:
+            type: string
+            description: Type of event for the concrete subclass.
+            enum:
+            - MOVEMENT
+          activity:
+            $ref: '#/components/schemas/ContainerMovementActivity'
+            description: Movement activity for which the event occurred.
+      description: Entity for CONTAINER Movement Business Events.
+      required:
+      - activity
+      - event-type
+      - segments
+      - tag
     ContainerContainerizationActivity:
       type: object
       description: Entity for Container Containerization Business Activities.
@@ -790,38 +1203,6 @@ components:
       - source
       - timestamp
       - type
-    ContainerMovementEvent:
-      allOf:
-      - $ref: '#/components/schemas/ContainerEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - MOVEMENT
-          activity:
-            $ref: '#/components/schemas/ContainerMovementActivity'
-            description: Movement activity for which the event occurred.
-      description: Entity for CONTAINER Movement Business Events.
-      required:
-      - activity
-      - event-type
-      - segments
-      - tag
-    ContainerEventSegment:
-      type: object
-      description: Description of container segment. For use in container events.
-      properties:
-        sequence-number:
-          type: integer
-          format: int32
-          description: Sequence number of segment.
-        identifier:
-          $ref: '#/components/schemas/FlightIdentifier'
-          description: Segment identifier.
-      required:
-      - identifier
     AircraftCompartment:
       type: object
       properties:
@@ -829,226 +1210,6 @@ components:
           type: string
         compartment:
           type: string
-    SecondaryIdentifier:
-      type: object
-      description: Additional identifiers for flight legs or segments used by airport systems etc.
-      properties:
-        identifier:
-          type: string
-          description: Secondary identifier .
-        created:
-          type: string
-          format: date-time
-          description: Timestamp of creation of secondary identifier in UTC.
-        source:
-          type: string
-          description: Source creating the secondary identifier.
-      required:
-      - created
-      - identifier
-      - source
-    FlightIdentifier:
-      type: object
-      description: Object holding identifying information for a flight.
-      properties:
-        carrier:
-          type: string
-          description: 2-digit IATA code of operating carrier.
-          example: ZZ
-        flight-number:
-          type: string
-          description: The flight number of the operating carrier. Should contain not more than 4 chars and must not include whitespaces. If less than 4 chars leading zeros will be added to normalize it to 4 chars.
-          example: 997
-        operational-suffix:
-          type: string
-          description: Used to distinguish two flights having the same flight number and departing from their respective origin stations on the same date.
-          example: B
-        origin-date:
-          type: string
-          format: date
-          description: UTC scheduled date of departure of the first leg of the flight. Must be between 2010-01-01 and 2210-01-01.
-        identifier-string:
-          type: string
-          description: Automatically generated unique flight ID using format CARRIERFLIGHTNUMBER-DATE-ORIGIN-DESTINATION.
-        iata-message-key:
-          type: string
-          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT in the origin timezone
-        iata-message-key-utc:
-          type: string
-          description: Automatically generated key using format CARRIERFLIGHTNUMBERSOBT. SOBT coverted to UTC
-        origin-iata-code:
-          type: string
-          description: 3-digit IATA code of origin airport.
-          example: AAA
-        destination-iata-code:
-          type: string
-          description: 3-digit IATA code of destination airport.
-          example: ZZZ
-      required:
-      - carrier
-      - destination-iata-code
-      - flight-number
-      - origin-date
-      - origin-iata-code
-    ContainerSegment:
-      type: object
-      description: Object holding a the state of a uld journey represented by container tag for a flight segment.
-      properties:
-        sequence-number:
-          type: integer
-          format: int32
-          description: Sequence number of flight segment within container journey.
-        identifier:
-          $ref: '#/components/schemas/FlightIdentifier'
-          description: Flight segment identifier.
-        tag:
-          type: string
-          description: Tag number of the uld tag used on this segment.
-          example: A12345678
-        activities:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ContainerActivity'
-          description: Activities of the conatiner on this segment.
-          properties:
-            register:
-              $ref: '#/components/schemas/ContainerRegistrationActivity'
-              description: Register.
-            close:
-              $ref: '#/components/schemas/ContainerSecurityActivity'
-              description: Close.
-            deliver-at-mup:
-              $ref: '#/components/schemas/ContainerMovementActivity'
-              description: Deliver at handover place at MUP for transport to aircraft / store.
-            acquire-at-mup:
-              $ref: '#/components/schemas/ContainerMovementActivity'
-              description: Acquire at MUP.
-            deliver-at-store:
-              $ref: '#/components/schemas/ContainerMovementActivity'
-              description: Deliver at store.
-            receipt:
-              $ref: '#/components/schemas/ContainerStorageActivity'
-              description: Receipt at store.
-            put-away:
-              $ref: '#/components/schemas/ContainerStorageActivity'
-              description: Put away at store.
-            withdraw:
-              $ref: '#/components/schemas/ContainerStorageActivity'
-              description: Withdraw from store.
-            acquire-at-store:
-              $ref: '#/components/schemas/ContainerMovementActivity'
-              description: Acquire at store.
-            deliver-at-bay:
-              $ref: '#/components/schemas/ContainerMovementActivity'
-              description: Deliver at bay.
-            load:
-              $ref: '#/components/schemas/ContainerContainerizationActivity'
-              description: Load into aircraft.
-            offload:
-              $ref: '#/components/schemas/ContainerContainerizationActivity'
-              description: Offload from aircraft.
-            acquire-at-bay:
-              $ref: '#/components/schemas/ContainerMovementActivity'
-              description: Acquire at bay.
-            deliver-at-transfer-lateral:
-              $ref: '#/components/schemas/ContainerMovementActivity'
-              description: Deliver at transfer lateral.
-            deliver-at-reclaim-belt:
-              $ref: '#/components/schemas/ContainerMovementActivity'
-              description: Deliver at reclaim belt.
-            open:
-              $ref: '#/components/schemas/ContainerSecurityActivity'
-              description: Open.
-            empty:
-              type: boolean
-            remove:
-              $ref: '#/components/schemas/ContainerContainerizationActivity'
-              description: Remove from aircraft.
-    ContainerSecurityActivity:
-      type: object
-      description: Entity for Container Security Business Activities.
-      properties:
-        type:
-          type: string
-          description: Type of activity, must match the type defined for the concrete subclass.
-          enum:
-          - SECURITY
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp of event in UTC.
-        location:
-          type: string
-          description: Location id of event.
-          example: TRA_14
-        source:
-          type: string
-          description: System generating the event.
-          example: TRA Scanner 12
-        function:
-          type: string
-          description: Security function.
-          enum:
-          - SCREEN
-          - CLOSE
-          - OPEN
-          - SEAL
-          - UNSEAL
-      required:
-      - function
-      - source
-      - timestamp
-      - type
-    User:
-      type: object
-      description: Metadata of DH objects.
-      properties:
-        user-id:
-          type: string
-          description: Unique user id.
-          readOnly: true
-        user-name:
-          type: string
-          description: Readable user name
-          readOnly: true
-      readOnly: true
-    ContainerActivity:
-      type: object
-      description: Details on a specific container activity on a container segment.
-      discriminator:
-        propertyName: type
-        mapping:
-          REGISTRATION: '#/components/schemas/ContainerRegistrationActivity'
-          SECURITY: '#/components/schemas/ContainerSecurityActivity'
-          MOVEMENT: '#/components/schemas/ContainerMovementActivity'
-          STORAGE: '#/components/schemas/ContainerStorageActivity'
-          CONTAINERIZATION: '#/components/schemas/ContainerContainerizationActivity'
-      oneOf:
-      - $ref: '#/components/schemas/ContainerRegistrationActivity'
-      - $ref: '#/components/schemas/ContainerSecurityActivity'
-      - $ref: '#/components/schemas/ContainerMovementActivity'
-      - $ref: '#/components/schemas/ContainerStorageActivity'
-      - $ref: '#/components/schemas/ContainerContainerizationActivity'
-      properties:
-        type:
-          type: string
-          description: Type of activity, must match the type defined for the concrete subclass.
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp of event in UTC.
-        location:
-          type: string
-          description: Location id of event.
-          example: TRA_14
-        source:
-          type: string
-          description: System generating the event.
-          example: TRA Scanner 12
-      required:
-      - source
-      - timestamp
-      - type
     ContainerRegistrationEvent:
       allOf:
       - $ref: '#/components/schemas/ContainerEvent'
@@ -1068,89 +1229,19 @@ components:
       - event-type
       - segments
       - tag
-    ContainerMovementActivity:
+    ContainerEventSegment:
       type: object
-      description: Entity for CONTAINER Movement Business Activities.
+      description: Description of container segment. For use in container events.
       properties:
-        type:
-          type: string
-          description: Type of activity, must match the type defined for the concrete subclass.
-          enum:
-          - MOVEMENT
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp of event in UTC.
-        location:
-          type: string
-          description: Location id of event.
-          example: TRA_14
-        source:
-          type: string
-          description: System generating the event.
-          example: TRA Scanner 12
-        function:
-          type: string
-          description: Movement function.
-          enum:
-          - ACQUIRE
-          - TRACK
-          - DELIVER
-        location-type:
-          type: string
-          description: Location type.
-          enum:
-          - MUP
-          - BAY
-          - STORE
-          - TRANSFER_LATERAL
-          - RECLAIM_BELT
-      required:
-      - function
-      - location-type
-      - source
-      - timestamp
-      - type
-    BasicMeta:
-      type: object
-      description: Metadata of DH objects.
-      properties:
-        created-at:
-          type: string
-          format: date-time
-          description: Timestamp when object was first created in DH.
-          readOnly: true
-        created-by:
-          $ref: '#/components/schemas/User'
-          description: ID of user of event which caused the object to be created.
-          readOnly: true
-        modified-count:
+        sequence-number:
           type: integer
-          format: int64
-          description: Number of modifications in DH.
-          readOnly: true
-        modified-at:
-          type: string
-          format: date-time
-          description: Timestamp of last modification in DH.
-          readOnly: true
-        modified-by:
-          $ref: '#/components/schemas/User'
-          description: ID of user of event which caused the object to be modified.
-          readOnly: true
-        tag-id:
-          type: string
-          deprecated: true
-          description: Unique id of the bag tag in the data hub for an unlimited period of time.
-        skip-datawarehouse:
-          type: boolean
-          description: Skip Datawarehouse processing.
-          readOnly: true
-        skip-report-flight:
-          type: boolean
-          description: Skip Report Flight processing.
-          readOnly: true
-      readOnly: true
+          format: int32
+          description: Sequence number of segment.
+        identifier:
+          $ref: '#/components/schemas/FlightIdentifier'
+          description: Segment identifier.
+      required:
+      - identifier
     ContainerEvent:
       type: object
       description: Entity for Container Business Events. Use concrete subclass.
@@ -1196,6 +1287,24 @@ components:
       - event-type
       - segments
       - tag
+    SecondaryIdentifier:
+      type: object
+      description: Additional identifiers for flight legs or segments used by airport systems etc.
+      properties:
+        identifier:
+          type: string
+          description: Secondary identifier .
+        created:
+          type: string
+          format: date-time
+          description: Timestamp of creation of secondary identifier in UTC.
+        source:
+          type: string
+          description: Source creating the secondary identifier.
+      required:
+      - created
+      - identifier
+      - source
     ContainerStorageEvent:
       allOf:
       - $ref: '#/components/schemas/ContainerEvent'
@@ -1210,115 +1319,6 @@ components:
             $ref: '#/components/schemas/ContainerStorageActivity'
             description: Container storage activity for which the event occurred.
       description: Entity for Container Storage Business Events.
-      required:
-      - activity
-      - event-type
-      - segments
-      - tag
-    ContainerTag:
-      type: object
-      description: Object holding a the state of an container journey represented by ContainerTag.
-      properties:
-        meta:
-          $ref: '#/components/schemas/AggregatedMeta'
-          description: Metadata, generated by ADH.
-          readOnly: true
-        tag-id:
-          type: string
-          description: Unique id of the container tag in the data hub for an unlimited period of time.
-        tag:
-          type: string
-          description: Tag number of the container tag. Latest tag number in case of re-tagging.
-        secondary-identifiers:
-          type: array
-          description: Additionally identifiers for the container tag, i.e. container journey, used by airports etc.
-          items:
-            $ref: '#/components/schemas/SecondaryIdentifier'
-          uniqueItems: true
-        container-type:
-          type: string
-          description: Container type identifier.
-          example: ULD
-        container-subtype:
-          type: string
-          description: Container subtype identifier
-          example: AKE
-        segments:
-          type: array
-          description: Container segments.
-          items:
-            $ref: '#/components/schemas/ContainerSegment'
-          uniqueItems: true
-    ContainerStorageActivity:
-      type: object
-      description: Entity for Container Storage Business Events.
-      properties:
-        type:
-          type: string
-          description: Type of activity, must match the type defined for the concrete subclass.
-          enum:
-          - STORAGE
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp of event in UTC.
-        location:
-          type: string
-          description: Location id of event.
-          example: TRA_14
-        source:
-          type: string
-          description: System generating the event.
-          example: TRA Scanner 12
-        function:
-          type: string
-          description: Storage function.
-          enum:
-          - RECEIPT
-          - PUT_AWAY
-          - WITHDRAW
-        storage-position:
-          type: string
-          description: Position in storage.
-          example: UL3
-      required:
-      - function
-      - source
-      - timestamp
-      - type
-    ContainerContainerizationEvent:
-      allOf:
-      - $ref: '#/components/schemas/ContainerEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - CONTAINERIZATION
-          activity:
-            $ref: '#/components/schemas/ContainerContainerizationActivity'
-            description: Containerization activity for which the event occurred.
-      description: Entity for Container Containerization Business Events.
-      required:
-      - activity
-      - event-type
-      - segments
-      - tag
-    ContainerSecurityEvent:
-      allOf:
-      - $ref: '#/components/schemas/ContainerEvent'
-      - type: object
-        properties:
-          event-type:
-            type: string
-            description: Type of event for the concrete subclass.
-            enum:
-            - SECURITY
-          activity:
-            $ref: '#/components/schemas/ContainerSecurityActivity'
-            description: Container security activity for which the event occurred.
-      description: Entity for Container Security Business Events.
       required:
       - activity
       - event-type
